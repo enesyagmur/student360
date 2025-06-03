@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-bg-primary: #f0f4f8; /* Açık tema ana arka plan */
+  --color-bg-secondary: #ffffff; /* Açık tema daha açık arka plan */
+  --color-text-primary: #1e293b; /* Açık tema koyu mavi ton (tailwind slate-800 gibi) */
+  --color-text-secondary: #475569; /* Açık tema daha açık yazı rengi */
+
+  --color-accent: #2563eb; /* Açık tema vurgu rengi (mavi) */
+}
+
+.dark {
+  --color-bg-primary: #0f172a; /* Koyu tema ana arka plan (tailwind slate-900) */
+  --color-bg-secondary: #1e293b; /* Koyu tema koyu mavi ton (tailwind slate-800) */
+  --color-text-primary: #e0e7ff; /* Koyu tema açık mavi ton */
+  --color-text-secondary: #94a3b8; /* Koyu tema açık gri-mavi ton */
+
+  --color-accent: #3b82f6; /* Koyu tema vurgu rengi */
+}
