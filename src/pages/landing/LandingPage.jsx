@@ -17,7 +17,7 @@ const LandingPage = () => {
         type="primary"
         children={"Başla"}
         size="lg"
-        onClick={() => navigate("/home/teacherManagement")}
+        onClick={() => navigate("/login")}
       />
     </div>
   );
