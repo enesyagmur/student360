@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Search, Plus } from "lucide-react";
 import ManagerList from "../../components/manager/lists/ManagerList";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { managerSchema } from "../../utils/managerSchema";
+import { managerSchema } from "../../lib/validation/managerSchema";
 import { useForm } from "react-hook-form";
+import { createNewManagerService } from "../../features/manager/managerService";
 
 const ManagerManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -17,9 +18,19 @@ const ManagerManagementPage = () => {
     resolver: yupResolver(managerSchema),
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    reset();
+  const onSubmit = async (data) => {
+    try {
+      const user = await createNewManagerService(data);
+
+      if (user) {
+        reset();
+      }
+    } catch (err) {
+      console.error(
+        "Manager Management Page | Yönetici oluşturulurken sorun ",
+        err
+      );
+    }
   };
 
   return (
