@@ -1,11 +1,11 @@
 const toggleTheme = () => {
   const html = document.documentElement;
-  if (html.classList.contains("dark")) {
-    html.classList.remove("dark");
-    return "light";
-  } else {
-    html.classList.add("dark");
+  if (html.classList.contains("light")) {
+    html.classList.remove("light");
     return "dark";
+  } else {
+    html.classList.add("light");
+    return "light";
   }
 };
 

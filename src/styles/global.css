@@ -3,19 +3,37 @@
 @tailwind utilities;
 
 :root {
-  --color-bg-primary: #f0f4f8; /* Açık tema ana arka plan */
-  --color-bg-secondary: #ffffff; /* Açık tema daha açık arka plan */
-  --color-text-primary: #1e293b; /* Açık tema koyu mavi ton (tailwind slate-800 gibi) */
-  --color-text-secondary: #475569; /* Açık tema daha açık yazı rengi */
+  /* Mevcut renkler */
+  --color-bg-primary: #111828;
+  --color-bg-secondary: #202938;
+  --color-bg-tertiary: #334155;
+  --color-bg-quaternary: #475569;
 
-  --color-accent: #2563eb; /* Açık tema vurgu rengi (mavi) */
+  --color-text-primary: #e0e7ff;
+  --color-text-secondary: #b6c1cd;
+  --color-text-tertiary: #95a3b6;
+  --color-accent: #104274;
+
+  --color-success: #10b981; /* Koyu temada daha parlak yeşil */
+  --color-warning: #f59e0b; /* Koyu temada daha parlak turuncu */
+  --color-danger: #ef4444; /* Koyu temada daha parlak kırmızı */
+  --color-accent-light: #1761ab; /* Koyu mavi arka plan */
 }
 
-.dark {
-  --color-bg-primary: #0f172a; /* Koyu tema ana arka plan (tailwind slate-900) */
-  --color-bg-secondary: #1e293b; /* Koyu tema koyu mavi ton (tailwind slate-800) */
-  --color-text-primary: #e0e7ff; /* Koyu tema açık mavi ton */
-  --color-text-secondary: #94a3b8; /* Koyu tema açık gri-mavi ton */
+.light {
+  /* Mevcut renkler */
+  --color-bg-primary: #f0f4f8;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #f8fafc;
+  --color-bg-quaternary: #e2e8f0;
 
-  --color-accent: #3b82f6; /* Koyu tema vurgu rengi */
+  --color-text-primary: #111828;
+  --color-text-secondary: #202938;
+  --color-text-tertiary: #64748b;
+  --color-accent: #1976d3;
+
+  --color-success: #059669; /* Yeşil tonları */
+  --color-warning: #d97706; /* Turuncu tonları */
+  --color-danger: #dc2626; /* Kırmızı tonları */
+  --color-accent-light: #1d8dfc; /* Açık mavi arka plan */
 }

@@ -1,11 +1,11 @@
 import React from "react";
 
-const TeacherManagementPage = () => {
+const AnnouncementManagementPage = () => {
   return (
     <div className="flex-1 h-full text-text-secondary">
-      TeacherManagementPage
+      AnnouncementManagementPage
     </div>
   );
 };
 
-export default TeacherManagementPage;
+export default AnnouncementManagementPage;
