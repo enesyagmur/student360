@@ -1,9 +1,179 @@
-import React from "react";
+import React, { useState } from "react";
+import { Search, Plus } from "lucide-react";
+import ManagerList from "../../components/manager/lists/ManagerList";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { managerSchema } from "../../utils/managerSchema";
+import { useForm } from "react-hook-form";
 
 const ManagerManagementPage = () => {
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(managerSchema),
+  });
+
+  const onSubmit = (data) => {
+    console.log(data);
+    reset();
+  };
+
   return (
-    <div className="flex-1 h-full text-text-secondary">
-      ManagerManagementPage
+    <div className="flex-1 h-full bg-slate-900 text-white">
+      {/* Header */}
+      <div className="bg-slate-800/50 border-b border-slate-700 p-6">
+        <h1 className="text-2xl font-semibold text-white mb-2">Yöneticiler</h1>
+        <p className="text-slate-400">
+          Sistem yöneticilerini görüntüleyin ve yönetin
+        </p>
+      </div>
+
+      <div className="p-6">
+        {/* Action Bar */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6 justify-between items-start sm:items-center">
+          {/* Search */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Yönetici ara..."
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* Add Button */}
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-blue-500/25"
+          >
+            <Plus className="w-5 h-5" />
+            Yeni Yönetici Ekle
+          </button>
+        </div>
+
+        <ManagerList />
+
+        {/* Add Manager Modal */}
+        {showAddModal && (
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+          >
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md">
+              <h3 className="text-xl font-semibold text-white mb-4">
+                Yeni Yönetici Ekle
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                    Ad Soyad
+                  </label>
+                  <input
+                    type="text"
+                    {...register("fullName")}
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Yönetici adı ve soyadı"
+                  />
+                  {errors.fullName && (
+                    <p className="text-color-danger">
+                      {errors.fullName.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                    Kimlik Numarası
+                  </label>
+                  <input
+                    type="number"
+                    {...register("tc")}
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="TC numarası"
+                  />
+                  {errors.tc && (
+                    <p className="text-color-danger">{errors.tc.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                    E-posta
+                  </label>
+                  <input
+                    type="email"
+                    {...register("email")}
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="ornek@ogrenci360.com"
+                  />
+                  {errors.email && (
+                    <p className="text-color-danger">{errors.email.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                    Telefon
+                  </label>
+                  <input
+                    type="tel"
+                    {...register("phone")}
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="+90 5XX XXX XX XX"
+                  />
+                  {errors.phone && (
+                    <p className="text-color-danger">{errors.phone.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                    Pozisyon
+                  </label>
+                  <select
+                    {...register("position")}
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Pozisyon seçin</option>
+                    <option value="principal">Müdür</option>
+                    <option value="assistant principal">
+                      Müdür Yardımcısı
+                    </option>
+                    <option value="IT">Bilgi İşlem Yöneticisi</option>
+                    <option value="officer">Arşiv Sorumlusu</option>
+                    <option value="counselor">Rehber Öğretmen</option>
+                  </select>
+                  {errors.position && (
+                    <p className="text-color-danger">
+                      {errors.position.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg transition-colors"
+                >
+                  İptal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-4 rounded-lg transition-colors"
+                >
+                  Ekle
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 };

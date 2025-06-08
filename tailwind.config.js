@@ -14,6 +14,10 @@ export default {
         "text-tertiary": "var(--color-text-tertiary)",
         "color-accent": "var(--color-accent)",
         "color-accent-light": "var(--color-accent-light)",
+
+        "color-success": "var(--color-success)",
+        "color-warning": "var(--color-warning)",
+        "color-danger": "var(--color-danger)",
       },
     },
   },
