@@ -22,9 +22,9 @@ const ManagerList = ({ search }) => {
   }, [managers, dispatch]);
 
   return (
-    <div className="bg-bg-tertiary border border-bg-quaternary rounded-xl overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
+    <div className="w-full h-[430px] bg-bg-tertiary  rounded-xl  overflow-x-auto  overflow-y-auto ">
+      <div className="">
+        <table className="w-full ">
           <thead className="bg-bg-quaternary">
             <tr>
               <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
@@ -40,11 +40,11 @@ const ManagerList = ({ search }) => {
                 Katılım Tarihi
               </th>
               <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                Kaldır
+                Çıkar
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y  overflow-y-auto ">
+          <tbody className="divide-y ">
             {managers
               .filter((staff) =>
                 staff.fullName.toLowerCase().includes(search.toLowerCase())
@@ -52,16 +52,16 @@ const ManagerList = ({ search }) => {
               .map((manager) => (
                 <tr
                   key={manager.id}
-                  className="text-text-secondary m-2 bg-bg-secondary"
+                  className="text-text-secondary bg-bg-secondary"
                 >
-                  <td className="py-4 px-6 ">
+                  <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold uppercase">
                         {manager.fullName[0]}
                         {manager.fullName.split(" ")[1][0]}
                       </div>
                       <div>
-                        <div className="font-medium text-text-primary  capitalize">
+                        <div className="hidden md:flex font-medium text-text-primary  capitalize">
                           {manager.fullName}
                         </div>
                       </div>

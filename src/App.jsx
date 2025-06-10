@@ -9,7 +9,6 @@ import AssigmentPage from "./pages/manager/AssigmentPage";
 import ManagerManagementPage from "./pages/manager/ManagerManagementPage";
 import StudentManagementPage from "./pages/manager/StudentManagementPage";
 import ScheduleManagementPage from "./pages/manager/ScheduleManagementPage";
-import LandingPage from "./pages/landing/LandingPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SettingsPage from "./pages/shared/SettingsPage";
 import AnnouncementManagementPage from "./pages/manager/AnnouncementManagementPage";
@@ -21,8 +20,7 @@ function App() {
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<LoginPage />} />
 
           <Route path="/manager" element={<ManagerLayout />}>
             <Route

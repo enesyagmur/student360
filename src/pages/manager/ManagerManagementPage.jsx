@@ -185,7 +185,7 @@ const ManagerManagementPage = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-text-primary py-2 px-4 rounded-lg transition-colors"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-4 rounded-lg transition-colors"
                 >
                   Ekle
                 </button>
