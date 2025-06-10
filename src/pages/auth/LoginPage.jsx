@@ -8,7 +8,7 @@ const LoginPage = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   return (
     <div className="min-h-screen bg-bg-primary flex  items-center justify-center p-4">
-      <main className="w-full flex items-center justify-center h-[520px] ">
+      <main className="w-full flex items-center justify-center h-[500px] ">
         {showForgotPassword ? (
           <ForgotPasswordForm setShowForgotPassword={setShowForgotPassword} />
         ) : (

@@ -27,7 +27,7 @@ function App() {
               path="teacherManagement"
               element={<TeacherManagementPage />}
             />
-            <Route path="managerDashboard" element={<ManagerDashboardPage />} />
+            <Route path="dashboard" element={<ManagerDashboardPage />} />
             <Route path="examManagement" element={<ExamManagementPage />} />
             <Route path="lessonManagement" element={<LessonManagementPage />} />
             <Route path="classManagement" element={<ClassManagementPage />} />
