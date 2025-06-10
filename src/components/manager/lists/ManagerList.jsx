@@ -22,29 +22,29 @@ const ManagerList = ({ search }) => {
   }, [managers, dispatch]);
 
   return (
-    <div className="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden">
+    <div className="bg-bg-tertiary border border-bg-quaternary rounded-xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-slate-700/50">
+          <thead className="bg-bg-quaternary">
             <tr>
-              <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">
+              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
                 Yönetici
               </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">
+              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
                 İletişim
               </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">
+              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
                 Rol & Departman
               </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">
+              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
                 Katılım Tarihi
               </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">
-                Durum
+              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
+                Kaldır
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-700">
+          <tbody className="divide-y  overflow-y-auto ">
             {managers
               .filter((staff) =>
                 staff.fullName.toLowerCase().includes(search.toLowerCase())
@@ -52,16 +52,16 @@ const ManagerList = ({ search }) => {
               .map((manager) => (
                 <tr
                   key={manager.id}
-                  className="hover:bg-slate-700/30 transition-colors"
+                  className="text-text-secondary m-2 bg-bg-secondary"
                 >
-                  <td className="py-4 px-6">
+                  <td className="py-4 px-6 ">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold uppercase">
                         {manager.fullName[0]}
                         {manager.fullName.split(" ")[1][0]}
                       </div>
                       <div>
-                        <div className="font-medium text-white capitalize">
+                        <div className="font-medium text-text-primary  capitalize">
                           {manager.fullName}
                         </div>
                       </div>
@@ -69,11 +69,11 @@ const ManagerList = ({ search }) => {
                   </td>
                   <td className="py-4 px-6">
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm text-slate-300">
+                      <div className="flex items-center gap-2 text-sm ">
                         <Mail className="w-4 h-4" />
                         {manager.email}
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-slate-400">
+                      <div className="flex items-center gap-2 text-sm ">
                         <Phone className="w-4 h-4" />
                         {manager.phone}
                       </div>
@@ -81,7 +81,7 @@ const ManagerList = ({ search }) => {
                   </td>
                   <td className="py-4 px-6">
                     <div className="space-y-1">
-                      <div className="font-medium text-white">
+                      <div className="font-medium text-text-primary ">
                         {manager.position === "principal" && "Müdür"}
                         {manager.position === "assistant principal" &&
                           "Müdür Yardımcısı"}
@@ -89,19 +89,19 @@ const ManagerList = ({ search }) => {
                         {manager.position === "officer" && "Arşiv Sorumlusu"}
                         {manager.position === "IT" && "Bilgi İşlem Yönteticisi"}
                       </div>
-                      <div className=" text-sm text-slate-400">yönetici</div>
+                      <div className=" text-sm ">yönetici</div>
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <div className="flex items-center gap-2 text-sm text-slate-300">
+                    <div className="flex items-center gap-2 text-sm ">
                       <Calendar className="w-4 h-4" />
                       {new Date(manager.createdAt).toLocaleDateString("tr-TR")}
                     </div>
                   </td>
 
-                  <td className="py-4 px-6">
-                    <div className="flex items-center justify-end gap-2">
-                      <button className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                  <td className="py-4 px-6 flex items-center justify-start">
+                    <div className="flex items-center justify-center ">
+                      <button className="p-2  hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -115,10 +115,10 @@ const ManagerList = ({ search }) => {
       {managers.length === 0 && (
         <div className="text-center py-12">
           <Shield className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-slate-300 mb-2">
+          <h3 className="text-lg font-medium text-text-primary mb-2">
             Yönetici bulunamadı
           </h3>
-          <p className="text-slate-500">
+          <p className="text-text-secondary">
             Arama kriterlerinize uygun yönetici bulunmuyor.
           </p>
         </div>
