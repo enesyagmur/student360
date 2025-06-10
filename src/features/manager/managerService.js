@@ -1,7 +1,14 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { db, auth } from "../../lib/firebase";
 import generateRandomPassword from "../../utils/generateRandomPassword";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 
 export const createNewManagerService = async ({
   fullName,
@@ -39,5 +46,20 @@ export const createNewManagerService = async ({
   } catch (err) {
     console.error("SERVICE | Yönetici kayıt sırasında sorun ", err);
     throw err;
+  }
+};
+
+export const getUsersByRoleService = async (role) => {
+  try {
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("role", "==", role));
+    const userSnapShot = await getDocs(q);
+    const users = userSnapShot.docs.map((doc) => ({
+      ...doc.data(),
+    }));
+    return users || [];
+  } catch (err) {
+    console.error("SERVICE | Kullanıcı çekerken sorun ", err);
+    return err;
   }
 };
