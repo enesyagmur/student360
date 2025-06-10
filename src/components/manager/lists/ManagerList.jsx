@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsersByRoleThunk } from "../../../features/manager/managerThunk";
 
-const ManagerList = () => {
+const ManagerList = ({ search }) => {
   const managers = useSelector((state) => state.managerState.managerList);
   const dispatch = useDispatch();
 
@@ -45,65 +45,69 @@ const ManagerList = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700">
-            {managers.map((manager) => (
-              <tr
-                key={manager.id}
-                className="hover:bg-slate-700/30 transition-colors"
-              >
-                <td className="py-4 px-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold uppercase">
-                      {manager.fullName[0]}
-                      {manager.fullName.split(" ")[1][0]}
-                    </div>
-                    <div>
-                      <div className="font-medium text-white capitalize">
-                        {manager.fullName}
+            {managers
+              .filter((staff) =>
+                staff.fullName.toLowerCase().includes(search.toLowerCase())
+              )
+              .map((manager) => (
+                <tr
+                  key={manager.id}
+                  className="hover:bg-slate-700/30 transition-colors"
+                >
+                  <td className="py-4 px-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold uppercase">
+                        {manager.fullName[0]}
+                        {manager.fullName.split(" ")[1][0]}
+                      </div>
+                      <div>
+                        <div className="font-medium text-white capitalize">
+                          {manager.fullName}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <td className="py-4 px-6">
-                  <div className="space-y-1">
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-sm text-slate-300">
+                        <Mail className="w-4 h-4" />
+                        {manager.email}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-slate-400">
+                        <Phone className="w-4 h-4" />
+                        {manager.phone}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="space-y-1">
+                      <div className="font-medium text-white">
+                        {manager.position === "principal" && "Müdür"}
+                        {manager.position === "assistant principal" &&
+                          "Müdür Yardımcısı"}
+                        {manager.position === "counselor" && "Rehber Öğretmen"}
+                        {manager.position === "officer" && "Arşiv Sorumlusu"}
+                        {manager.position === "IT" && "Bilgi İşlem Yönteticisi"}
+                      </div>
+                      <div className=" text-sm text-slate-400">yönetici</div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6">
                     <div className="flex items-center gap-2 text-sm text-slate-300">
-                      <Mail className="w-4 h-4" />
-                      {manager.email}
+                      <Calendar className="w-4 h-4" />
+                      {new Date(manager.createdAt).toLocaleDateString("tr-TR")}
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-400">
-                      <Phone className="w-4 h-4" />
-                      {manager.phone}
-                    </div>
-                  </div>
-                </td>
-                <td className="py-4 px-6">
-                  <div className="space-y-1">
-                    <div className="font-medium text-white">
-                      {manager.position === "principal" && "Müdür"}
-                      {manager.position === "assistant principal" &&
-                        "Müdür Yardımcısı"}
-                      {manager.position === "counselor" && "Rehber Öğretmen"}
-                      {manager.position === "officer" && "Arşiv Sorumlusu"}
-                      {manager.position === "IT" && "Bilgi İşlem Yönteticisi"}
-                    </div>
-                    <div className=" text-sm text-slate-400">yönetici</div>
-                  </div>
-                </td>
-                <td className="py-4 px-6">
-                  <div className="flex items-center gap-2 text-sm text-slate-300">
-                    <Calendar className="w-4 h-4" />
-                    {new Date(manager.createdAt).toLocaleDateString("tr-TR")}
-                  </div>
-                </td>
+                  </td>
 
-                <td className="py-4 px-6">
-                  <div className="flex items-center justify-end gap-2">
-                    <button className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  <td className="py-4 px-6">
+                    <div className="flex items-center justify-end gap-2">
+                      <button className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

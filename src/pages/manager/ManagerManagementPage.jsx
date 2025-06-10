@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, X } from "lucide-react";
 import ManagerList from "../../components/manager/lists/ManagerList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { managerSchema } from "../../lib/validation/managerSchema";
@@ -8,6 +8,7 @@ import { createNewManagerService } from "../../features/manager/managerService";
 
 const ManagerManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [search, setSearch] = useState("");
 
   const {
     register,
@@ -52,7 +53,15 @@ const ManagerManagementPage = () => {
             <input
               type="text"
               placeholder="Yönetici ara..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <X
+              className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5 cursor-pointer ${
+                search !== "" ? "flex" : "hidden"
+              }`}
+              onClick={() => setSearch("")}
             />
           </div>
 
@@ -66,7 +75,7 @@ const ManagerManagementPage = () => {
           </button>
         </div>
 
-        <ManagerList />
+        <ManagerList search={search} />
 
         {/* Add Manager Modal */}
         {showAddModal && (
