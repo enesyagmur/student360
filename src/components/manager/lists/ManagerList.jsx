@@ -52,9 +52,12 @@ const ManagerList = () => {
               >
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold"></div>
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold uppercase">
+                      {manager.fullName[0]}
+                      {manager.fullName.split(" ")[1][0]}
+                    </div>
                     <div>
-                      <div className="font-medium text-white">
+                      <div className="font-medium text-white capitalize">
                         {manager.fullName}
                       </div>
                     </div>
@@ -74,10 +77,15 @@ const ManagerList = () => {
                 </td>
                 <td className="py-4 px-6">
                   <div className="space-y-1">
-                    <div className="font-medium text-white">{manager.role}</div>
-                    <div className="text-sm text-slate-400">
-                      {manager.position}
+                    <div className="font-medium text-white">
+                      {manager.position === "principal" && "Müdür"}
+                      {manager.position === "assistant principal" &&
+                        "Müdür Yardımcısı"}
+                      {manager.position === "counselor" && "Rehber Öğretmen"}
+                      {manager.position === "officer" && "Arşiv Sorumlusu"}
+                      {manager.position === "IT" && "Bilgi İşlem Yönteticisi"}
                     </div>
+                    <div className=" text-sm text-slate-400">yönetici</div>
                   </div>
                 </td>
                 <td className="py-4 px-6">
