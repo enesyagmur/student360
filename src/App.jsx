@@ -13,36 +13,49 @@ import LandingPage from "./pages/landing/LandingPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SettingsPage from "./pages/shared/SettingsPage";
 import AnnouncementManagementPage from "./pages/manager/AnnouncementManagementPage";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
 
-        <Route path="/manager" element={<ManagerLayout />}>
-          <Route path="teacherManagement" element={<TeacherManagementPage />} />
-          <Route path="managerDashboard" element={<ManagerDashboardPage />} />
-          <Route path="examManagement" element={<ExamManagementPage />} />
-          <Route path="lessonManagement" element={<LessonManagementPage />} />
-          <Route path="classManagement" element={<ClassManagementPage />} />
-          <Route path="assigment" element={<AssigmentPage />} />
-          <Route path="managerManagement" element={<ManagerManagementPage />} />
+          <Route path="/manager" element={<ManagerLayout />}>
+            <Route
+              path="teacherManagement"
+              element={<TeacherManagementPage />}
+            />
+            <Route path="managerDashboard" element={<ManagerDashboardPage />} />
+            <Route path="examManagement" element={<ExamManagementPage />} />
+            <Route path="lessonManagement" element={<LessonManagementPage />} />
+            <Route path="classManagement" element={<ClassManagementPage />} />
+            <Route path="assigment" element={<AssigmentPage />} />
+            <Route
+              path="managerManagement"
+              element={<ManagerManagementPage />}
+            />
 
-          <Route path="studentManagement" element={<StudentManagementPage />} />
-          <Route
-            path="scheduleManagement"
-            element={<ScheduleManagementPage />}
-          />
-          <Route
-            path="announcementManagement"
-            element={<AnnouncementManagementPage />}
-          />
-          <Route path="settings" element={<SettingsPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+            <Route
+              path="studentManagement"
+              element={<StudentManagementPage />}
+            />
+            <Route
+              path="scheduleManagement"
+              element={<ScheduleManagementPage />}
+            />
+            <Route
+              path="announcementManagement"
+              element={<AnnouncementManagementPage />}
+            />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 
