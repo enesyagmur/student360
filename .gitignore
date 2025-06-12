@@ -29,6 +29,4 @@ server/dist/
 *.njsproj
 *.sln
 *.sw?
-
-# Firebase Admin SDK key (server klasöründeki)
-server/serviceAccountKey.json
+*.env

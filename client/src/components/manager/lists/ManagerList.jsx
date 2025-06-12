@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsersByRoleThunk } from "../../../features/manager/managerThunk";
 
 const ManagerList = ({ search }) => {
+  const user = useSelector((state) => state.authState.user);
   const managers = useSelector((state) => state.managerState.managerList);
   const dispatch = useDispatch();
 
@@ -39,9 +40,11 @@ const ManagerList = ({ search }) => {
               <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
                 Katılım Tarihi
               </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                Çıkar
-              </th>
+              {user.position === "principal" && (
+                <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
+                  Çıkar
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y ">
@@ -98,14 +101,15 @@ const ManagerList = ({ search }) => {
                       {new Date(manager.createdAt).toLocaleDateString("tr-TR")}
                     </div>
                   </td>
-
-                  <td className="py-4 px-6 flex items-center justify-start">
-                    <div className="flex items-center justify-center ">
-                      <button className="p-2  hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+                  {user.position === "principal" && (
+                    <td className="py-4 px-6 flex items-center justify-start">
+                      <div className="flex items-center justify-center ">
+                        <button className="p-2  hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
           </tbody>

@@ -1,5 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getUsersByRoleService } from "./managerService";
+import {
+  createNewManagerService,
+  getUsersByRoleService,
+} from "./managerService";
+
+export const addNewManagerThunk = createAsyncThunk(
+  "manager/addNewManager",
+  async (newManagerData, thunkAPI) => {
+    try {
+      const newManager = await createNewManagerService(newManagerData);
+      return newManager;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
 
 export const fetchUsersByRoleThunk = createAsyncThunk(
   "manager/fetchUsersByRole",

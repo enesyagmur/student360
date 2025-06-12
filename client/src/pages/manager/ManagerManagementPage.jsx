@@ -4,11 +4,13 @@ import ManagerList from "../../components/manager/lists/ManagerList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { managerSchema } from "../../lib/validation/managerSchema";
 import { useForm } from "react-hook-form";
-import { createNewManagerService } from "../../features/manager/managerService";
+import { useDispatch } from "react-redux";
+import { addNewManagerThunk } from "../../features/manager/managerThunk";
 
 const ManagerManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -21,7 +23,7 @@ const ManagerManagementPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      const user = await createNewManagerService(data);
+      const user = await dispatch(addNewManagerThunk(data)).unwrap();
 
       if (user) {
         reset();

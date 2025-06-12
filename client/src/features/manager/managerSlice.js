@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchUsersByRoleThunk } from "./managerThunk";
+import { addNewManagerThunk, fetchUsersByRoleThunk } from "./managerThunk";
 
 const initialState = {
   managerList: [],
@@ -15,6 +15,22 @@ const managerSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+
+      //manager ekleme
+      .addCase(addNewManagerThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addNewManagerThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.managerList.push(action.payload);
+      })
+      .addCase(addNewManagerThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      //kullanıcıları alma
       .addCase(fetchUsersByRoleThunk.pending, (state) => {
         state.loading = true;
         state.error = null;

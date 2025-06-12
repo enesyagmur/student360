@@ -31,7 +31,7 @@ export const createNewManagerService = async ({
       displayName: fullName,
     });
 
-    await setDoc(doc(db, "users", user.uid), {
+    const newUser = {
       id: user.uid,
       fullName: fullName,
       tc: tc,
@@ -40,9 +40,13 @@ export const createNewManagerService = async ({
       role: "manager",
       position: position,
       createdAt: new Date().toISOString(),
+    };
+
+    await setDoc(doc(db, "users", user.uid), {
+      newUser,
     });
 
-    return user;
+    return newUser;
   } catch (err) {
     console.error("SERVICE | Yönetici kayıt sırasında sorun ", err);
     throw err;
