@@ -7,12 +7,19 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
 
-# Editor directories and files
+
+
+# Build klasörleri (client/server'a özel)
+client/dist/
+client/dist-ssr/
+server/dist/
+
+# Environment variables (tüm .env dosyalarını ignore et)
+*.env
+*.env.local
+
+# Editor dosyaları
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,4 +29,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-*.env
+
+# Firebase Admin SDK key (server klasöründeki)
+server/serviceAccountKey.json
