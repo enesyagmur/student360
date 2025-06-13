@@ -1,4 +1,5 @@
 const admin = require("../config/firebase-admin");
+const { sendWelcomeEmail } = require("../services/email.service");
 
 exports.createUserInFirestore = async ({
   fullName,
@@ -25,5 +26,6 @@ exports.createUserInFirestore = async ({
   };
 
   await admin.firestore().collection("users").doc(userRecord.uid).set(userData);
+  await sendWelcomeEmail(email, fullName, password);
   return userData;
 };
