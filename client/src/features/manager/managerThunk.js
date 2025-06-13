@@ -18,11 +18,13 @@ export const addNewManagerThunk = createAsyncThunk(
 
 export const fetchUsersByRoleThunk = createAsyncThunk(
   "manager/fetchUsersByRole",
-  async (role, thunkAPI) => {
+  async ({ role, currentUserId }, thunkAPI) => {
     try {
-      const users = await getUsersByRoleService(role);
+      const users = await getUsersByRoleService(role, currentUserId);
+
       return { users, role };
     } catch (err) {
+      console.error("Thunk - Hata:", err);
       return thunkAPI.rejectWithValue(err.message);
     }
   }

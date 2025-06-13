@@ -5,33 +5,36 @@ exports.createManager = async (req, res) => {
   try {
     console.log("Yönetici oluşturma isteği başladı");
     const { fullName, email, phone, position, tc, role } = req.body;
-    const requesterId = req.user.uid;
 
-    console.log("İstek yapan kullanıcı ID:", requesterId);
-
-    const requester = await admin
-      .firestore()
-      .collection("users")
-      .doc(requesterId)
-      .get();
-
-    console.log("İstek yapan kullanıcı verisi:", requester.data());
-
-    if (!requester.exists) {
-      console.log("Kullanıcı bulunamadı");
-      return res.status(404).json({ error: "Kullanıcı bulunamadı" });
+    // Gerekli alanların kontrolü
+    if (!fullName || !email || !phone || !position || !tc || !role) {
+      return res.status(400).json({
+        error: "Eksik bilgi",
+        details: "Tüm alanların doldurulması zorunludur",
+      });
     }
 
-    if (requester.data().position !== "principal") {
-      console.log(
-        "Yetki hatası: Kullanıcı pozisyonu:",
-        requester.data().position
-      );
-      return res.status(403).json({ error: "Yetki Hatası" });
+    // E-posta formatı kontrolü
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        error: "Geçersiz e-posta formatı",
+      });
+    }
+
+    // E-posta adresi kullanımda mı kontrolü
+    try {
+      await admin.auth().getUserByEmail(email);
+      return res.status(400).json({
+        error: "E-posta adresi kullanımda",
+        details: "Bu e-posta adresi ile kayıtlı bir kullanıcı zaten mevcut",
+      });
+    } catch (error) {
+      // E-posta bulunamadıysa devam et
     }
 
     console.log("Yeni yönetici oluşturuluyor...");
-    const newUser = await createUserInFirestore({
+    const result = await createUserInFirestore({
       fullName,
       email,
       phone,
@@ -40,10 +43,57 @@ exports.createManager = async (req, res) => {
       tc,
     });
 
-    console.log("Yeni yönetici başarıyla oluşturuldu");
-    res.status(201).json(newUser);
+    console.log("Yeni yönetici başarıyla oluşturuldu:", result.user.id);
+    return res.status(201).json(result);
   } catch (err) {
-    console.error("Yönetici oluşturma hatası:", err.message);
-    res.status(400).json({ error: err.message });
+    console.error("Yönetici oluşturma hatası:", err);
+    return res.status(400).json({
+      error: "İşlem başarısız",
+      details: err.message || "Beklenmeyen bir hata oluştu",
+    });
+  }
+};
+
+exports.getUsersByRole = async (req, res) => {
+  try {
+    const { role } = req.params;
+
+    // firestore'dan kullanıcıları getir
+    const usersSnapshot = await admin
+      .firestore()
+      .collection("users")
+      .where("role", "==", role)
+      .get();
+
+    console.log("Bulunan kullanıcı sayısı:", usersSnapshot.size);
+
+    if (usersSnapshot.empty) {
+      console.log("Bu role sahip kullanıcı bulunamadı:", role);
+      return res.status(200).json({
+        message: "Bu role sahip kullanıcı bulunamadı",
+        users: [],
+      });
+    }
+
+    const users = [];
+    usersSnapshot.forEach((doc) => {
+      users.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+
+    console.log("Dönen kullanıcı sayısı:", users.length);
+
+    return res.status(200).json({
+      message: "Kullanıcılar başarıyla getirildi",
+      users,
+    });
+  } catch (err) {
+    console.error("Kullanıcıları getirme hatası:", err);
+    return res.status(500).json({
+      error: "İşlem başarısız",
+      details: err.message || "Beklenmeyen bir hata oluştu",
+    });
   }
 };

@@ -3,13 +3,12 @@ import { GraduationCap, Lock, Mail, UserCheck, Users } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { loginSchema } from "../../lib/validation/loginFormSchema";
-import { useDispatch } from "react-redux";
-import { userLoginThunk } from "../../features/auth/authThunk";
 import { useNavigate } from "react-router-dom";
+import { userLoginService } from "../../features/auth/authService";
 
 const LoginForm = ({ setShowForgotPassword }) => {
   const [role, setRole] = useState("student");
-  const dispatch = useDispatch();
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const {
@@ -22,22 +21,23 @@ const LoginForm = ({ setShowForgotPassword }) => {
   });
 
   const onSubmit = async (data) => {
-    const newData = { email: data.email, password: data.password, role };
     try {
-      const user = await dispatch(userLoginThunk(newData)).unwrap();
+      setError("");
+      const _user = await userLoginService(data.email, data.password, role);
 
-      if (user.role === role) {
-        if (role === "manager") {
-          navigate("/manager/dashboard");
-        } else if (role === "teacher") {
-          navigate("/teacher/dashboard");
-        } else {
-          navigate("/student/dashboard");
-        }
+      // Rol bazlı yönlendirme
+      if (role === "manager") {
+        navigate("/manager/dashboard");
+      } else if (role === "teacher") {
+        navigate("/teacher/dashboard");
+      } else {
+        navigate("/student/dashboard");
       }
+
       reset();
     } catch (err) {
-      console.error("LOGIN | Giriş sırasında sorun ", err);
+      console.error("Giriş sırasında hata:", err);
+      setError(err.message || "Giriş yapılırken bir hata oluştu");
     }
   };
 
@@ -52,6 +52,12 @@ const LoginForm = ({ setShowForgotPassword }) => {
         </h2>
         <p className="text-text-tertiary">Hesabınıza erişim sağlayın</p>
       </div>
+
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          {error}
+        </div>
+      )}
 
       <div className="flex justify-center mb-6 bg-bg-tertiary rounded-lg p-1 border border-bg-quaternary">
         {/* Yönetici Rolü Butonu */}
@@ -78,13 +84,14 @@ const LoginForm = ({ setShowForgotPassword }) => {
         <button
           type="button"
           onClick={() => setRole("student")}
-          className={`flex-1 py-2 ppx-1 text-sm text-text-secondary rounded-md transition-all duration-200 shadow-md ${
+          className={`flex-1 py-2 px-1 text-sm text-text-secondary rounded-md transition-all duration-200 shadow-md ${
             role === "student" && "bg-color-accent text-white "
           }`}
         >
           <GraduationCap className="inline-block w-4 h-4 mr-2" /> Öğrenci
         </button>
       </div>
+
       {/* Email Field */}
       <div>
         <label className="block text-sm font-medium text-text-secondary mb-2">
@@ -98,11 +105,16 @@ const LoginForm = ({ setShowForgotPassword }) => {
             className="w-full bg-bg-tertiary border border-bg-quaternary rounded-lg pl-10 pr-4 py-3 text-text-primary placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-color-accent focus:border-transparent transition-all duration-200"
             placeholder="ornek@yonetici360.com"
           />
+          {errors.email && (
+            <p className="text-color-danger text-sm mt-1">
+              {errors.email.message}
+            </p>
+          )}
         </div>
       </div>
 
       {/* Password Field */}
-      <div className="mt-2">
+      <div className="mt-4">
         <label className="block text-sm font-medium text-text-secondary mb-2">
           Şifre
         </label>
@@ -114,8 +126,10 @@ const LoginForm = ({ setShowForgotPassword }) => {
             className="w-full bg-bg-tertiary border border-bg-quaternary rounded-lg pl-10 pr-4 py-3 text-text-primary placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-color-accent focus:border-transparent transition-all duration-200"
             placeholder="••••••••"
           />
-          {errors.position && (
-            <p className="text-color-danger">{errors.password.message}</p>
+          {errors.password && (
+            <p className="text-color-danger text-sm mt-1">
+              {errors.password.message}
+            </p>
           )}
         </div>
       </div>
@@ -123,13 +137,13 @@ const LoginForm = ({ setShowForgotPassword }) => {
       {/* Login Button */}
       <button
         type="submit"
-        className="w-full mt-6 bg-gradient-to-r from-color-accent to-color-accent-light  text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+        className="w-full mt-6 bg-gradient-to-r from-color-accent to-color-accent-light text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
       >
         Giriş Yap
       </button>
 
       {/* Forgot Password */}
-      <div className="flex items-center justify-center h-10 ">
+      <div className="flex items-center justify-center h-10">
         <button
           type="button"
           className="text-sm text-text-secondary hover:text-white transition-colors"

@@ -1,17 +1,36 @@
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.ADMIN_EMAIL,
-    pass: process.env.ADMIN_EMAIL_PASSWORD,
+    user: process.env.VITE_EMAIL_USER,
+    pass: process.env.VITE_EMAIL_PASSWORD,
   },
+  debug: true,
 });
 
 const sendWelcomeEmail = async (email, fullName, password) => {
   try {
+    console.log("Mail gönderme işlemi başladı");
+    console.log("Gönderici:", process.env.VITE_EMAIL_USER);
+    console.log("Alıcı:", email);
+
+    if (!process.env.VITE_EMAIL_USER || !process.env.VITE_EMAIL_PASSWORD) {
+      console.error("E-posta yapılandırması eksik:");
+      console.error(
+        "EMAIL_USER:",
+        process.env.VITE_EMAIL_USER ? "Tanımlı" : "Tanımlı değil"
+      );
+      console.error(
+        "EMAIL_PASSWORD:",
+        process.env.VITE_EMAIL_PASSWORD ? "Tanımlı" : "Tanımlı değil"
+      );
+      throw new Error("E-posta yapılandırması eksik");
+    }
+
     const mailOptions = {
-      from: process.env.ADMIN_EMAIL,
+      from: process.env.VITE_EMAIL_USER,
       to: email,
       subject: "Student360 - Hoş Geldiniz",
       html: ` <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -28,12 +47,14 @@ const sendWelcomeEmail = async (email, fullName, password) => {
         </div>`,
     };
 
-    await transporter.sendMail(mailOptions);
-    console.log(`Hoş geldiniz maili gönderildi: ${email}`);
+    console.log("Mail gönderiliyor...");
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Mail başarıyla gönderildi:", info.messageId);
     return true;
-  } catch (err) {
+  } catch (error) {
     console.error("Mail gönderme hatası:", error);
-    throw new Error("Mail gönderilemedi");
+    console.error("Hata detayları:", error.message);
+    throw error;
   }
 };
 

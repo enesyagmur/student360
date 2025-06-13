@@ -38,6 +38,7 @@ const managerSlice = createSlice({
       .addCase(fetchUsersByRoleThunk.fulfilled, (state, action) => {
         state.loading = false;
         const { users, role } = action.payload;
+
         if (role === "manager") {
           state.managerList = users;
         } else if (role === "teacher") {

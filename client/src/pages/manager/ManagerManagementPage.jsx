@@ -5,14 +5,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { managerSchema } from "../../lib/validation/managerSchema";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { createNewManagerService } from "../../features/manager/managerService";
-import { auth } from "../../lib/firebase";
+import { addNewManagerThunk } from "../../features/manager/managerThunk";
 
 const ManagerManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
-  console.log(auth.currentUser);
 
   const {
     register,
@@ -29,7 +27,7 @@ const ManagerManagementPage = () => {
         ...data,
         role: "manager",
       };
-      const user = await createNewManagerService(newData);
+      const user = await dispatch(addNewManagerThunk(newData)).unwrap();
 
       if (user) {
         reset();
@@ -82,6 +80,8 @@ const ManagerManagementPage = () => {
             Yeni Yönetici Ekle
           </button>
         </div>
+
+        <ManagerList search={search} />
 
         {/* Add Manager Modal */}
         {showAddModal && (

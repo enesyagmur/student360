@@ -1,5 +1,4 @@
 const admin = require("../config/firebase-admin");
-const { sendWelcomeEmail } = require("../services/email.service");
 
 exports.createUserInFirestore = async ({
   fullName,
@@ -9,23 +8,55 @@ exports.createUserInFirestore = async ({
   position,
   tc,
 }) => {
-  const password = Math.random().toString(36).slice(-8);
-  const userRecord = await admin
-    .auth()
-    .createUser({ email, password, displayName: fullName });
+  try {
+    const generatePassword = () => {
+      const length = 12;
+      const charset =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        password += charset.charAt(Math.floor(Math.random() * charset.length));
+      }
+      return password;
+    };
 
-  const userData = {
-    id: userRecord.uid,
-    fullName,
-    email,
-    phone,
-    role,
-    position,
-    tc,
-    createdAt: new Date().toISOString(),
-  };
+    const password = generatePassword();
 
-  await admin.firestore().collection("users").doc(userRecord.uid).set(userData);
-  await sendWelcomeEmail(email, fullName, password);
-  return userData;
+    // Firebase Auth da kullanıcı oluştur
+    const userRecord = await admin.auth().createUser({
+      email,
+      password,
+      displayName: fullName,
+      emailVerified: false,
+    });
+
+    // Firestore a kullanıcı bilgilerini kaydet
+    const userData = {
+      id: userRecord.uid,
+      fullName,
+      email,
+      phone,
+      role,
+      position,
+      tc,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isActive: true,
+    };
+
+    await admin
+      .firestore()
+      .collection("users")
+      .doc(userRecord.uid)
+      .set(userData);
+
+    return {
+      success: true,
+      message: "Kullanıcı başarıyla oluşturuldu",
+      user: userData,
+    };
+  } catch (error) {
+    console.error("Kullanıcı oluşturma hatası:", error);
+    throw new Error(error.message || "Kullanıcı oluşturulamadı");
+  }
 };

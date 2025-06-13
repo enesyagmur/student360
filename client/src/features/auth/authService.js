@@ -1,84 +1,74 @@
-import { deleteUser, signInWithEmailAndPassword } from "firebase/auth";
-import { db, auth } from "../../lib/firebase";
+import { auth, db } from "../../lib/firebase";
 
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
+// firebase servislerini başlat
 export const userLoginService = async (email, password, role) => {
   try {
-    const userCredantial = await signInWithEmailAndPassword(
+    console.log("Firebase ile giriş başlatılıyor...");
+
+    // 1. firebase Authentication ile giriş
+    const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
-    const user = userCredantial.user;
-    const userDocRef = doc(db, "users", user.uid);
-    const userSnapShot = await getDoc(userDocRef);
+    const user = userCredential.user;
+    console.log("Firebase giriş başarılı, UID:", user.uid);
 
-    if (!userSnapShot.exists()) {
-      throw new Error("SERVICE | Kullanıcı Bulunamadı");
+    // 2. firestore dan kullanıcı verilerini çek
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+
+    if (!userDoc.exists()) {
+      throw new Error("Kullanıcı veritabanında bulunamadı");
     }
 
-    const userData = userSnapShot.data();
+    const userData = userDoc.data();
+    console.log("Firestore'dan alınan kullanıcı verisi:", userData);
 
+    // 3. rol kontrolü
     if (userData.role !== role) {
       throw new Error(
-        `SERVICE | Hatalı Rol Seçimi, Sizin Rolünüz: ${userData.role}, Seçtiğiniz Rol: ${role}`
+        `Yetkisiz erişim! Sizin rolünüz: ${userData.role}, Erişmeye çalıştığınız rol: ${role}`
       );
     }
 
-    return userData;
+    // 4. token al ve kullanıcıyı sakla
+    const token = await user.getIdToken();
+    const userToStore = {
+      uid: user.uid,
+      email: user.email,
+      role: userData.role,
+      token: token,
+      ...userData,
+    };
+
+    localStorage.setItem("user", JSON.stringify(userToStore));
+    console.log("Kullanıcı localStorage'a kaydedildi");
+
+    return userToStore;
   } catch (err) {
-    console.error("SERVICE | giriş yaparken sorun ", err);
-    return err;
+    console.error("Giriş hatası:", err);
+    // Çıkış yaparak temizlik
+    await auth.signOut();
+    localStorage.removeItem("user");
+    throw err;
   }
 };
 
-export const deleteManagerService = async (
-  currentUserId,
-  managerIdForDelete
-) => {
-  if (!currentUserId) {
-    throw new Error("Bu işlemi yapmak için giriş yapmanız gerekiyor");
-  }
+export const logoutService = async () => {
   try {
-    const userDocRef = doc(db, "users");
-    const userSnapDoc = await getDoc(userDocRef);
-    if (!userSnapDoc.exists()) {
-      throw new Error("SERVICE | Kullanıcılar verisi bulunamadı");
-    }
-
-    const users = userSnapDoc.data();
-
-    const currentManager = users.find(
-      (manager) => manager.id === currentUserId
-    );
-
-    if (!currentManager || currentManager.position !== "principal") {
-      throw new Error(
-        "SERVICE | Bu işlem için yetkiniz yok ya da bilgileriniz bulunamadı."
-      );
-    }
-
-    const managerForDelete = users.find(
-      (manager) => manager.id === managerIdForDelete
-    );
-
-    if (!managerForDelete) {
-      throw new Error("SERVICE | Silinecek yönetici bilgileri bulunamadı.");
-    }
-
-    const newUsers = users.filter(
-      (manager) => manager.id !== managerIdForDelete
-    );
-
-    await updateDoc(userDocRef, {
-      newUsers,
-    });
-
-    deleteUser(managerIdForDelete);
-
-    return managerIdForDelete;
+    await signOut(auth);
+    localStorage.removeItem("user");
+    console.log("Çıkış başarılı");
   } catch (err) {
-    console.error("SERVICE | Yönetici silme işleminde sorun ", err);
+    console.error("Çıkış yaparken hata:", err);
+    throw err;
   }
+};
+
+export const getCurrentUser = () => {
+  const userJson = localStorage.getItem("user");
+  return userJson ? JSON.parse(userJson) : null;
 };
