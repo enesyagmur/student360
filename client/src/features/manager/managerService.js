@@ -103,7 +103,6 @@ export const getUsersByRoleService = async (role, currentUserId) => {
     }
 
     const url = `${BASE_URL}/api/managers/by-role/${role}?currentUserId=${currentUserId}`;
-    console.log("API isteği yapılıyor:", url);
 
     const response = await fetch(url, {
       method: "GET",
@@ -113,7 +112,6 @@ export const getUsersByRoleService = async (role, currentUserId) => {
     });
 
     const data = await response.json();
-    console.log("API'den gelen veri:", data);
 
     if (!response.ok) {
       throw new Error(
@@ -121,7 +119,6 @@ export const getUsersByRoleService = async (role, currentUserId) => {
       );
     }
 
-    // API'den gelen veriyi düzenle
     return data.users;
   } catch (err) {
     console.error("API | Kullanıcıları Getirme Hatası: ", err.message);

@@ -143,3 +143,102 @@ exports.getUsersByRole = async (req, res) => {
     });
   }
 };
+
+exports.createTeacher = async (req, res) => {
+  try {
+    console.log("Öğretmen oluşturma isteği başladı");
+    const { fullName, email, phone, position, tc, role } = req.body;
+
+    // Gerekli alanların kontrolü
+    if (!fullName || !email || !phone || !position || !tc || !role) {
+      return res.status(400).json({
+        error: "Eksik bilgi",
+        details: "Tüm alanların doldurulması zorunludur",
+      });
+    }
+
+    // E-posta formatı kontrolü
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        error: "Geçersiz e-posta formatı",
+      });
+    }
+
+    // E-posta adresi kullanımda mı kontrolü
+    try {
+      await admin.auth().getUserByEmail(email);
+      return res.status(400).json({
+        error: "E-posta adresi kullanımda",
+        details: "Bu e-posta adresi ile kayıtlı bir kullanıcı zaten mevcut",
+      });
+    } catch (error) {
+      // E-posta bulunamadıysa devam et
+    }
+
+    console.log("Yeni öğretmen oluşturuluyor...");
+    const result = await createUserInFirestore({
+      fullName,
+      email,
+      phone,
+      role,
+      position,
+      tc,
+    });
+
+    console.log("Yeni öğretmen başarıyla oluşturuldu:", result.user.id);
+    return res.status(201).json(result);
+  } catch (err) {
+    console.error("Öğretmen oluşturma hatası:", err);
+    return res.status(400).json({
+      error: "İşlem başarısız",
+      details: err.message || "Beklenmeyen bir hata oluştu",
+    });
+  }
+};
+
+exports.deleteTeacher = async (req, res) => {
+  try {
+    console.log("Öğretmen silme isteği başladı");
+    const { teacherId } = req.params;
+
+    if (!teacherId) {
+      return res.status(400).json({
+        error: "Eksik bilgi",
+        details: "Öğretmen ID'si gereklidir",
+      });
+    }
+
+    // Silinecek öğretmenin varlığını kontrol et
+    const teacherDoc = await admin
+      .firestore()
+      .collection("users")
+      .doc(teacherId)
+      .get();
+
+    if (!teacherDoc.exists) {
+      return res.status(404).json({
+        error: "Öğretmen bulunamadı",
+        details: "Belirtilen ID ile öğretmen bulunamadı",
+      });
+    }
+
+    // Önce Firestore'dan kullanıcıyı sil
+    await admin.firestore().collection("users").doc(teacherId).delete();
+
+    // Sonra Firebase Auth'dan kullanıcıyı sil
+    await admin.auth().deleteUser(teacherId);
+
+    console.log("Öğretmen başarıyla silindi:", teacherId);
+    return res.status(200).json({
+      success: true,
+      message: "Öğretmen başarıyla silindi",
+    });
+  } catch (err) {
+    console.error("Öğretmen silme hatası:", err);
+    return res.status(400).json({
+      error: "İşlem başarısız",
+      details: err.message || "Beklenmeyen bir hata oluştu",
+    });
+  }
+};

@@ -2,24 +2,25 @@ import React from "react";
 
 const Button = ({ type, size, children, onClick }) => {
   let baseClasses =
-    "rounded-md font-semibold transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2";
+    "flex items-center rounded-md font-semibold transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2";
 
   let typeClasses = "";
   switch (type) {
     case "primary":
       typeClasses =
-        "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white";
+        "bg-indigo-600 focus:ring-indigo-500 text-white border border-indigo-700 ";
       break;
     case "secondary":
       typeClasses =
-        "bg-slate-700 hover:bg-slate-600 focus:ring-slate-500 text-slate-200";
+        " hover:bg-slate-600 focus:ring-slate-500 text-slate-200  border border-slate-600";
       break;
     case "danger":
-      typeClasses = "bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white";
+      typeClasses =
+        " hover:bg-red-600 focus:ring-red-500 text-white border border-red-900";
       break;
     default:
       typeClasses =
-        "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white";
+        " hover:bg-indigo-700 focus:ring-indigo-500 text-white border border-indigo-700 ";
   }
 
   let sizeClasses = "";

@@ -69,6 +69,14 @@ export const logoutService = async () => {
 };
 
 export const getCurrentUser = () => {
-  const userJson = localStorage.getItem("user");
-  return userJson ? JSON.parse(userJson) : null;
+  try {
+    const userJson = localStorage.getItem("user");
+    if (!userJson) return null;
+
+    const user = JSON.parse(userJson);
+    return user;
+  } catch (error) {
+    console.error("Kullanıcı bilgisi alınırken hata:", error);
+    return null;
+  }
 };

@@ -5,6 +5,7 @@ import {
   deleteManagerThunk,
   fetchUsersByRoleThunk,
 } from "../../../features/manager/managerThunk";
+import Button from "../../ui/button";
 
 const ManagerList = ({ search }) => {
   const managers = useSelector((state) => state.managerState.managerList || []);
@@ -23,13 +24,13 @@ const ManagerList = ({ search }) => {
       try {
         const userData = localStorage.getItem("user");
         if (!userData) {
-          console.log("Kullanıcı bilgisi bulunamadı");
+          console.error("Kullanıcı bilgisi bulunamadı");
           return;
         }
 
         const user = JSON.parse(userData);
         if (!user.id || !user.token) {
-          console.log("Kullanıcı ID veya token bulunamadı");
+          console.error("Kullanıcı ID veya token bulunamadı");
           return;
         }
 
@@ -39,8 +40,6 @@ const ManagerList = ({ search }) => {
             currentUserId: user.id,
           })
         );
-
-        console.log("Redux store'daki yönetici verileri:", managers);
       } catch (err) {
         console.error("MANAGERLIST | Yöneticileri çekerken sorun ", err);
       }
@@ -85,7 +84,7 @@ const ManagerList = ({ search }) => {
   };
 
   return (
-    <div className="w-full h-[430px] bg-bg-tertiary  rounded-xl  overflow-x-auto  overflow-y-auto ">
+    <div className="w-full h-[500px] bg-bg-tertiary  rounded-xl  overflow-x-auto  overflow-y-auto ">
       <div className="">
         <table className="w-full ">
           <thead className="bg-bg-quaternary">
@@ -171,12 +170,12 @@ const ManagerList = ({ search }) => {
                 {user?.position === "principal" && (
                   <td className="py-4 px-6 flex items-center justify-start">
                     <div className="flex items-center justify-center ">
-                      <button
+                      <Button
                         onClick={() => handleDelete(manager.id)}
-                        className="p-2  hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                        type={"danger"}
                       >
                         <Trash2 className="w-4 h-4" />
-                      </button>
+                      </Button>
                     </div>
                   </td>
                 )}
