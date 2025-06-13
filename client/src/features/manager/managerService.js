@@ -1,69 +1,50 @@
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { db, auth } from "../../lib/firebase";
-import generateRandomPassword from "../../utils/generateRandomPassword";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { auth } from "../../lib/firebase";
+const API_URL = "http://localhost:3001/api/managers";
 
 export const createNewManagerService = async ({
   fullName,
-  tc,
   email,
   phone,
   position,
+  tc,
+  role,
 }) => {
   try {
-    const password = generateRandomPassword();
-    const userCreditinal = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    if (!auth.currentUser) {
+      throw new Error("Kullanıcı oturumu bulunamadı");
+    }
 
-    const user = userCreditinal.user;
+    const token = await auth.currentUser.getIdToken();
 
-    await updateProfile(user, {
-      displayName: fullName,
+    const response = await fetch(`http://localhost:3001/api/managers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        fullName,
+        tc,
+        email,
+        phone,
+        position,
+        role,
+      }),
     });
 
-    const newUser = {
-      id: user.uid,
-      fullName: fullName,
-      tc: tc,
-      email: email,
-      phone: phone,
-      role: "manager",
-      position: position,
-      createdAt: new Date().toISOString(),
-    };
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Kullanıcı Oluşturulamadı");
+    }
+    console.log(auth.currentUser);
 
-    await setDoc(doc(db, "users", user.uid), {
-      newUser,
-    });
-
-    return newUser;
+    return await response.json();
   } catch (err) {
-    console.error("SERVICE | Yönetici kayıt sırasında sorun ", err);
+    console.error("API | Kullanıcı Oluşturma Hatası: ", err.message);
     throw err;
   }
 };
 
 export const getUsersByRoleService = async (role) => {
-  try {
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("role", "==", role));
-    const userSnapShot = await getDocs(q);
-    const users = userSnapShot.docs.map((doc) => ({
-      ...doc.data(),
-    }));
-    return users || [];
-  } catch (err) {
-    console.error("SERVICE | Kullanıcı çekerken sorun ", err);
-    return err;
-  }
+  console.log(role);
 };

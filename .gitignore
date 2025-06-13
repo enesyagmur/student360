@@ -30,3 +30,5 @@ server/dist/
 *.sln
 *.sw?
 *.env
+/server/serviceAccountKey.json
+*.json
