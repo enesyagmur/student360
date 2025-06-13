@@ -10,7 +10,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use("/api", authenticateToken);
+app.use(authenticateToken);
 
 // Logging middleware
 app.use((req, res, next) => {
@@ -25,6 +25,7 @@ app.get("/api/health", (req, res) => {
 
 // Mount routes
 app.use("/api", routes);
+app.use("/api/managers", require("./routes/api/managers.routes"));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

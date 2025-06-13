@@ -46,9 +46,49 @@ export const createNewManagerService = async ({
       throw new Error(data.error || data.details || "Kullanıcı oluşturulamadı");
     }
 
+    // Gelen veriyi kontrol et ve doğru formatta döndür
+    if (!data || typeof data !== "object") {
+      throw new Error("Geçersiz veri formatı");
+    }
+
     return data;
   } catch (err) {
     console.error("API | Kullanıcı Oluşturma Hatası: ", err.message);
+    throw err;
+  }
+};
+
+export const deleteManagerService = async (managerId) => {
+  try {
+    const token = getTokenFromStorage();
+    if (!token) {
+      throw new Error("Token bulunamadı");
+    }
+
+    const response = await fetch(`${BASE_URL}/api/managers/${managerId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Önce response'un content type'ını kontrol et
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Sunucudan geçersiz yanıt alındı");
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.details || "Yönetici silinemedi"
+      );
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("API | Yönetici Silme Hatası: ", err);
     throw err;
   }
 };
@@ -63,6 +103,7 @@ export const getUsersByRoleService = async (role, currentUserId) => {
     }
 
     const url = `${BASE_URL}/api/managers/by-role/${role}?currentUserId=${currentUserId}`;
+    console.log("API isteği yapılıyor:", url);
 
     const response = await fetch(url, {
       method: "GET",
@@ -72,6 +113,7 @@ export const getUsersByRoleService = async (role, currentUserId) => {
     });
 
     const data = await response.json();
+    console.log("API'den gelen veri:", data);
 
     if (!response.ok) {
       throw new Error(
@@ -79,7 +121,8 @@ export const getUsersByRoleService = async (role, currentUserId) => {
       );
     }
 
-    return data;
+    // API'den gelen veriyi düzenle
+    return data.users;
   } catch (err) {
     console.error("API | Kullanıcıları Getirme Hatası: ", err.message);
     throw err;

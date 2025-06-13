@@ -12,7 +12,15 @@ const initialState = {
 const managerSlice = createSlice({
   name: "managerSlice",
   initialState,
-  reducers: {},
+  reducers: {
+    resetManagerState: (state) => {
+      state.managerList = [];
+      state.teacherList = [];
+      state.studentList = [];
+      state.loading = false;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
 
@@ -23,7 +31,12 @@ const managerSlice = createSlice({
       })
       .addCase(addNewManagerThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.managerList.push(action.payload);
+        if (action.payload && typeof action.payload === "object") {
+          if (!Array.isArray(state.managerList)) {
+            state.managerList = [];
+          }
+          state.managerList = [...state.managerList, action.payload];
+        }
       })
       .addCase(addNewManagerThunk.rejected, (state, action) => {
         state.loading = false;
@@ -38,13 +51,14 @@ const managerSlice = createSlice({
       .addCase(fetchUsersByRoleThunk.fulfilled, (state, action) => {
         state.loading = false;
         const { users, role } = action.payload;
+        console.log("Redux store'a kaydedilecek veri:", { users, role });
 
         if (role === "manager") {
-          state.managerList = users;
+          state.managerList = Array.isArray(users) ? users : [];
         } else if (role === "teacher") {
-          state.teacherList = users;
+          state.teacherList = Array.isArray(users) ? users : [];
         } else {
-          state.studentList = users;
+          state.studentList = Array.isArray(users) ? users : [];
         }
       })
       .addCase(fetchUsersByRoleThunk.rejected, (state, action) => {
@@ -54,4 +68,5 @@ const managerSlice = createSlice({
   },
 });
 
+export const { resetManagerState } = managerSlice.actions;
 export default managerSlice.reducer;

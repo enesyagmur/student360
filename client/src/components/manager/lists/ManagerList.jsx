@@ -1,12 +1,13 @@
 import { Calendar, Mail, Phone, Shield, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsersByRoleThunk } from "../../../features/manager/managerThunk";
+import {
+  deleteManagerThunk,
+  fetchUsersByRoleThunk,
+} from "../../../features/manager/managerThunk";
 
 const ManagerList = ({ search }) => {
-  const managers = useSelector(
-    (state) => state.managerState.managerList?.users || []
-  );
+  const managers = useSelector((state) => state.managerState.managerList || []);
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
 
@@ -38,6 +39,8 @@ const ManagerList = ({ search }) => {
             currentUserId: user.id,
           })
         );
+
+        console.log("Redux store'daki yönetici verileri:", managers);
       } catch (err) {
         console.error("MANAGERLIST | Yöneticileri çekerken sorun ", err);
       }
@@ -46,13 +49,40 @@ const ManagerList = ({ search }) => {
     takeManagers();
   }, [dispatch]);
 
-  const filteredManagers = managers.filter((manager) => {
-    if (!search.trim()) return true;
+  const filteredManagers = Array.isArray(managers)
+    ? managers.filter((manager) => {
+        if (!search.trim()) return true;
+        if (!manager?.fullName) return false;
+        return manager.fullName
+          .toLowerCase()
+          .includes(search.toLowerCase().trim());
+      })
+    : [];
 
-    if (!manager?.fullName) return false;
+  const handleDelete = async (managerId) => {
+    try {
+      if (!user?.id) {
+        console.error("Kullanıcı bilgisi bulunamadı");
+        return;
+      }
 
-    return manager.fullName.toLowerCase().includes(search.toLowerCase().trim());
-  });
+      await dispatch(deleteManagerThunk(managerId)).unwrap();
+
+      // Silme başarılı olduktan sonra listeyi yenile
+      await dispatch(
+        fetchUsersByRoleThunk({
+          role: "manager",
+          currentUserId: user.id,
+        })
+      );
+    } catch (err) {
+      console.error(
+        "Yönetici silinemedi:",
+        err.message || "Beklenmeyen bir hata oluştu"
+      );
+      // Burada bir hata mesajı gösterebilirsiniz
+    }
+  };
 
   return (
     <div className="w-full h-[430px] bg-bg-tertiary  rounded-xl  overflow-x-auto  overflow-y-auto ">
@@ -88,51 +118,63 @@ const ManagerList = ({ search }) => {
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold uppercase">
-                      {manager.fullName[0]}
-                      {manager.fullName.split(" ")[1]?.[0] || ""}
+                      {manager.fullName ? (
+                        <>
+                          {manager.fullName[0]}
+                          {manager.fullName.split(" ")[1]?.[0] || ""}
+                        </>
+                      ) : (
+                        "?"
+                      )}
                     </div>
                     <div>
-                      <div className="hidden md:flex font-medium text-text-primary  capitalize">
-                        {manager.fullName}
+                      <div className="hidden md:flex font-medium text-text-primary capitalize">
+                        {manager.fullName || "İsimsiz Yönetici"}
                       </div>
                     </div>
                   </div>
                 </td>
                 <td className="py-4 px-6">
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm ">
+                    <div className="flex items-center gap-2 text-sm">
                       <Mail className="w-4 h-4" />
-                      {manager.email}
+                      {manager.email || "E-posta yok"}
                     </div>
-                    <div className="flex items-center gap-2 text-sm ">
+                    <div className="flex items-center gap-2 text-sm">
                       <Phone className="w-4 h-4" />
-                      {manager.phone}
+                      {manager.phone || "Telefon yok"}
                     </div>
                   </div>
                 </td>
                 <td className="py-4 px-6">
                   <div className="space-y-1">
-                    <div className="font-medium text-text-primary ">
+                    <div className="font-medium text-text-primary">
                       {manager.position === "principal" && "Müdür"}
                       {manager.position === "assistant principal" &&
                         "Müdür Yardımcısı"}
                       {manager.position === "counselor" && "Rehber Öğretmen"}
                       {manager.position === "officer" && "Arşiv Sorumlusu"}
-                      {manager.position === "IT" && "Bilgi İşlem Yönteticisi"}
+                      {manager.position === "IT" && "Bilgi İşlem Yöntemicisi"}
+                      {!manager.position && "Pozisyon belirtilmemiş"}
                     </div>
-                    <div className=" text-sm ">yönetici</div>
+                    <div className="text-sm">yönetici</div>
                   </div>
                 </td>
                 <td className="py-4 px-6">
-                  <div className="flex items-center gap-2 text-sm ">
+                  <div className="flex items-center gap-2 text-sm">
                     <Calendar className="w-4 h-4" />
-                    {new Date(manager.createdAt).toLocaleDateString("tr-TR")}
+                    {manager.createdAt
+                      ? new Date(manager.createdAt).toLocaleDateString("tr-TR")
+                      : "Tarih belirtilmemiş"}
                   </div>
                 </td>
                 {user?.position === "principal" && (
                   <td className="py-4 px-6 flex items-center justify-start">
                     <div className="flex items-center justify-center ">
-                      <button className="p-2  hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                      <button
+                        onClick={() => handleDelete(manager.id)}
+                        className="p-2  hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
