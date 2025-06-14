@@ -2,7 +2,7 @@ import { Calendar, Mail, Phone, BookOpen, Trash2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchTeachersByRoleThunk,
+  fetchTeachersThunk,
   deleteTeacherThunk,
 } from "../../../features/teacher/teacherThunk";
 import Button from "../../ui/button";
@@ -13,19 +13,28 @@ const TeacherList = ({ search, user }) => {
   const { teacherList = [], loading = false, error = null } = teacherState;
 
   useEffect(() => {
-    console.log("Mevcut user state:", user);
-    if (user?.id) {
-      console.log("Öğretmenler çekiliyor...");
-      dispatch(
-        fetchTeachersByRoleThunk({
-          role: "teacher",
-          currentUserId: user.id,
-        })
-      ).catch((error) => {
-        console.error("API hatası:", error);
-      });
+    const takeTeachers = async () => {
+      try {
+        if (!user) {
+          console.error("Kullanıcı bilgisi bulunamadı");
+          return;
+        }
+
+        if (!user.id || !user.token) {
+          console.error("Kullanıcı ID veya token bulunamadı");
+          return;
+        }
+
+        await dispatch(fetchTeachersThunk(user.id)).unwrap();
+      } catch (err) {
+        console.error("TEACHERLIST | Öğretmenleri çekerken sorun ", err);
+      }
+    };
+
+    if (teacherList.length === 0) {
+      takeTeachers();
     }
-  }, [dispatch, user, user?.id]);
+  }, [dispatch, teacherList, user]);
 
   // yardımcı fonksiyon
   const getPositionName = (position) => {
@@ -53,13 +62,6 @@ const TeacherList = ({ search, user }) => {
     if (window.confirm("Bu öğretmeni silmek istediğinizden emin misiniz?")) {
       try {
         await dispatch(deleteTeacherThunk(teacherId)).unwrap();
-        // silme başarılı olduktan sonra listeyi güncelle
-        dispatch(
-          fetchTeachersByRoleThunk({
-            role: "teacher",
-            currentUserId: user.id,
-          })
-        );
       } catch (err) {
         console.error("Öğretmen silinirken hata oluştu:", err);
       }

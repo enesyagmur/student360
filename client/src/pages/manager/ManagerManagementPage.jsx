@@ -97,7 +97,7 @@ const ManagerManagementPage = () => {
         </div>
       </div>
 
-      <ManagerList search={search} />
+      <ManagerList search={search} user={user} />
 
       {/* Add Manager Modal */}
       {showAddModal && (

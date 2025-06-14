@@ -2,24 +2,27 @@ const admin = require("../config/firebase-admin");
 
 exports.requirePrincipal = async (req, res, next) => {
   try {
-    //istek atan kişinin pozisyonu için verisini çekiyoruz
-    const requester = await admin
+    let requester = await admin
       .firestore()
-      .collection("users")
+      .collection("managers")
       .doc(req.user.uid)
       .get();
 
     if (!requester.exists) {
-      console.log("Kullanıcı bulunamadı");
+      requester = await admin
+        .firestore()
+        .collection("users")
+        .doc(req.user.uid)
+        .get();
+    }
+
+    if (!requester.exists) {
       throw new Error("Kullanıcı bulunamadı");
     }
 
-    //müdür değilse hata
-    if (requester.data().position !== "principal") {
-      console.log(
-        "Yetki hatası: Kullanıcı pozisyonu:",
-        requester.data().position
-      );
+    const userData = requester.data();
+
+    if (userData.position !== "principal") {
       throw new Error("Yetki Hatası");
     }
 
@@ -32,12 +35,9 @@ exports.requirePrincipal = async (req, res, next) => {
 
 exports.requireRoleBasedAccess = async (req, res, next) => {
   try {
-    console.log("Role bazlı yetkilendirme kontrolü başlıyor...");
-    console.log("Kullanıcı ID:", req.user.uid);
-
     const requester = await admin
       .firestore()
-      .collection("users")
+      .collection("managers")
       .doc(req.user.uid)
       .get();
 
@@ -88,7 +88,10 @@ exports.requireRoleBasedAccess = async (req, res, next) => {
 exports.authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log("Gelen auth header:", authHeader);
+
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.log("Token formatı hatalı veya eksik");
       return res.status(401).json({
         error: "Yetkilendirme başarısız",
         details: "Token bulunamadı",
@@ -96,7 +99,11 @@ exports.authenticateToken = async (req, res, next) => {
     }
 
     const token = authHeader.split("Bearer ")[1];
+    console.log("Token alındı, doğrulanıyor...");
+
     const decodedToken = await admin.auth().verifyIdToken(token);
+    console.log("Token doğrulandı, kullanıcı bilgileri:", decodedToken);
+
     req.user = decodedToken;
     next();
   } catch (err) {

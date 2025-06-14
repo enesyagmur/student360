@@ -23,30 +23,18 @@ function App() {
           <Route path="/" element={<LoginPage />} />
 
           <Route path="/manager" element={<ManagerLayout />}>
-            <Route
-              path="teacherManagement"
-              element={<TeacherManagementPage />}
-            />
+            <Route path="teachers" element={<TeacherManagementPage />} />
             <Route path="dashboard" element={<ManagerDashboardPage />} />
-            <Route path="examManagement" element={<ExamManagementPage />} />
-            <Route path="lessonManagement" element={<LessonManagementPage />} />
-            <Route path="classManagement" element={<ClassManagementPage />} />
-            <Route path="assigment" element={<AssigmentPage />} />
-            <Route
-              path="managerManagement"
-              element={<ManagerManagementPage />}
-            />
+            <Route path="exams" element={<ExamManagementPage />} />
+            <Route path="lessons" element={<LessonManagementPage />} />
+            <Route path="classes" element={<ClassManagementPage />} />
+            <Route path="assigments" element={<AssigmentPage />} />
+            <Route path="managers" element={<ManagerManagementPage />} />
 
+            <Route path="students" element={<StudentManagementPage />} />
+            <Route path="schedule" element={<ScheduleManagementPage />} />
             <Route
-              path="studentManagement"
-              element={<StudentManagementPage />}
-            />
-            <Route
-              path="scheduleManagement"
-              element={<ScheduleManagementPage />}
-            />
-            <Route
-              path="announcementManagement"
+              path="announcements"
               element={<AnnouncementManagementPage />}
             />
             <Route path="settings" element={<SettingsPage />} />

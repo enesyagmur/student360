@@ -1,52 +1,39 @@
 import { Calendar, Mail, Phone, Shield, Trash2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteManagerThunk,
-  fetchUsersByRoleThunk,
+  fetchManagersThunk,
 } from "../../../features/manager/managerThunk";
 import Button from "../../ui/button";
 
-const ManagerList = ({ search }) => {
+const ManagerList = ({ search, user }) => {
   const managers = useSelector((state) => state.managerState.managerList || []);
   const dispatch = useDispatch();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
 
   useEffect(() => {
     const takeManagers = async () => {
       try {
-        const userData = localStorage.getItem("user");
-        if (!userData) {
+        if (!user) {
           console.error("Kullanıcı bilgisi bulunamadı");
           return;
         }
 
-        const user = JSON.parse(userData);
         if (!user.id || !user.token) {
           console.error("Kullanıcı ID veya token bulunamadı");
           return;
         }
 
-        await dispatch(
-          fetchUsersByRoleThunk({
-            role: "manager",
-            currentUserId: user.id,
-          })
-        );
+        await dispatch(fetchManagersThunk(user.id)).unwrap();
       } catch (err) {
         console.error("MANAGERLIST | Yöneticileri çekerken sorun ", err);
       }
     };
 
-    takeManagers();
-  }, [dispatch]);
+    if (managers.length === 0) {
+      takeManagers();
+    }
+  }, [dispatch, user, managers]);
 
   const filteredManagers = Array.isArray(managers)
     ? managers.filter((manager) => {
@@ -66,14 +53,6 @@ const ManagerList = ({ search }) => {
       }
 
       await dispatch(deleteManagerThunk(managerId)).unwrap();
-
-      // Silme başarılı olduktan sonra listeyi yenile
-      await dispatch(
-        fetchUsersByRoleThunk({
-          role: "manager",
-          currentUserId: user.id,
-        })
-      );
     } catch (err) {
       console.error(
         "Yönetici silinemedi:",

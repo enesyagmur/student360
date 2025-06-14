@@ -1,8 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const admin = require("./config/firebase-admin");
 const routes = require("./routes");
-require("dotenv").config();
 const { authenticateToken } = require("./middlewares/auth.middleware");
 
 const app = express();

@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createNewManagerService,
   deleteManagerService,
-  getUsersByRoleService,
+  getManagersService,
 } from "./managerService";
 
 export const addNewManagerThunk = createAsyncThunk(
@@ -33,13 +33,13 @@ export const deleteManagerThunk = createAsyncThunk(
   }
 );
 
-export const fetchUsersByRoleThunk = createAsyncThunk(
-  "manager/fetchUsersByRole",
-  async ({ role, currentUserId }, thunkAPI) => {
+export const fetchManagersThunk = createAsyncThunk(
+  "manager/fetchManagers",
+  async (currentUserId, thunkAPI) => {
     try {
-      const users = await getUsersByRoleService(role, currentUserId);
+      const users = await getManagersService(currentUserId);
 
-      return { users, role };
+      return users;
     } catch (err) {
       console.error("Thunk - Hata:", err);
       return thunkAPI.rejectWithValue(err.message);

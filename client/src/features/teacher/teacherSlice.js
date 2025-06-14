@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   addNewTeacherThunk,
-  fetchTeachersByRoleThunk,
+  fetchTeachersThunk,
   deleteTeacherThunk,
 } from "./teacherThunk";
 
@@ -43,19 +43,15 @@ const teacherSlice = createSlice({
       })
 
       // Öğretmenleri alma
-      .addCase(fetchTeachersByRoleThunk.pending, (state) => {
+      .addCase(fetchTeachersThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchTeachersByRoleThunk.fulfilled, (state, action) => {
+      .addCase(fetchTeachersThunk.fulfilled, (state, action) => {
         state.loading = false;
-
-        const { teachers, role } = action.payload;
-        if (role === "teacher") {
-          state.teacherList = Array.isArray(teachers) ? teachers : [];
-        }
+        state.teacherList = Array.isArray(action.payload) ? action.payload : [];
       })
-      .addCase(fetchTeachersByRoleThunk.rejected, (state, action) => {
+      .addCase(fetchTeachersThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

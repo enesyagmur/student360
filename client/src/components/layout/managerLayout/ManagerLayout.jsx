@@ -14,6 +14,7 @@ import {
   FileText,
   Bell,
   Settings,
+  Send,
 } from "lucide-react";
 
 const ManagerLayout = () => {
@@ -21,47 +22,52 @@ const ManagerLayout = () => {
     {
       label: "Performans",
       icon: BarChart3,
-      url: "/manager/managerdashboard",
+      url: "/manager/dashboard",
     },
     {
       label: "Öğrenciler",
       icon: GraduationCap,
-      url: "/manager/studentManagement",
+      url: "/manager/students",
     },
     {
       label: "Öğretmenler",
       icon: UserCheck,
-      url: "/manager/teacherManagement",
+      url: "/manager/teachers",
     },
     {
       label: "Yöneticiler",
       icon: BriefcaseBusiness,
-      url: "/manager/managerManagement",
+      url: "/manager/managers",
     },
     {
       label: "Sınıflar",
       icon: DoorClosed,
-      url: "/manager/classManagement",
+      url: "/manager/classes",
     },
     {
       label: "Dersler",
       icon: BookOpen,
-      url: "/manager/lessonManagement",
+      url: "/manager/lessons",
     },
     {
-      label: "Programlar",
+      label: "Atamalar",
+      icon: Send,
+      url: "/manager/assigments",
+    },
+    {
+      label: "Program",
       icon: Calendar,
-      url: "/manager/scheduleManagement",
+      url: "/manager/schedule",
     },
     {
       label: "Sınavlar",
       icon: FileText,
-      url: "/manager/examManagement",
+      url: "/manager/exams",
     },
     {
       label: "Duyurular",
       icon: Bell,
-      url: "/manager/announcementManagement",
+      url: "/manager/announcements",
     },
     {
       label: "Ayarlar",

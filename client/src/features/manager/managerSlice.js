@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addNewManagerThunk, fetchUsersByRoleThunk } from "./managerThunk";
+import { addNewManagerThunk, fetchManagersThunk } from "./managerThunk";
 
 const initialState = {
   managerList: [],
@@ -40,19 +40,16 @@ const managerSlice = createSlice({
       })
 
       //kullanıcıları alma
-      .addCase(fetchUsersByRoleThunk.pending, (state) => {
+      .addCase(fetchManagersThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchUsersByRoleThunk.fulfilled, (state, action) => {
+      .addCase(fetchManagersThunk.fulfilled, (state, action) => {
         state.loading = false;
-        const { users, role } = action.payload;
 
-        if (role === "manager") {
-          state.managerList = Array.isArray(users) ? users : [];
-        }
+        state.managerList = Array.isArray(action.payload) ? action.payload : [];
       })
-      .addCase(fetchUsersByRoleThunk.rejected, (state, action) => {
+      .addCase(fetchManagersThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -1,3 +1,6 @@
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+
 const BASE_URL = "http://localhost:3001";
 
 // yardımcı fonksiyon - localStorage dan token al
@@ -58,6 +61,7 @@ export const createNewManagerService = async ({
   }
 };
 
+//YÖnetici Silme ------------------------------------------------
 export const deleteManagerService = async (managerId) => {
   try {
     const token = getTokenFromStorage();
@@ -93,35 +97,37 @@ export const deleteManagerService = async (managerId) => {
   }
 };
 
-export const getUsersByRoleService = async (role, currentUserId) => {
+//Kullanıcıları Getirme ------------------------------------------------
+export const getManagersService = async (currentUserId) => {
   try {
-    const token = getTokenFromStorage();
-
-    if (!role || !currentUserId) {
-      console.error("Eksik parametreler:", { role, currentUserId });
-      throw new Error("Role ve currentUserId parametreleri gereklidir");
+    if (!currentUserId) {
+      console.error("eksik parametre:", { currentUserId });
+      throw new Error("currentUserId parametresi gereklidir");
     }
 
-    const url = `${BASE_URL}/api/managers/by-role/${role}?currentUserId=${currentUserId}`;
+    // önce bu kullanıcının gerçekten yönetici olup olmadığını kontrol etme
+    const currentUserRef = doc(db, "managers", currentUserId);
+    const currentUserDoc = await getDoc(currentUserRef);
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    if (!currentUserDoc.exists()) {
+      throw new Error("kullanıcı bulunamadı veya yetkiniz bulunmuyor");
+    }
+
+    const managersRef = collection(db, "managers");
+
+    const querySnapshot = await getDocs(managersRef);
+    const users = [];
+
+    querySnapshot.forEach((doc) => {
+      users.push({
+        id: doc.id,
+        ...doc.data(),
+      });
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.error || data.details || "Kullanıcılar getirilemedi"
-      );
-    }
-
-    return data.users;
+    return users;
   } catch (err) {
-    console.error("API | Kullanıcıları Getirme Hatası: ", err.message);
+    console.error("firebase | yöneticileri getirme hatası: ", err.message);
     throw err;
   }
 };

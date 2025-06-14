@@ -5,10 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { teacherSchema } from "../../lib/validation/teacherFormSchema";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import {
-  addNewTeacherThunk,
-  fetchTeachersByRoleThunk,
-} from "../../features/teacher/teacherThunk";
+import { addNewTeacherThunk } from "../../features/teacher/teacherThunk";
 import Button from "../../components/ui/button";
 import { getCurrentUser } from "../../features/auth/authService";
 
@@ -34,18 +31,6 @@ const TeacherManagementPage = () => {
   } = useForm({
     resolver: yupResolver(teacherSchema),
   });
-
-  // Sayfa yüklendiğinde öğretmenleri getir
-  useEffect(() => {
-    if (user?.id) {
-      dispatch(
-        fetchTeachersByRoleThunk({
-          role: "teacher",
-          currentUserId: user.id,
-        })
-      );
-    }
-  }, [dispatch, user?.id]);
 
   const onSubmit = async (data) => {
     try {

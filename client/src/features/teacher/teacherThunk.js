@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createNewTeacherService,
   deleteTeacherService,
-  getTeachersByRoleService,
+  getTeachersService,
 } from "./teacherService";
 
 export const addNewTeacherThunk = createAsyncThunk(
@@ -33,12 +33,15 @@ export const deleteTeacherThunk = createAsyncThunk(
   }
 );
 
-export const fetchTeachersByRoleThunk = createAsyncThunk(
-  "teacher/fetchTeachersByRole",
-  async ({ role, currentUserId }, thunkAPI) => {
+export const fetchTeachersThunk = createAsyncThunk(
+  "teacher/fetchTeachers",
+  async (currentUserId, thunkAPI) => {
     try {
-      const teachers = await getTeachersByRoleService(role, currentUserId);
-      return { teachers, role };
+      if (!currentUserId) {
+        throw new Error("Kullanıcı ID'si gereklidir");
+      }
+      const teachers = await getTeachersService(currentUserId);
+      return teachers;
     } catch (err) {
       console.error("Thunk - Hata:", err);
       return thunkAPI.rejectWithValue(err.message);

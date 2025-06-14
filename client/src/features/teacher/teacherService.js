@@ -1,3 +1,6 @@
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+
 const BASE_URL = "http://localhost:3001";
 
 // yardımcı fonksiyon - localStorage dan token al
@@ -96,33 +99,49 @@ export const deleteTeacherService = async (teacherId) => {
   }
 };
 
-export const getTeachersByRoleService = async (role, currentUserId) => {
+export const getTeachersService = async (currentUserId) => {
   try {
-    const token = getTokenFromStorage();
-
-    if (!role || !currentUserId) {
-      console.error("Eksik parametreler:", { role, currentUserId });
-      throw new Error("Role ve currentUserId parametreleri gereklidir");
+    if (!currentUserId) {
+      console.error("eksik parametre:", { currentUserId });
+      throw new Error("currentUserId parametresi gereklidir");
     }
 
-    const url = `${BASE_URL}/api/teachers/by-role/${role}?currentUserId=${currentUserId}`;
+    // önce bu kullanıcının gerçekten yönetici olup olmadığını kontrol etme
+    const currentUserRef = doc(db, "managers", currentUserId);
+    const currentUserDoc = await getDoc(currentUserRef);
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || data.details || "Öğretmenler getirilemedi");
+    if (!currentUserDoc.exists()) {
+      throw new Error("kullanıcı bulunamadı veya yetkiniz bulunmuyor");
     }
 
-    return data.users;
+    const teachersRef = collection(db, "teachers");
+    const querySnapshot = await getDocs(teachersRef);
+
+    if (!querySnapshot || !querySnapshot.docs) {
+      console.error("Geçersiz querySnapshot:", querySnapshot);
+      return [];
+    }
+
+    const teachers = [];
+
+    for (const doc of querySnapshot.docs) {
+      try {
+        const teacherData = doc.data();
+        if (teacherData && typeof teacherData === "object") {
+          teachers.push({
+            id: doc.id,
+            ...teacherData,
+          });
+        }
+      } catch (docError) {
+        console.error("Doküman işleme hatası:", docError);
+        continue;
+      }
+    }
+
+    return teachers;
   } catch (err) {
-    console.error("API | Öğretmenleri Getirme Hatası: ", err.message);
+    console.error("firebase | öğretmenleri getirme hatası: ", err.message);
     throw err;
   }
 };

@@ -1,4 +1,5 @@
 const admin = require("../config/firebase-admin");
+const { sendWelcomeEmail } = require("./email.service");
 
 exports.createUserInFirestore = async ({
   fullName,
@@ -9,6 +10,8 @@ exports.createUserInFirestore = async ({
   tc,
 }) => {
   try {
+    console.log("Kullanıcı oluşturma başladı"); // Debug log
+
     const generatePassword = () => {
       const length = 12;
       const charset =
@@ -21,6 +24,7 @@ exports.createUserInFirestore = async ({
     };
 
     const password = generatePassword();
+    console.log("Şifre oluşturuldu:", password); // Debug log
 
     // Firebase Auth da kullanıcı oluştur
     const userRecord = await admin.auth().createUser({
@@ -29,6 +33,8 @@ exports.createUserInFirestore = async ({
       displayName: fullName,
       emailVerified: false,
     });
+
+    console.log("Firebase Auth'da kullanıcı oluşturuldu"); // Debug log
 
     // Firestore a kullanıcı bilgilerini kaydet
     const userData = {
@@ -44,11 +50,36 @@ exports.createUserInFirestore = async ({
       isActive: true,
     };
 
-    await admin
-      .firestore()
-      .collection("users")
-      .doc(userRecord.uid)
-      .set(userData);
+    if (role === "manager") {
+      await admin
+        .firestore()
+        .collection("managers")
+        .doc(userRecord.uid)
+        .set(userData);
+    } else if (role === "teacher") {
+      await admin
+        .firestore()
+        .collection("teachers")
+        .doc(userRecord.uid)
+        .set(userData);
+    } else if (role === "student") {
+      await admin
+        .firestore()
+        .collection("students")
+        .doc(userRecord.uid)
+        .set(userData);
+    }
+
+    console.log("Firestore'a kullanıcı kaydedildi"); // Debug log
+
+    // Email gönderme işlemi
+    console.log("Email gönderme işlemi başlıyor..."); // Debug log
+    try {
+      await sendWelcomeEmail(email, password, fullName);
+      console.log("Hoş geldiniz maili gönderildi");
+    } catch (emailError) {
+      console.error("Hoş geldiniz maili gönderilemedi:", emailError);
+    }
 
     return {
       success: true,
@@ -56,7 +87,7 @@ exports.createUserInFirestore = async ({
       user: userData,
     };
   } catch (error) {
-    console.error("Kullanıcı oluşturma hatası:", error);
+    console.error("BACKEND | Kullanıcı oluşturma hatası:", error);
     throw new Error(error.message || "Kullanıcı oluşturulamadı");
   }
 };
@@ -64,7 +95,7 @@ exports.createUserInFirestore = async ({
 exports.deleteManager = async (managerId) => {
   try {
     // önce firestore dan yöneticiyi sil
-    await admin.firestore().collection("users").doc(managerId).delete();
+    await admin.firestore().collection("managers").doc(managerId).delete();
 
     // sonra firebase Auth'dan kullanıcıyı sil
     await admin.auth().deleteUser(managerId);

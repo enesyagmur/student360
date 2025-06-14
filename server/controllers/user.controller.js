@@ -3,7 +3,6 @@ const { createUserInFirestore } = require("../services/user.service");
 
 exports.createManager = async (req, res) => {
   try {
-    console.log("Yönetici oluşturma isteği başladı");
     const { fullName, email, phone, position, tc, role } = req.body;
 
     // Gerekli alanların kontrolü
@@ -33,7 +32,6 @@ exports.createManager = async (req, res) => {
       // E-posta bulunamadıysa devam et
     }
 
-    console.log("Yeni yönetici oluşturuluyor...");
     const result = await createUserInFirestore({
       fullName,
       email,
@@ -43,7 +41,6 @@ exports.createManager = async (req, res) => {
       tc,
     });
 
-    console.log("Yeni yönetici başarıyla oluşturuldu:", result.user.id);
     return res.status(201).json(result);
   } catch (err) {
     console.error("Yönetici oluşturma hatası:", err);
@@ -69,7 +66,7 @@ exports.deleteManager = async (req, res) => {
     // Silinecek yöneticinin varlığını kontrol et
     const managerDoc = await admin
       .firestore()
-      .collection("users")
+      .collection("managers")
       .doc(managerId)
       .get();
 
@@ -81,7 +78,7 @@ exports.deleteManager = async (req, res) => {
     }
 
     // Önce Firestore'dan kullanıcıyı sil
-    await admin.firestore().collection("users").doc(managerId).delete();
+    await admin.firestore().collection("managers").doc(managerId).delete();
 
     // Sonra Firebase Auth'dan kullanıcıyı sil
     await admin.auth().deleteUser(managerId);
@@ -107,8 +104,7 @@ exports.getUsersByRole = async (req, res) => {
     // firestore'dan kullanıcıları getir
     const usersSnapshot = await admin
       .firestore()
-      .collection("users")
-      .where("role", "==", role)
+      .collection(role + "s")
       .get();
 
     console.log("Bulunan kullanıcı sayısı:", usersSnapshot.size);
@@ -212,7 +208,7 @@ exports.deleteTeacher = async (req, res) => {
     // Silinecek öğretmenin varlığını kontrol et
     const teacherDoc = await admin
       .firestore()
-      .collection("users")
+      .collection("teachers")
       .doc(teacherId)
       .get();
 
@@ -224,7 +220,7 @@ exports.deleteTeacher = async (req, res) => {
     }
 
     // Önce Firestore'dan kullanıcıyı sil
-    await admin.firestore().collection("users").doc(teacherId).delete();
+    await admin.firestore().collection("teachers").doc(teacherId).delete();
 
     // Sonra Firebase Auth'dan kullanıcıyı sil
     await admin.auth().deleteUser(teacherId);
