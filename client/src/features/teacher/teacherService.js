@@ -78,6 +78,7 @@ export const deleteTeacherService = async (teacherId) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({ teacherId }),
     });
 
     const contentType = response.headers.get("content-type");

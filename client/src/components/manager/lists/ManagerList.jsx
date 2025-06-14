@@ -1,14 +1,22 @@
 import { Calendar, Mail, Phone, Shield, Trash2 } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteManagerThunk,
   fetchManagersThunk,
 } from "../../../features/manager/managerThunk";
 import Button from "../../ui/button";
+import ConfirmModal from "../../ui/confirmModal";
 
 const ManagerList = ({ search, user }) => {
-  const managers = useSelector((state) => state.managerState.managerList || []);
+  const managerState = useSelector((state) => state.managerState) || {};
+  const { managerList = [], loading = false, error = null } = managerState;
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    answer: false,
+    selectedItemId: "",
+  });
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,13 +38,13 @@ const ManagerList = ({ search, user }) => {
       }
     };
 
-    if (managers.length === 0) {
+    if (managerList.length === 0) {
       takeManagers();
     }
-  }, [dispatch, user, managers]);
+  }, [dispatch, user, managerList]);
 
-  const filteredManagers = Array.isArray(managers)
-    ? managers.filter((manager) => {
+  const filteredManagers = Array.isArray(managerList)
+    ? managerList.filter((manager) => {
         if (!search.trim()) return true;
         if (!manager?.fullName) return false;
         return manager.fullName
@@ -45,22 +53,52 @@ const ManagerList = ({ search, user }) => {
       })
     : [];
 
-  const handleDelete = async (managerId) => {
-    try {
-      if (!user?.id) {
-        console.error("Kullanıcı bilgisi bulunamadı");
-        return;
+  useEffect(() => {
+    const handleDelete = async (managerId) => {
+      try {
+        await dispatch(deleteManagerThunk(managerId)).unwrap();
+      } catch (err) {
+        console.error(
+          "Yönetici silinemedi:",
+          err.message || "Beklenmeyen bir hata oluştu"
+        );
+        // Burada bir hata mesajı gösterebilirsiniz
       }
+    };
 
-      await dispatch(deleteManagerThunk(managerId)).unwrap();
-    } catch (err) {
-      console.error(
-        "Yönetici silinemedi:",
-        err.message || "Beklenmeyen bir hata oluştu"
-      );
-      // Burada bir hata mesajı gösterebilirsiniz
+    if (confirmModal.answer === true && confirmModal.selectedItemId !== "") {
+      handleDelete(confirmModal.selectedItemId);
+      setConfirmModal((prev) => ({
+        ...prev,
+        selectedItemId: "",
+        answer: false,
+      }));
     }
-  };
+  }, [confirmModal, dispatch]);
+
+  // loading durumu
+  if (loading) {
+    return (
+      <div className="w-full h-[500px] bg-bg-tertiary rounded-xl flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-text-secondary">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // error durumu
+  if (error) {
+    return (
+      <div className="w-full h-[500px] bg-bg-tertiary rounded-xl flex items-center justify-center">
+        <div className="text-center text-red-500">
+          <p className="text-lg font-medium mb-2">Hata oluştu</p>
+          <p className="text-sm">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-[500px] bg-bg-tertiary  rounded-xl  overflow-x-auto  overflow-y-auto ">
@@ -82,7 +120,7 @@ const ManagerList = ({ search, user }) => {
               </th>
               {user?.position === "principal" && (
                 <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                  Çıkar
+                  İşlem
                 </th>
               )}
             </tr>
@@ -150,7 +188,13 @@ const ManagerList = ({ search, user }) => {
                   <td className="py-4 px-6 flex items-center justify-start">
                     <div className="flex items-center justify-center ">
                       <Button
-                        onClick={() => handleDelete(manager.id)}
+                        onClick={() => {
+                          setConfirmModal((prev) => ({
+                            ...prev,
+                            open: true,
+                            teacherId: manager.id,
+                          }));
+                        }}
                         type={"danger"}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -175,6 +219,13 @@ const ManagerList = ({ search, user }) => {
           </p>
         </div>
       )}
+
+      <ConfirmModal
+        type={"danger"}
+        message={"Silmek istediğinize emin misiniz?"}
+        confirmModal={confirmModal}
+        setConfirmModal={setConfirmModal}
+      />
     </div>
   );
 };

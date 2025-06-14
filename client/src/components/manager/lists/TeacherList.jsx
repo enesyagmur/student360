@@ -1,16 +1,22 @@
 import { Calendar, Mail, Phone, BookOpen, Trash2 } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchTeachersThunk,
   deleteTeacherThunk,
 } from "../../../features/teacher/teacherThunk";
 import Button from "../../ui/button";
+import ConfirmModal from "../../ui/confirmModal";
 
 const TeacherList = ({ search, user }) => {
   const dispatch = useDispatch();
   const teacherState = useSelector((state) => state.teacherState) || {};
   const { teacherList = [], loading = false, error = null } = teacherState;
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    answer: false,
+    selectedItemId: "",
+  });
 
   useEffect(() => {
     const takeTeachers = async () => {
@@ -57,16 +63,29 @@ const TeacherList = ({ search, user }) => {
     return positionNames[position] || "Branş belirtilmemiş";
   };
 
-  // silme işlemi için onay fonksiyonu
-  const handleDelete = async (teacherId) => {
-    if (window.confirm("Bu öğretmeni silmek istediğinizden emin misiniz?")) {
+  useEffect(() => {
+    const handleDelete = async (teacherId) => {
       try {
+        if (!teacherId) {
+          console.error("Öğretmen ID bulunamadı");
+          return;
+        }
+
         await dispatch(deleteTeacherThunk(teacherId)).unwrap();
       } catch (err) {
         console.error("Öğretmen silinirken hata oluştu:", err);
       }
+    };
+
+    if (confirmModal.answer === true && confirmModal.selectedItemId !== "") {
+      handleDelete(confirmModal.selectedItemId);
+      setConfirmModal((prev) => ({
+        ...prev,
+        selectedItemId: "",
+        answer: false,
+      }));
     }
-  };
+  }, [confirmModal, dispatch]);
 
   // arama fonksiyonu
   const filteredTeachers = Array.isArray(teacherList)
@@ -121,9 +140,11 @@ const TeacherList = ({ search, user }) => {
               <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
                 Katılım Tarihi
               </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                İşlemler
-              </th>
+              {user?.position === "principal" && (
+                <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
+                  İşlem
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -182,7 +203,13 @@ const TeacherList = ({ search, user }) => {
                 <td className="py-4 px-6 flex items-center justify-start">
                   <div className="flex items-center justify-center gap-2">
                     <Button
-                      onClick={() => handleDelete(teacher.id)}
+                      onClick={() => {
+                        setConfirmModal((prev) => ({
+                          ...prev,
+                          open: true,
+                          teacherId: teacher.id,
+                        }));
+                      }}
                       type={"danger"}
                     >
                       <Trash2 className="w-4 h-4" />
@@ -206,6 +233,13 @@ const TeacherList = ({ search, user }) => {
           </p>
         </div>
       )}
+
+      <ConfirmModal
+        type={"danger"}
+        message={"Silmek istediğinize emin misiniz?"}
+        confirmModal={confirmModal}
+        setConfirmModal={setConfirmModal}
+      />
     </div>
   );
 };

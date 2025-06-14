@@ -1,38 +1,46 @@
 import React from "react";
 
-// dinamik onay modalı
-// type: success, danger, warning gibi farklı durumlar için
-// message: gösterilecek mesaj
-// setAnswer: modal kapandığında true/false döndüren fonksiyon
-const ConfirmModal = ({ type = "success", message, setAnswer, isOpen }) => {
+const ConfirmModal = ({ type, message, confirmModal, setConfirmModal }) => {
   // modal kapalıysa null döndür
-  if (!isOpen) return null;
+  if (!confirmModal.open) return null;
 
   // type'a göre renk sınıflarını belirle
   const colorClasses = {
-    success: "bg-green-500 hover:bg-green-600",
-    danger: "bg-red-500 hover:bg-red-600",
-    warning: "bg-yellow-500 hover:bg-yellow-600",
+    success: "bg-color-success hover:bg-color-success/90",
+    danger: "bg-color-danger hover:bg-color-danger/90",
+    warning: "bg-color-warning hover:bg-color-warning/90",
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-bg-primary rounded-xl p-16 max-w-md w-full mx-4 shadow-2xl border border-bg-quaternary">
         <div className="text-center">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+          <h3 className="text-xl font-semibold text-text-primary mb-6">
             {message}
           </h3>
 
-          <div className="flex justify-center space-x-4 mt-6">
+          <div className="flex justify-center space-x-4 mt-8">
             <button
-              onClick={() => setAnswer(false)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200"
+              onClick={() => {
+                setConfirmModal((prev) => ({
+                  ...prev,
+                  open: false,
+                  teacherId: "",
+                }));
+              }}
+              className="px-6 py-2.5 text-sm font-medium text-text-secondary bg-bg-tertiary hover:bg-bg-quaternary rounded-lg transition-all duration-200"
             >
               Vazgeç
             </button>
             <button
-              onClick={() => setAnswer(true)}
-              className={`px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 ${
+              onClick={() => {
+                setConfirmModal((prev) => ({
+                  ...prev,
+                  open: false,
+                  answer: true,
+                }));
+              }}
+              className={`px-6 py-2.5 text-sm font-medium text-white rounded-lg transition-all duration-200 ${
                 colorClasses[type] || colorClasses.success
               }`}
             >
