@@ -16,7 +16,7 @@ const Button = ({ type, size, children, onClick }) => {
       break;
     case "danger":
       typeClasses =
-        " hover:bg-red-600 focus:ring-red-500 text-white border border-red-900";
+        " hover:bg-red-600 focus:ring-red-500 text-text-secondary border border-red-900";
       break;
     default:
       typeClasses =
