@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createClassThunk } from "./classThunk";
+import { createClassThunk, getClassesThunk } from "./classThunk";
 
 const initialState = {
   classList: [],
@@ -24,6 +24,20 @@ const classSlice = createSlice({
         state.classList = [...state.classList, action.payload];
       })
       .addCase(createClassThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      //sınıfları getir
+      .addCase(getClassesThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getClassesThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.classList = action.payload;
+      })
+      .addCase(getClassesThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

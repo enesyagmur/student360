@@ -1,13 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Edit2, Trash2, Users, Loader2, AlertCircle } from "lucide-react";
-import { format } from "date-fns";
-import { tr } from "date-fns/locale";
+import { getClassesThunk } from "../../../features/class/classThunk";
 
 const ClassList = ({ search, user }) => {
   const [filteredClasses, setFilteredClasses] = useState([]);
   const classState = useSelector((state) => state.classState);
   const { classList: classes = [], loading = false, error = null } = classState;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        if (!user?.uid) {
+          console.warn("Kullanıcı bilgisi bulunamadı");
+          return;
+        }
+        await dispatch(getClassesThunk(user.uid)).unwrap();
+      } catch (error) {
+        console.error("Sınıflar çekilirken hata:", error);
+      }
+    };
+
+    if (classes.length === 0 && user?.uid) {
+      fetchClasses();
+    }
+  }, [classes, dispatch, user?.uid]);
 
   useEffect(() => {
     if (search) {
@@ -150,7 +168,7 @@ const ClassList = ({ search, user }) => {
                   <td className="py-4 px-4">
                     <div className="flex items-center justify-end gap-2">
                       <button
-                        onClick={() => handleDelete(classItem._id)}
+                        onClick={() => handleDelete(classItem.id)}
                         className="p-2 hover:bg-bg-secondary rounded-lg transition-colors"
                       >
                         <Trash2 className="w-5 h-5 text-red-500" />

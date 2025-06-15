@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createClassService } from "./classService";
+import { createClassService, getClassesService } from "./classService";
 
 export const createClassThunk = createAsyncThunk(
   "class/createClass",
@@ -9,6 +9,19 @@ export const createClassThunk = createAsyncThunk(
       return result;
     } catch (err) {
       console.error("THUNKS | Class oluştururken sorun: ", err);
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getClassesThunk = createAsyncThunk(
+  "class/getClass",
+  async (currentUserId, thunkAPI) => {
+    try {
+      const result = await getClassesService(currentUserId);
+      return result;
+    } catch (err) {
+      console.error("THUNK | Sınıflar çekilirken sorun: ", err);
       return thunkAPI.rejectWithValue(err.message);
     }
   }

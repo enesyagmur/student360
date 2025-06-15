@@ -1,4 +1,4 @@
-import { doc, getDoc, collection, addDoc } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
 export const createClassService = async (currentUserId, classData) => {
@@ -47,5 +47,38 @@ export const createClassService = async (currentUserId, classData) => {
   } catch (err) {
     console.error("SERVICE | Sınıf oluştururken sorun: ", err);
     throw err;
+  }
+};
+
+export const getClassesService = async (currentUserId) => {
+  try {
+    if (!currentUserId) {
+      throw new Error("SERVICE | Sınıflar getirilirken eksik bilgi: UserId");
+    }
+
+    const managerDocRef = doc(db, "managers", currentUserId);
+    const managerSnapShot = await getDoc(managerDocRef);
+
+    if (!managerSnapShot.exists()) {
+      throw new Error(
+        "SERVICE | Sınıf çekilirken mevcut kullanıcı bulunamadı ya da yetkiniz yok."
+      );
+    }
+
+    const classesDocRef = collection(db, "classes");
+    const classesSnapShot = await getDocs(classesDocRef);
+
+    if (classesSnapShot.empty) {
+      return [];
+    }
+
+    const classes = classesSnapShot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    return classes;
+  } catch (err) {
+    console.error("SERVICE | Sınıflar getirilirken sorun: ", err);
+    throw new Error("SERVICE | Sınıflar getirilirken sorun: ", err);
   }
 };
