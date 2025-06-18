@@ -13,6 +13,7 @@ export const userLoginService = async (email, password, role) => {
       password
     );
     const user = userCredential.user;
+
     let userDoc;
 
     // 2. firestore dan kullanıcı verilerini çek
@@ -68,7 +69,6 @@ export const logoutService = async () => {
   try {
     await signOut(auth);
     localStorage.removeItem("user");
-    console.log("Çıkış başarılı");
   } catch (err) {
     console.error("Çıkış yaparken hata:", err);
     throw err;

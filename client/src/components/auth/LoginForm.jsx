@@ -23,7 +23,7 @@ const LoginForm = ({ setShowForgotPassword }) => {
   const onSubmit = async (data) => {
     try {
       setError("");
-      const _user = await userLoginService(data.email, data.password, role);
+      await userLoginService(data.email, data.password, role);
 
       // Rol bazlı yönlendirme
       if (role === "manager") {
