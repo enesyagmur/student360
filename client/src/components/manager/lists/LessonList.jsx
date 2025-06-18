@@ -55,7 +55,12 @@ const LessonList = ({ search, user }) => {
   useEffect(() => {
     const handleDelete = async (lessonId) => {
       try {
-        await dispatch(deleteLessonThunk(lessonId)).unwrap();
+        await dispatch(
+          deleteLessonThunk({
+            lessonId,
+            currentUserId: user.id,
+          })
+        ).unwrap();
       } catch (err) {
         console.error(
           "Ders silinemedi:",
@@ -72,7 +77,7 @@ const LessonList = ({ search, user }) => {
         answer: false,
       }));
     }
-  }, [confirmModal, dispatch]);
+  }, [confirmModal, dispatch, user]);
 
   // Yükleme durumu
   if (loading) {
@@ -123,7 +128,7 @@ const LessonList = ({ search, user }) => {
           <tbody className="divide-y">
             {filteredLessons.map((lesson) => (
               <tr
-                key={lesson.id}
+                key={lesson.lessonId}
                 className="text-text-secondary bg-bg-secondary"
               >
                 <td className="py-4 px-6">
@@ -160,7 +165,7 @@ const LessonList = ({ search, user }) => {
                       onClick={() =>
                         setConfirmModal({
                           open: true,
-                          selectedItemId: lesson.id,
+                          selectedItemId: lesson.lessonId,
                         })
                       }
                       type="danger"

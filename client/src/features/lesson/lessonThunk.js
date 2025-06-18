@@ -1,5 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createLessonService, getLessonsService } from "./lessonService";
+import {
+  createLessonService,
+  deleteLessonService,
+  getLessonsService,
+} from "./lessonService";
 
 export const createLessonThunk = createAsyncThunk(
   "class/createLesson",
@@ -31,10 +35,10 @@ export const deleteLessonThunk = createAsyncThunk(
   "class/deleteLesson",
   async ({ lessonId, currentUserId }, thunkAPI) => {
     try {
-      const result = await createLessonService(lessonId, currentUserId);
+      const result = await deleteLessonService({ lessonId, currentUserId });
       return result;
     } catch (err) {
-      console.error("THUNK | Lesson oluştururken sorun: ", err);
+      console.error("THUNK | Lesson silinirken sorun: ", err);
       return thunkAPI.rejectWithValue(err.message);
     }
   }

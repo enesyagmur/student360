@@ -1,4 +1,11 @@
-import { doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
 export const createLessonService = async ({ lessonData, currentUserId }) => {
@@ -54,5 +61,26 @@ export const getLessonsService = async (currentUserId) => {
     return lessons;
   } catch (err) {
     throw new Error(`SERVICE | Dersleri çekerken sorun: ${err}`);
+  }
+};
+
+export const deleteLessonService = async ({ lessonId, currentUserId }) => {
+  try {
+    if (!lessonId || !currentUserId) {
+      throw new Error(`SERVICE | Dersi silinirken sorun: eksik bilgi`);
+    }
+
+    const userSnapShot = await getDoc(doc(db, "managers", currentUserId));
+    if (!userSnapShot.exists()) {
+      throw new Error(`SERVICE | Dersi silerken sorun: yönetici bulunamadı`);
+    }
+
+    const lessonsDocRef = doc(db, "lessons", lessonId);
+
+    await deleteDoc(lessonsDocRef);
+
+    return lessonId;
+  } catch (err) {
+    throw new Error(`SERVICE | Dersi silinirken sorun: ${err}`);
   }
 };
