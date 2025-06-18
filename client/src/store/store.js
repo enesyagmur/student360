@@ -3,6 +3,7 @@ import managerSlice from "../features/manager/managerSlice";
 import teacherSlice from "../features/teacher/teacherSlice";
 import classSlice from "../features/class/classSlice";
 import lessonSlice from "../features/lesson/lessonSlice";
+import studentSlice from "../features/student/studentSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     teacherState: teacherSlice,
     classState: classSlice,
     lessonState: lessonSlice,
+    studentState: studentSlice,
   },
 });
 
