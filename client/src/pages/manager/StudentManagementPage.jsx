@@ -12,6 +12,7 @@ import {
 import StudentList from "../../components/manager/lists/StudentList";
 import { studentSchema } from "../../lib/validation/studentFormSchema";
 import { getClassesThunk } from "../../features/class/classThunk";
+import { studentAddToClassService } from "../../features/class/classService";
 
 const StudentManagementPage = () => {
   const [search, setSearch] = useState("");
@@ -30,6 +31,7 @@ const StudentManagementPage = () => {
     resolver: yupResolver(studentSchema),
   });
   const grade = watch("grade");
+  const branch = watch("branch");
 
   // LocalStorage'dan kullanıcı bilgisini al
   useEffect(() => {
@@ -70,15 +72,21 @@ const StudentManagementPage = () => {
         console.error("Kullanıcı ID'si bulunamadı");
         return;
       }
+      const selectedClass = classes.find((item) => item.classChar === branch);
 
       const newData = {
         ...data,
         role: "student",
+        classId: selectedClass.id,
+        className: `${grade} - ${branch.toUpperCase()}`,
       };
 
-      await dispatch(
+      const student = await dispatch(
         addNewStudentThunk({ studentData: newData, currentUserId: user.id })
       ).unwrap();
+
+      await studentAddToClassService(student, selectedClass.id, user.id);
+
       reset();
       setShowAddModal(false);
     } catch (err) {

@@ -38,7 +38,5 @@ export const studentSchema = Yup.object({
     .required("Sınıf seçimi zorunludur.")
     .min(5, "Geçerli bir sınıf seçiniz.")
     .max(12, "Geçerli bir sınıf seçiniz."),
-  branch: Yup.string()
-    .nullable()
-    .transform((value) => (value === "" ? null : value)),
+  branch: Yup.string().required("Şube seçimi zorunludur."),
 });

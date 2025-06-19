@@ -29,7 +29,7 @@ const StudentList = ({ search, user }) => {
       }
     };
 
-    if (user?.id && studentList.length === 0) {
+    if (user?.id) {
       takeStudents();
     }
   }, [dispatch, user]);
@@ -160,8 +160,8 @@ const StudentList = ({ search, user }) => {
                 <td className="py-4 px-6">
                   <div className="space-y-1">
                     <div className="font-medium text-text-primary">
-                      {student.grade !== "" && student.branch !== ""
-                        ? student.grade + "-" + student.branch
+                      {student.grade !== ""
+                        ? student.className
                         : "Sınıf atanmamış"}
                     </div>
                     <div className="text-sm">Öğrenci</div>

@@ -1,4 +1,11 @@
-import { doc, getDoc, collection, addDoc, getDocs } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
 export const createClassService = async (currentUserId, classData) => {
@@ -86,5 +93,49 @@ export const getClassesService = async (currentUserId) => {
   } catch (err) {
     console.error("SERVICE | Sınıflar getirilirken sorun: ", err);
     throw new Error("SERVICE | Sınıflar getirilirken sorun: ", err);
+  }
+};
+
+export const studentAddToClassService = async (
+  student,
+  classId,
+  currentUserId
+) => {
+  try {
+    if (!currentUserId) {
+      throw new Error(
+        "SERVICE | Öğrenciyi sınıfa eklerken sorun: userId eksik"
+      );
+    }
+
+    if (!classId) {
+      throw new Error(
+        "SERVICE | Öğrenciyi sınıfa eklerken sorun: classId eksik"
+      );
+    }
+
+    const classDocRef = doc(db, "classes", classId);
+    const classSnapShot = await getDoc(classDocRef);
+    if (!classSnapShot.exists()) {
+      throw new Error(
+        "SERVICE | Öğrenciyi sınıfa eklerken sorun: sınıf bulunamadı"
+      );
+    }
+
+    const classData = classSnapShot.data();
+
+    const alreadyExists = classData.students.some((s) => s.id === student.id);
+    if (alreadyExists) {
+      throw new Error(
+        "SERVICE | Öğrenciyi sınıfa eklerken sorun: kullanıcı sınıfa daha önce eklenmiş"
+      );
+    }
+
+    await updateDoc(classDocRef, {
+      students: [...classData.students, student],
+      currentStudentNumber: (classData.currentStudentNumber || 0) + 1,
+    });
+  } catch (err) {
+    throw new Error(`SERVICE | Öğrenciyi sınıfa eklerken sorun: ${err}`);
   }
 };
