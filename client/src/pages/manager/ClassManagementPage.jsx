@@ -43,7 +43,6 @@ const ClassManagementPage = () => {
       const newData = {
         ...data,
         className: `${data.classNumber}-${data.classChar.toUpperCase()}`,
-        currentStudents: 0,
       };
 
       const classData = await dispatch(

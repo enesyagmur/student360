@@ -21,26 +21,17 @@ const TeacherList = ({ search, user }) => {
   useEffect(() => {
     const takeTeachers = async () => {
       try {
-        if (!user) {
-          console.error("Kullanıcı bilgisi bulunamadı");
-          return;
-        }
-
-        if (!user.id || !user.token) {
-          console.error("Kullanıcı ID veya token bulunamadı");
-          return;
-        }
-
+        if (!user?.id) return;
         await dispatch(fetchTeachersThunk(user.id)).unwrap();
       } catch (err) {
         console.error("TEACHERLIST | Öğretmenleri çekerken sorun ", err);
       }
     };
 
-    if (teacherList.length === 0) {
+    if (user?.id && teacherList.length === 0) {
       takeTeachers();
     }
-  }, [dispatch, teacherList, user]);
+  }, [dispatch, user]);
 
   // yardımcı fonksiyon
   const getPositionName = (position) => {

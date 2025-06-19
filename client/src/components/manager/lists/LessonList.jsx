@@ -23,26 +23,17 @@ const LessonList = ({ search, user }) => {
   useEffect(() => {
     const takeLessons = async () => {
       try {
-        if (!user) {
-          console.error("Kullanıcı bilgisi bulunamadı");
-          return;
-        }
-
-        if (!user.id || !user.token) {
-          console.error("Kullanıcı ID veya token bulunamadı");
-          return;
-        }
-
+        if (!user?.id) return;
         await dispatch(fetchLessonsThunk(user.id)).unwrap();
       } catch (err) {
         console.error("LESSONLIST | Dersleri çekerken sorun: ", err);
       }
     };
 
-    if (lessonList.length === 0) {
+    if (user?.id && lessonList.length === 0) {
       takeLessons();
     }
-  }, [dispatch, user, lessonList]);
+  }, [dispatch, user]);
 
   const filteredLessons = Array.isArray(lessonList)
     ? lessonList.filter((lesson) => {

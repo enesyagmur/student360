@@ -22,26 +22,17 @@ const ManagerList = ({ search, user }) => {
   useEffect(() => {
     const takeManagers = async () => {
       try {
-        if (!user) {
-          console.error("Kullanıcı bilgisi bulunamadı");
-          return;
-        }
-
-        if (!user.id || !user.token) {
-          console.error("Kullanıcı ID veya token bulunamadı");
-          return;
-        }
-
+        if (!user?.id) return;
         await dispatch(fetchManagersThunk(user.id)).unwrap();
       } catch (err) {
         console.error("MANAGERLIST | Yöneticileri çekerken sorun ", err);
       }
     };
 
-    if (managerList.length === 0) {
+    if (user?.id && managerList.length === 0) {
       takeManagers();
     }
-  }, [dispatch, user, managerList]);
+  }, [dispatch, user]);
 
   const filteredManagers = Array.isArray(managerList)
     ? managerList.filter((manager) => {

@@ -10,28 +10,16 @@ const ClassList = ({ search, user }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchClasses = async () => {
-      try {
-        if (!user?.uid) {
-          console.warn("Kullanıcı bilgisi bulunamadı");
-          return;
-        }
-        await dispatch(getClassesThunk(user.uid)).unwrap();
-      } catch (error) {
-        console.error("Sınıflar çekilirken hata:", error);
-      }
-    };
-
-    if (classes.length === 0 && user?.uid) {
-      fetchClasses();
+    if (user?.id) {
+      dispatch(getClassesThunk(user.id));
     }
-  }, [classes, dispatch, user?.uid]);
+  }, [dispatch, user?.id]);
 
   useEffect(() => {
     if (search) {
-      const filtered = classes.filter((classItem) => {
-        return classItem.className.toLowerCase().includes(search.toLowerCase());
-      });
+      const filtered = classes.filter((classItem) =>
+        classItem.className.toLowerCase().includes(search.toLowerCase())
+      );
       setFilteredClasses(filtered);
     } else {
       setFilteredClasses(classes);
@@ -57,7 +45,7 @@ const ClassList = ({ search, user }) => {
   if (error) {
     return (
       <div className="bg-bg-tertiary rounded-lg p-6 flex flex-col items-center justify-center min-h-[400px]">
-        <AlertCircle className="w-8 h-8 text-red-500 mb-4" />
+        <AlertCircle className="overflow-y-autoed-500 mb-4" />
         <p className="text-text-secondary mb-2">Bir hata oluştu</p>
         <p className="text-text-tertiary text-sm">{error}</p>
       </div>
@@ -65,7 +53,7 @@ const ClassList = ({ search, user }) => {
   }
 
   return (
-    <div className="bg-bg-tertiary h-[500px] rounded-lg p-6">
+    <div className="bg-bg-tertiary h-[500px] rounded-lg p-6 overflow-y-auto">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>

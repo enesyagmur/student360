@@ -11,31 +11,58 @@ import {
 } from "../../features/student/studentThunk";
 import StudentList from "../../components/manager/lists/StudentList";
 import { studentSchema } from "../../lib/validation/studentFormSchema";
+import { getClassesThunk } from "../../features/class/classThunk";
 
 const StudentManagementPage = () => {
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [user, setUser] = useState(null);
   const dispatch = useDispatch();
+  const [classes, setClasses] = useState([]);
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(studentSchema),
   });
+  const grade = watch("grade");
 
   // LocalStorage'dan kullanıcı bilgisini al
   useEffect(() => {
     const userData = getCurrentUser();
     if (userData) {
       setUser(userData);
-      // Öğrencileri getir
+
       dispatch(fetchStudentsThunk(userData.id));
     }
   }, [dispatch]);
+
+  //sınıf seçimine göre uygun olan şubeleri alma
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const result = await dispatch(getClassesThunk(user.id)).unwrap();
+
+        if (result) {
+          const filteredClasses = result
+            .filter((item) => item.classNumber === Number(grade))
+            .filter((element) => element.currentStudentNumber < 25)
+            .sort((a, b) => a.classChar.localeCompare(b.classChar));
+          setClasses(filteredClasses);
+        }
+      } catch (err) {
+        throw new Error(`Sınıfları çekerken sorun: ${err}`);
+      }
+    };
+
+    if (grade !== 0 && user && user.id) {
+      fetchClasses();
+    }
+  }, [dispatch, user, grade]);
 
   const onSubmit = async (data) => {
     try {
@@ -289,12 +316,16 @@ const StudentManagementPage = () => {
                   </label>
                   <select
                     {...register("branch")}
-                    className="w-full bg-bg-secondary rounded-lg px-4 py-2.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 border border-bg-tertiary"
+                    className="w-full bg-bg-secondary capitalize rounded-lg px-4 py-2.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 border border-bg-tertiary"
                   >
-                    <option value="">Şube Seçiniz (Opsiyonel)</option>
-                    {["A", "B", "C", "D", "E", "F"].map((branch) => (
-                      <option key={branch} value={branch}>
-                        {branch} Şubesi
+                    <option value="">Şube Seçiniz</option>
+                    {classes.map((item) => (
+                      <option
+                        className="capitalize"
+                        key={item.id}
+                        value={item.classChar}
+                      >
+                        {item.classChar} Şubesi
                       </option>
                     ))}
                   </select>

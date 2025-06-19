@@ -22,26 +22,17 @@ const StudentList = ({ search, user }) => {
   useEffect(() => {
     const takeStudents = async () => {
       try {
-        if (!user) {
-          console.error("Kullanıcı bilgisi bulunamadı");
-          return;
-        }
-
-        if (!user.id || !user.token) {
-          console.error("Kullanıcı ID veya token bulunamadı");
-          return;
-        }
-
+        if (!user?.id) return;
         await dispatch(fetchStudentsThunk(user.id)).unwrap();
       } catch (err) {
         console.error("STUDENTLIST | Öğrencileri çekerken sorun ", err);
       }
     };
 
-    if (studentList.length === 0) {
+    if (user?.id && studentList.length === 0) {
       takeStudents();
     }
-  }, [dispatch, user, studentList]);
+  }, [dispatch, user]);
 
   const filteredStudents = Array.isArray(studentList)
     ? studentList.filter((student) => {

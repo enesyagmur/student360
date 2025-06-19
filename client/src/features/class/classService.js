@@ -28,22 +28,28 @@ export const createClassService = async (currentUserId, classData) => {
     }
 
     const classesCollectionRef = collection(db, "classes");
+    const newClassDocRef = doc(classesCollectionRef);
 
     const newClassData = {
+      id: newClassDocRef.id,
       ...classData,
       createdAt: new Date().toISOString(),
-      currentStudents: 0,
-      managerId: currentUserId,
+      currentStudentNumber: 0,
+      students: [],
+      schedule: {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+        sunday: [],
+      },
     };
 
-    const docRef = await addDoc(classesCollectionRef, newClassData);
+    await addDoc(classesCollectionRef, newClassData);
 
-    const finalClassData = {
-      ...newClassData,
-      id: docRef.id,
-    };
-
-    return finalClassData;
+    return newClassData;
   } catch (err) {
     console.error("SERVICE | Sınıf oluştururken sorun: ", err);
     throw err;
