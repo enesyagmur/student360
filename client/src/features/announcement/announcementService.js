@@ -7,6 +7,7 @@ import {
   query,
   where,
   setDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 export const createAnnouncementService = async (
@@ -17,6 +18,10 @@ export const createAnnouncementService = async (
   currentUserId
 ) => {
   try {
+    if (!currentUserId) {
+      throw new Error(`SERVICE | Duyurular getirilirken sorun: kullanıcı Id`);
+    }
+
     const userDocRef = doc(db, "managers", currentUserId);
     const userSnapDoc = await getDoc(userDocRef);
 
@@ -96,5 +101,30 @@ export const fetchAnnouncementsService = async (userId, userRole) => {
     return announcements;
   } catch (err) {
     throw new Error(`SERVICE | Duyurular getirilirken sorun: ${err}`);
+  }
+};
+
+export const deleteAnnouncementService = async (announcementId, managerId) => {
+  try {
+    if (!managerId) {
+      throw new Error(`SERVICE | Duyuru silinirken sorun: Yönetici Id eksik`);
+    }
+    const userDocRef = doc(db, "managers", managerId);
+    const userSnapDoc = await getDoc(userDocRef);
+
+    if (!userSnapDoc.exists()) {
+      throw new Error(`SERVICE | Duyuru silinirken sorun: Yönetici bulunamadı`);
+    }
+
+    const announcementDocRef = doc(db, "announcements", announcementId);
+    const announcementSnapShot = await getDoc(announcementDocRef);
+
+    if (!announcementSnapShot.exists()) {
+      throw new Error(`SERVICE | Duyuru silinirken sorun: Duyuru Bulunamadı`);
+    }
+
+    await deleteDoc(announcementDocRef);
+  } catch (err) {
+    throw new Error(`SERVICE | Duyuru silinirken sorun: ${err}`);
   }
 };

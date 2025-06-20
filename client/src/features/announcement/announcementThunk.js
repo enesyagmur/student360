@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createAnnouncementService,
+  deleteAnnouncementService,
   fetchAnnouncementsService,
 } from "./announcementService";
 
@@ -35,6 +36,22 @@ export const getAnnouncementsThunk = createAsyncThunk(
       const result = await fetchAnnouncementsService(userId, userRole);
 
       return result;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
+export const deleteAnnouncementThunk = createAsyncThunk(
+  "announcement/deleteAnnouncement",
+  async ({ announcementId, managerId }, thunkAPI) => {
+    try {
+      if (!announcementId || !managerId) {
+        throw new Error(`THUNK | Duyuruyu silerken sorun: bilgiler eksik`);
+      }
+
+      await deleteAnnouncementService(announcementId, managerId);
+      return announcementId;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }

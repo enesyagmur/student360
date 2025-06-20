@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Loader2, AlertCircle, Megaphone, Trash2 } from "lucide-react";
-import { getAnnouncementsThunk } from "../../../features/announcement/announcementThunk";
+import {
+  deleteAnnouncementThunk,
+  getAnnouncementsThunk,
+} from "../../../features/announcement/announcementThunk";
 
 const AnnouncementList = ({ search, user }) => {
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
@@ -38,9 +41,16 @@ const AnnouncementList = ({ search, user }) => {
     }
   }, [search, announcements]);
 
-  const handleDelete = (announcementId) => {
-    // Silme işlemi için fonksiyon
-    console.log("Sil:", announcementId);
+  const handleDelete = async (announcementId) => {
+    try {
+      if (!announcementId || !user?.id) {
+        throw new Error("LIST | Silme işlemi için gerekli bilgiler eksik");
+      }
+      const data = { announcementId: announcementId, managerId: user.id };
+      await dispatch(deleteAnnouncementThunk(data)).unwrap();
+    } catch (err) {
+      throw new Error(err);
+    }
   };
 
   if (loading) {

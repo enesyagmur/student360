@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   getAnnouncementsThunk,
   createAnnouncementThunk,
+  deleteAnnouncementThunk,
 } from "./announcementThunk";
 
 const initialState = {
@@ -40,6 +41,22 @@ const announcementSlice = createSlice({
         state.announcementList = action.payload;
       })
       .addCase(getAnnouncementsThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // duyuru silme
+      .addCase(deleteAnnouncementThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAnnouncementThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.announcementList = state.announcementList.filter(
+          (item) => item.id !== action.payload
+        );
+      })
+      .addCase(deleteAnnouncementThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
