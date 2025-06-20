@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Loader2, AlertCircle, Megaphone, Trash2 } from "lucide-react";
+import { getAnnouncementsThunk } from "../../../features/announcement/announcementThunk";
 
 const AnnouncementList = ({ search, user }) => {
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
@@ -10,6 +11,21 @@ const AnnouncementList = ({ search, user }) => {
     loading = false,
     error = null,
   } = announcementState;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const takeAnnouncements = async () => {
+      try {
+        const data = { userRole: user.role, userId: user.id };
+        await dispatch(getAnnouncementsThunk(data)).unwrap();
+      } catch (err) {
+        throw new Error(err);
+      }
+    };
+    if (user?.id && user?.role) {
+      takeAnnouncements();
+    }
+  }, [dispatch, user?.id, user?.role]);
 
   useEffect(() => {
     if (search) {
@@ -48,7 +64,7 @@ const AnnouncementList = ({ search, user }) => {
 
   return (
     <div className="bg-bg-tertiary min-h-[500px] rounded-lg p-2 sm:p-6 overflow-y-auto">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 overflow-y-auto h-[450px]">
         {filteredAnnouncements.map((item) => (
           <div
             key={item.id}

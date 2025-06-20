@@ -55,7 +55,7 @@ export const fetchAnnouncementsService = async (userId, userRole) => {
 
     let userDocRef;
     if (userRole === "manager") {
-      userDocRef = doc(db, "manager", userId);
+      userDocRef = doc(db, "managers", userId);
     } else if (userRole === "teacher") {
       userDocRef = doc(db, "teachers", userId);
     } else if (userRole === "student") {
@@ -75,12 +75,12 @@ export const fetchAnnouncementsService = async (userId, userRole) => {
     } else if (userRole === "teacher") {
       announcementsQuery = query(
         collection(db, "announcements"),
-        where("targets", "in", ["everybody", "teacher"])
+        where("target", "in", ["everybody", "teacher"])
       );
     } else if (userRole === "student") {
       announcementsQuery = query(
         collection(db, "announcements"),
-        where("targets", "in", ["everybody", "student"])
+        where("target", "in", ["everybody", "student"])
       );
     }
     const announcementsSnap = await getDocs(announcementsQuery);

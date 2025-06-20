@@ -24,7 +24,7 @@ export const createAnnouncementThunk = createAsyncThunk(
 
 export const getAnnouncementsThunk = createAsyncThunk(
   "announcement/getAnnouncements",
-  async ({ announcementData, userId, userRole }, thunkAPI) => {
+  async ({ userId, userRole }, thunkAPI) => {
     try {
       if (!userId || !userRole) {
         throw new Error(
@@ -32,15 +32,11 @@ export const getAnnouncementsThunk = createAsyncThunk(
         );
       }
 
-      const result = await fetchAnnouncementsService(
-        announcementData,
-        userId,
-        userRole
-      );
+      const result = await fetchAnnouncementsService(userId, userRole);
 
       return result;
     } catch (err) {
-      thunkAPI.rejectWithValue(err.message);
+      return thunkAPI.rejectWithValue(err.message);
     }
   }
 );

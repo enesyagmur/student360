@@ -32,8 +32,6 @@ const AnnouncementManagementPage = () => {
     fetchUser();
   }, []);
 
-  console.log(user);
-
   const onSubmit = async (data) => {
     try {
       if (!user?.id) {
