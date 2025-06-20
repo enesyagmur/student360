@@ -4,6 +4,7 @@ import teacherSlice from "../features/teacher/teacherSlice";
 import classSlice from "../features/class/classSlice";
 import lessonSlice from "../features/lesson/lessonSlice";
 import studentSlice from "../features/student/studentSlice";
+import announcementSlice from "../features/announcement/announcementSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     classState: classSlice,
     lessonState: lessonSlice,
     studentState: studentSlice,
+    announcementState: announcementSlice,
   },
 });
 

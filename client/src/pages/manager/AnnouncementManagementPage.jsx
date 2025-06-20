@@ -1,62 +1,63 @@
 import React, { useEffect, useState } from "react";
 import { Search, Plus, X } from "lucide-react";
 import AnnouncementList from "../../components/manager/lists/AnnouncementList";
+import { getCurrentUser } from "../../features/auth/authService";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { announcementSchema } from "../../lib/validation/announcementSchema";
-
-// Sınıf seviyeleri (5-12. sınıf)
-const gradeLevels = [
-  { value: "5", label: "5. Sınıf" },
-  { value: "6", label: "6. Sınıf" },
-  { value: "7", label: "7. Sınıf" },
-  { value: "8", label: "8. Sınıf" },
-  { value: "9", label: "9. Sınıf" },
-  { value: "10", label: "10. Sınıf" },
-  { value: "11", label: "11. Sınıf" },
-  { value: "12", label: "12. Sınıf" },
-];
-
-const targetOptions = [
-  { value: "everyone", label: "Herkes" },
-  { value: "teachers", label: "Tüm Öğretmenler" },
-  { value: "students", label: "Tüm Öğrenciler" },
-  { value: "class", label: "Belirli Sınıf(lar)" },
-];
+import { useDispatch } from "react-redux";
+import { createAnnouncementThunk } from "../../features/announcement/announcementThunk";
 
 const AnnouncementManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
+  const [user, setUser] = useState();
+  const dispatch = useDispatch();
 
   const {
     register,
     handleSubmit,
     reset,
-    watch,
-    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(announcementSchema),
   });
 
-  const selectedTargets = watch("targets", []);
-  const selectedGrades = watch("classes", []);
-
-  const onSubmit = (data) => {
-    // Burada duyuru ekleme işlemi yapılacak
-    reset();
-    setShowAddModal(false);
-    console.log(data);
-  };
-
-  // "Herkes" seçilirse diğer seçimleri temizle
   useEffect(() => {
-    if (selectedTargets.includes("everyone")) {
-      setValue("targets", ["everyone"]);
-      setValue("classes", []);
+    const fetchUser = async () => {
+      const currentUser = await getCurrentUser();
+      if (currentUser) setUser(currentUser);
+    };
+    fetchUser();
+  }, []);
+
+  const onSubmit = async (data) => {
+    try {
+      if (!user?.id) {
+        throw new Error("PAGE | Kullanıcı id bulunmuyor");
+      }
+
+      const title = data.title;
+      const content = data.content;
+      const userId = user.id;
+      const target = data.target;
+
+      await dispatch(
+        createAnnouncementThunk({
+          title,
+          content,
+          target,
+          currentUserId: userId,
+        })
+      ).unwrap();
+
+      reset();
+      setShowAddModal(false);
+    } catch (err) {
+      throw new Error(`PAGE | duyuru eklerken sorun: ${err}`);
     }
-  }, [selectedTargets, setValue]);
+  };
 
   return (
     <div className="flex-1 w-11/12 h-full bg-bg-primary text-text-primary">
@@ -100,7 +101,7 @@ const AnnouncementManagementPage = () => {
       </div>
 
       {/* Duyuru Listesi */}
-      {/* <AnnouncementList search={search} /> */}
+      {/* <AnnouncementList user={user} search={search} /> */}
 
       {/* Yeni Duyuru Ekleme Modalı */}
       {showAddModal && (
@@ -162,63 +163,26 @@ const AnnouncementManagementPage = () => {
               {/* Kimlere Gösterilsin */}
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-1">
-                  Kimlere Gösterilsin?
+                  Kimlere Gösterilsin
                 </label>
-                <div className="flex flex-wrap gap-4">
-                  {targetOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex items-center gap-2 text-text-primary"
-                    >
-                      <input
-                        type="checkbox"
-                        value={option.value}
-                        {...register("targets")}
-                        className="accent-color-accent"
-                        disabled={
-                          selectedTargets.includes("everyone") &&
-                          option.value !== "everyone"
-                        }
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-                {errors.targets && (
+                <select
+                  {...register("target")}
+                  className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-color-accent"
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    Seçiniz
+                  </option>
+                  <option value="everyone">Herkes</option>
+                  <option value="teachers">Öğretmenler</option>
+                  <option value="students">Öğrenciler</option>
+                </select>
+                {errors.target && (
                   <p className="text-color-danger text-sm mt-1">
-                    {errors.targets.message}
+                    {errors.target.message}
                   </p>
                 )}
               </div>
-              {/* Belirli Sınıflar Bölümü */}
-              {selectedTargets.includes("class") && (
-                <section className="mt-4 p-4 bg-bg-secondary rounded-lg shadow-md">
-                  <h4 className="text-lg font-semibold text-text-primary mb-2">
-                    Sınıf Seçimi
-                  </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {gradeLevels.map((grade) => (
-                      <label
-                        key={grade.value}
-                        className="flex items-center gap-2 text-text-primary"
-                      >
-                        <input
-                          type="checkbox"
-                          value={grade.value}
-                          {...register("classes")}
-                          className="accent-color-accent"
-                        />
-                        <span>{grade.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {errors.classes && (
-                    <p className="text-color-danger text-sm mt-1">
-                      {errors.classes.message}
-                    </p>
-                  )}
-                </section>
-              )}
             </div>
             <div className="flex gap-3 mt-6">
               <button

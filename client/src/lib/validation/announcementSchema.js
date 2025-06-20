@@ -11,11 +11,8 @@ export const announcementSchema = yup.object().shape({
     .required("İçerik zorunludur")
     .min(10, "İçerik en az 10 karakter olmalıdır")
     .max(1000, "İçerik en fazla 1000 karakter olabilir"),
-  targets: yup
-    .array()
-    .of(yup.string())
-    .min(1, "En az bir hedef seçmelisiniz")
-    .required("Duyurunun kimlere gösterileceğini seçmelisiniz"),
-  // Eğer sınıf seçimi gerekiyorsa:
-  classes: yup.array().of(yup.string()),
+  target: yup
+    .string()
+    .oneOf(["everyone", "teachers", "students"], "Geçersiz hedef")
+    .required("Hedef seçimi zorunlu"),
 });
