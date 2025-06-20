@@ -47,81 +47,44 @@ const AnnouncementList = ({ search, user }) => {
   }
 
   return (
-    <div className="bg-bg-tertiary h-[500px] rounded-lg p-6 overflow-y-auto">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-bg-quaternary">
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
-                Başlık
-              </th>
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
-                Açıklama
-              </th>
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
-                Oluşturan
-              </th>
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
-                Tarih
-              </th>
+    <div className="bg-bg-tertiary min-h-[500px] rounded-lg p-2 sm:p-6 overflow-y-auto">
+      <div className="flex flex-col gap-4">
+        {filteredAnnouncements.map((item) => (
+          <div
+            key={item.id}
+            className="w-full rounded-lg shadow-md bg-bg-secondary p-4 flex flex-col justify-between transition-all"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+                <Megaphone className="w-5 h-5 text-yellow-600" />
+              </div>
+              <div>
+                <p className="font-medium text-text-primary text-lg">
+                  {item.title}
+                </p>
+                <span className="inline-flex capitalize items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-1">
+                  {item.creatorName}
+                </span>
+              </div>
+            </div>
+            <p className="text-text-tertiary mb-4">{item.content}</p>
+            <div className="flex justify-between items-center mt-auto">
+              <p className="text-text-primary text-xs">
+                {item.createdAt
+                  ? new Date(item.createdAt).toLocaleDateString("tr-TR")
+                  : "Tarih Yok"}
+              </p>
               {user?.position === "principal" && (
-                <th className="text-right py-4 px-4 text-text-secondary font-medium">
-                  İşlemler
-                </th>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="p-2 hover:bg-bg-secondary rounded-lg transition-colors"
+                >
+                  <Trash2 className="w-5 h-5 text-red-500" />
+                </button>
               )}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAnnouncements.map((item) => (
-              <tr
-                key={item.id}
-                className="border-b border-bg-quaternary hover:bg-bg-secondary/50 transition-colors"
-              >
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                      <Megaphone className="w-5 h-5 text-yellow-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-text-primary">
-                        {item.title}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="py-4 px-4">
-                  <p className="text-text-tertiary line-clamp-2">
-                    {item.description}
-                  </p>
-                </td>
-                <td className="py-4 px-4">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                    {item.createdBy}
-                  </span>
-                </td>
-                <td className="py-4 px-4">
-                  <p className="text-text-primary">
-                    {item.createdAt
-                      ? new Date(item.createdAt).toLocaleDateString("tr-TR")
-                      : "Tarih Yok"}
-                  </p>
-                </td>
-                {user?.position === "principal" && (
-                  <td className="py-4 px-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="p-2 hover:bg-bg-secondary rounded-lg transition-colors"
-                      >
-                        <Trash2 className="w-5 h-5 text-red-500" />
-                      </button>
-                    </div>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </div>
+          </div>
+        ))}
       </div>
       {filteredAnnouncements.length === 0 && !loading && !error && (
         <div className="text-center py-8">

@@ -13,6 +13,7 @@ export const createAnnouncementService = async (
   title,
   content,
   target,
+  creatorName,
   currentUserId
 ) => {
   try {
@@ -32,6 +33,7 @@ export const createAnnouncementService = async (
       title: title,
       content: content,
       target: target,
+      creatorName: creatorName,
       createdBy: currentUserId,
       createdAt: new Date().toISOString(),
     };

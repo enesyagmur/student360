@@ -32,6 +32,8 @@ const AnnouncementManagementPage = () => {
     fetchUser();
   }, []);
 
+  console.log(user);
+
   const onSubmit = async (data) => {
     try {
       if (!user?.id) {
@@ -40,7 +42,6 @@ const AnnouncementManagementPage = () => {
 
       const title = data.title;
       const content = data.content;
-      const userId = user.id;
       const target = data.target;
 
       await dispatch(
@@ -48,7 +49,8 @@ const AnnouncementManagementPage = () => {
           title,
           content,
           target,
-          currentUserId: userId,
+          creatorName: user.fullName,
+          currentUserId: user.id,
         })
       ).unwrap();
 
@@ -101,7 +103,7 @@ const AnnouncementManagementPage = () => {
       </div>
 
       {/* Duyuru Listesi */}
-      {/* <AnnouncementList user={user} search={search} /> */}
+      <AnnouncementList user={user} search={search} />
 
       {/* Yeni Duyuru Ekleme Modalı */}
       {showAddModal && (

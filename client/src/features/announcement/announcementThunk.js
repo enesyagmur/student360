@@ -6,12 +6,13 @@ import {
 
 export const createAnnouncementThunk = createAsyncThunk(
   "announcement/create",
-  async ({ title, content, target, currentUserId }, thunkAPI) => {
+  async ({ title, content, target, creatorName, currentUserId }, thunkAPI) => {
     try {
       const response = await createAnnouncementService(
         title,
         content,
         target,
+        creatorName,
         currentUserId
       );
       return response;
