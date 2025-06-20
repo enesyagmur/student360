@@ -5,7 +5,6 @@ import ManagerDashboardPage from "./pages/manager/ManagerDashboardPage";
 import ExamManagementPage from "./pages/manager/ExamManagementPage";
 import LessonManagementPage from "./pages/manager/LessonManagementPage";
 import ClassManagementPage from "./pages/manager/ClassManagementPage";
-import AssigmentPage from "./pages/manager/AssigmentPage";
 import ManagerManagementPage from "./pages/manager/ManagerManagementPage";
 import StudentManagementPage from "./pages/manager/StudentManagementPage";
 import ScheduleManagementPage from "./pages/manager/ScheduleManagementPage";
@@ -28,7 +27,7 @@ function App() {
             <Route path="exams" element={<ExamManagementPage />} />
             <Route path="lessons" element={<LessonManagementPage />} />
             <Route path="classes" element={<ClassManagementPage />} />
-            <Route path="assigments" element={<AssigmentPage />} />
+
             <Route path="managers" element={<ManagerManagementPage />} />
 
             <Route path="students" element={<StudentManagementPage />} />

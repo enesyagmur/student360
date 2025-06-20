@@ -14,7 +14,6 @@ import {
   FileText,
   Bell,
   Settings,
-  Send,
 } from "lucide-react";
 
 const ManagerLayout = () => {
@@ -49,11 +48,7 @@ const ManagerLayout = () => {
       icon: BookOpen,
       url: "/manager/lessons",
     },
-    {
-      label: "Atamalar",
-      icon: Send,
-      url: "/manager/assigments",
-    },
+
     {
       label: "Program",
       icon: Calendar,
