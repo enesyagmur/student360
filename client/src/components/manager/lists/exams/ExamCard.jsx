@@ -22,7 +22,7 @@ const ExamCard = ({ exam, user }) => {
       <div className="p-6 space-y-4">
         {/* Başlık ve durum */}
         <div className="flex items-start justify-between gap-3">
-          <h2 className="text-xl font-bold text-text-primary leading-tight flex-1 min-w-0">
+          <h2 className="text-xl md:text-2xl capitalize font-bold text-text-primary leading-tight flex-1 min-w-0">
             {exam.title}
           </h2>
           <div className="flex items-center gap-2 flex-shrink-0">
