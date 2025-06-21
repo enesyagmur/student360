@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { classSchema } from "../../lib/validation/classSchema";
 import { createClassThunk } from "../../features/class/classThunk";
-import ClassList from "../../components/manager/lists/ClassList";
+import ClassList from "../../components/manager/lists/classes/ClassList";
 import PageHeader from "../../components/ui/pageHeader";
 import { getCurrentUser } from "../../features/auth/authService";
 

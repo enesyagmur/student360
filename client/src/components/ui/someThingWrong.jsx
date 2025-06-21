@@ -4,7 +4,7 @@ import { AlertCircle } from "lucide-react";
 const SomeThingWrong = ({ err }) => {
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center p-4"
+      className="flex items-center justify-center h-full"
       style={{ backgroundColor: "var(--color-bg-primary)" }}
     >
       <div

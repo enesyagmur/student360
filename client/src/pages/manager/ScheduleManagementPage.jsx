@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import ScheduleList from "../../components/manager/lists/ScheduleList";
+import ScheduleList from "../../components/manager/lists/schedules/ScheduleList";
 import Button from "../../components/ui/button";
 import { useSelector, useDispatch } from "react-redux";
 import { getClassesThunk } from "../../features/class/classThunk";

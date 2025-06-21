@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Search, Plus, X } from "lucide-react";
-import AnnouncementList from "../../components/manager/lists/AnnouncementList";
+import AnnouncementList from "../../components/manager/lists/announcements/AnnouncementList";
 import { getCurrentUser } from "../../features/auth/authService";
 
 import { useForm } from "react-hook-form";

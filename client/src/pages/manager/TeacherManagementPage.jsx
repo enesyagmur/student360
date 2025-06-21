@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Search, Plus, X } from "lucide-react";
-import TeacherList from "../../components/manager/lists/TeacherList";
+import TeacherList from "../../components/manager/lists/teachers/TeacherList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { teacherSchema } from "../../lib/validation/teacherFormSchema";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { addNewTeacherThunk } from "../../features/teacher/teacherThunk";
+import {
+  addNewTeacherThunk,
+  fetchTeachersThunk,
+} from "../../features/teacher/teacherThunk";
 import Button from "../../components/ui/button";
 import { getCurrentUser } from "../../features/auth/authService";
+import PageHeader from "../../components/ui/pageHeader";
 
 const TeacherManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -50,8 +54,7 @@ const TeacherManagementPage = () => {
         setShowAddModal(false);
         // Yeni öğretmen eklendikten sonra listeyi güncelle
         dispatch(
-          fetchTeachersByRoleThunk({
-            role: "teacher",
+          fetchTeachersThunk({
             currentUserId: user.id,
           })
         );
@@ -67,48 +70,12 @@ const TeacherManagementPage = () => {
   return (
     <div className="flex-1 w-11/12 h-full bg-bg-primary text-text-primary">
       {/* Header */}
-      <div className="bg-bg-tertiary border-b border-bg-quaternary p-6 my-4 rounded-lg">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          {/* Left side - Title and description */}
-          <div>
-            <h1 className="text-2xl font-semibold mb-2">Öğretmenler</h1>
-            <p className="text-slate-400">
-              Öğretmenleri görüntüleyin ve yönetin
-            </p>
-          </div>
-
-          {/* Right side - Search and Add Button */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full lg:w-auto">
-            {/* Search */}
-            <div className="relative flex-1 lg:flex-none lg:w-80">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Öğretmen ara..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-bg-secondary border border-bg-tertiary rounded-lg pl-10 pr-4 py-3 text-text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              <X
-                className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-text-tertiary w-5 h-5 cursor-pointer ${
-                  search !== "" ? "flex" : "hidden"
-                }`}
-                onClick={() => setSearch("")}
-              />
-            </div>
-
-            {/* Add Button */}
-            <Button
-              onClick={() => setShowAddModal(true)}
-              type={"primary"}
-              size={"lg"}
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Yeni Öğretmen Ekle
-            </Button>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title={"Öğretmen Yönetimi"}
+        search={search}
+        setSearch={setSearch}
+        setShowAddModal={setShowAddModal}
+      />
 
       {/* Teacher List */}
       <TeacherList search={search} user={user} />

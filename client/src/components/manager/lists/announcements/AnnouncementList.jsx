@@ -4,7 +4,10 @@ import { Loader2, AlertCircle, Megaphone, Trash2 } from "lucide-react";
 import {
   deleteAnnouncementThunk,
   getAnnouncementsThunk,
-} from "../../../features/announcement/announcementThunk";
+} from "../../../../features/announcement/announcementThunk";
+import Loading from "../../../ui/loading";
+import SomeThingWrong from "../../../ui/someThingWrong";
+import NoData from "../../../ui/noData";
 
 const AnnouncementList = ({ search, user }) => {
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
@@ -53,23 +56,18 @@ const AnnouncementList = ({ search, user }) => {
     }
   };
 
+  // Loading durumu
   if (loading) {
-    return (
-      <div className="bg-bg-tertiary rounded-lg p-6 flex flex-col items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-4" />
-        <p className="text-text-secondary">Duyurular yükleniyor...</p>
-      </div>
-    );
+    return <Loading />;
   }
 
+  // Error durumu
   if (error) {
-    return (
-      <div className="bg-bg-tertiary rounded-lg p-6 flex flex-col items-center justify-center min-h-[400px]">
-        <AlertCircle className="text-red-500 mb-4" />
-        <p className="text-text-secondary mb-2">Bir hata oluştu</p>
-        <p className="text-text-tertiary text-sm">{error}</p>
-      </div>
-    );
+    return <SomeThingWrong err={error} />;
+  }
+
+  if (filteredAnnouncements.length === 0 && !loading && !error) {
+    return <NoData />;
   }
 
   return (
@@ -112,11 +110,6 @@ const AnnouncementList = ({ search, user }) => {
           </div>
         ))}
       </div>
-      {filteredAnnouncements.length === 0 && !loading && !error && (
-        <div className="text-center py-8">
-          <p className="text-text-tertiary">Henüz duyuru bulunmamaktadır.</p>
-        </div>
-      )}
     </div>
   );
 };

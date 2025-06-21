@@ -3,7 +3,7 @@ import React from "react";
 const Loading = () => {
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center"
+      className="flex items-center justify-center h-full"
       style={{ backgroundColor: "var(--color-bg-primary)" }}
     >
       <div className="text-center">

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Edit2, Trash2, Users, Loader2, AlertCircle } from "lucide-react";
-import { getClassesThunk } from "../../../features/class/classThunk";
+import { getClassesThunk } from "../../../../features/class/classThunk";
+import Loading from "../../../ui/loading";
+import SomeThingWrong from "../../../ui/someThingWrong";
+import NoData from "../../../ui/noData";
 
 const ClassList = ({ search, user }) => {
   const [filteredClasses, setFilteredClasses] = useState([]);
@@ -10,10 +13,10 @@ const ClassList = ({ search, user }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user?.id) {
+    if (user?.id && classes.length === 0) {
       dispatch(getClassesThunk(user.id));
     }
-  }, [dispatch, user?.id]);
+  }, [dispatch, user?.id, classes.length]);
 
   useEffect(() => {
     if (search) {
@@ -33,23 +36,16 @@ const ClassList = ({ search, user }) => {
 
   // Loading durumu
   if (loading) {
-    return (
-      <div className="bg-bg-tertiary rounded-lg p-6 flex flex-col items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-4" />
-        <p className="text-text-secondary">Sınıflar yükleniyor...</p>
-      </div>
-    );
+    return <Loading />;
   }
 
   // Error durumu
   if (error) {
-    return (
-      <div className="bg-bg-tertiary rounded-lg p-6 flex flex-col items-center justify-center min-h-[400px]">
-        <AlertCircle className="overflow-y-autoed-500 mb-4" />
-        <p className="text-text-secondary mb-2">Bir hata oluştu</p>
-        <p className="text-text-tertiary text-sm">{error}</p>
-      </div>
-    );
+    return <SomeThingWrong err={error} />;
+  }
+
+  if (filteredClasses.length === 0 && !loading && !error) {
+    return <NoData />;
   }
 
   return (
@@ -169,12 +165,6 @@ const ClassList = ({ search, user }) => {
           </tbody>
         </table>
       </div>
-
-      {filteredClasses.length === 0 && !loading && !error && (
-        <div className="text-center py-8">
-          <p className="text-text-tertiary">Henüz sınıf bulunmamaktadır.</p>
-        </div>
-      )}
     </div>
   );
 };

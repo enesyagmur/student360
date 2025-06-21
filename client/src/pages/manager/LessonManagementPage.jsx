@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Search, Plus, X } from "lucide-react";
-import LessonList from "../../components/manager/lists/LessonList";
+import LessonList from "../../components/manager/lists/lessons/LessonList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { lessonSchema } from "../../lib/validation/lessonSchema";
 import { useForm } from "react-hook-form";

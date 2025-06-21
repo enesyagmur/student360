@@ -9,10 +9,11 @@ import {
   addNewStudentThunk,
   fetchStudentsThunk,
 } from "../../features/student/studentThunk";
-import StudentList from "../../components/manager/lists/StudentList";
+import StudentList from "../../components/manager/lists/students/StudentList";
 import { studentSchema } from "../../lib/validation/studentFormSchema";
 import { getClassesThunk } from "../../features/class/classThunk";
 import { studentAddToClassService } from "../../features/class/classService";
+import PageHeader from "../../components/ui/pageHeader";
 
 const StudentManagementPage = () => {
   const [search, setSearch] = useState("");
@@ -96,49 +97,13 @@ const StudentManagementPage = () => {
 
   return (
     <div className="flex-1 w-11/12 h-full bg-bg-primary text-text-primary">
-      {/* Üst Başlık Bölümü */}
-      <div className="bg-bg-tertiary border-b border-bg-quaternary p-6 my-4 rounded-lg">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          {/* Sol Taraf - Başlık ve Açıklama */}
-          <div>
-            <h1 className="text-2xl font-semibold mb-2">Öğrenciler</h1>
-            <p className="text-slate-400">
-              Öğrencileri görüntüleyin ve yönetin
-            </p>
-          </div>
-
-          {/* Sağ Taraf - Arama ve Ekleme Butonu */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full lg:w-auto">
-            {/* Arama Kutusu */}
-            <div className="relative flex-1 lg:flex-none lg:w-80">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Öğrenci ara..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-bg-secondary border border-bg-tertiary rounded-lg pl-10 pr-4 py-3 text-text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              <X
-                className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-text-tertiary w-5 h-5 cursor-pointer ${
-                  search !== "" ? "flex" : "hidden"
-                }`}
-                onClick={() => setSearch("")}
-              />
-            </div>
-
-            {/* Yeni Öğrenci Ekleme Butonu */}
-            <Button
-              onClick={() => setShowAddModal(true)}
-              type={"primary"}
-              size={"lg"}
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Yeni Öğrenci Ekle
-            </Button>
-          </div>
-        </div>
-      </div>
+      {/* header */}
+      <PageHeader
+        title={"Öğrenci Yönetimi"}
+        search={search}
+        setSearch={setSearch}
+        setShowAddModal={setShowAddModal}
+      />
 
       {/* Öğrenci Listesi */}
       <StudentList search={search} user={user} />

@@ -1,12 +1,14 @@
-import { Calendar, Mail, Phone, GraduationCap, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteStudentThunk,
   fetchStudentsThunk,
-} from "../../../features/student/studentThunk";
-import Button from "../../ui/button";
-import ConfirmModal from "../../ui/confirmModal";
+} from "../../../../features/student/studentThunk";
+import Button from "../../../ui/button";
+import ConfirmModal from "../../../ui/confirmModal";
+import Loading from "../../../ui/loading";
+import SomeThingWrong from "../../../ui/someThingWrong";
+import NoData from "../../../ui/noData";
 
 const StudentList = ({ search, user }) => {
   const studentState = useSelector((state) => state.studentState) || {};
@@ -71,28 +73,16 @@ const StudentList = ({ search, user }) => {
     }
   }, [confirmModal, dispatch, user]);
 
-  // Yükleme durumu
   if (loading) {
-    return (
-      <div className="w-full h-[500px] bg-bg-tertiary rounded-xl flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-text-secondary">Yükleniyor...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
-  // Hata durumu
   if (error) {
-    return (
-      <div className="w-full h-[500px] bg-bg-tertiary rounded-xl flex items-center justify-center">
-        <div className="text-center text-red-500">
-          <p className="text-lg font-medium mb-2">Hata oluştu</p>
-          <p className="text-sm">{error}</p>
-        </div>
-      </div>
-    );
+    return <SomeThingWrong err={error} />;
+  }
+
+  if (filteredStudents.length === 0 && !loading && !error) {
+    return <NoData />;
   }
 
   return (

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { addNewManagerThunk } from "../../features/manager/managerThunk";
 import Button from "../../components/ui/button";
-import ManagerList from "../../components/manager/lists/ManagerList";
+import ManagerList from "../../components/manager/lists/managers/ManagerList";
 import PageHeader from "../../components/ui/pageHeader";
 
 const ManagerManagementPage = () => {

@@ -4,9 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteManagerThunk,
   fetchManagersThunk,
-} from "../../../features/manager/managerThunk";
-import Button from "../../ui/button";
-import ConfirmModal from "../../ui/confirmModal";
+} from "../../../../features/manager/managerThunk";
+import Button from "../../../ui/button";
+import ConfirmModal from "../../../ui/confirmModal";
+import Loading from "../../../ui/loading";
+import SomeThingWrong from "../../../ui/someThingWrong";
+import NoData from "../../../ui/noData";
 
 const ManagerList = ({ search, user }) => {
   const managerState = useSelector((state) => state.managerState) || {};
@@ -67,28 +70,18 @@ const ManagerList = ({ search, user }) => {
     }
   }, [confirmModal, dispatch]);
 
-  // loading durumu
+  // Loading durumu
   if (loading) {
-    return (
-      <div className="w-full h-[500px] bg-bg-tertiary rounded-xl flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-text-secondary">Yükleniyor...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
-  // error durumu
+  // Error durumu
   if (error) {
-    return (
-      <div className="w-full h-[500px] bg-bg-tertiary rounded-xl flex items-center justify-center">
-        <div className="text-center text-red-500">
-          <p className="text-lg font-medium mb-2">Hata oluştu</p>
-          <p className="text-sm">{error}</p>
-        </div>
-      </div>
-    );
+    return <SomeThingWrong err={error} />;
+  }
+
+  if (filteredManagers.length === 0 && !loading && !error) {
+    return <NoData />;
   }
 
   return (
@@ -198,18 +191,6 @@ const ManagerList = ({ search, user }) => {
           </tbody>
         </table>
       </div>
-
-      {(!filteredManagers || filteredManagers.length === 0) && (
-        <div className="text-center py-12">
-          <Shield className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-text-primary mb-2">
-            Yönetici bulunamadı
-          </h3>
-          <p className="text-text-secondary">
-            Arama kriterlerinize uygun yönetici bulunmuyor.
-          </p>
-        </div>
-      )}
 
       <ConfirmModal
         type={"danger"}
