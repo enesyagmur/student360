@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { createLessonThunk } from "../../features/lesson/lessonThunk";
 import Button from "../../components/ui/button";
 import { getCurrentUser } from "../../features/auth/authService";
+import PageHeader from "../../components/ui/pageHeader";
 
 const LessonManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -54,47 +55,13 @@ const LessonManagementPage = () => {
 
   return (
     <div className="flex-1 w-11/12 h-full bg-bg-primary text-text-primary">
-      {/* Üst Başlık Bölümü */}
-      <div className="bg-bg-tertiary border-b border-bg-quaternary p-6 my-4 rounded-lg">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          {/* Sol Taraf - Başlık ve Açıklama */}
-          <div>
-            <h1 className="text-2xl font-semibold mb-2">Dersler</h1>
-            <p className="text-slate-400">Dersleri görüntüleyin ve yönetin</p>
-          </div>
-
-          {/* Sağ Taraf - Arama ve Ekleme Butonu */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full lg:w-auto">
-            {/* Arama Kutusu */}
-            <div className="relative flex-1 lg:flex-none lg:w-80">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Ders ara..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-bg-secondary border border-bg-tertiary rounded-lg pl-10 pr-4 py-3 text-text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              <X
-                className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-text-tertiary w-5 h-5 cursor-pointer ${
-                  search !== "" ? "flex" : "hidden"
-                }`}
-                onClick={() => setSearch("")}
-              />
-            </div>
-
-            {/* Yeni Ders Ekleme Butonu */}
-            <Button
-              onClick={() => setShowAddModal(true)}
-              type={"primary"}
-              size={"lg"}
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Yeni Ders Ekle
-            </Button>
-          </div>
-        </div>
-      </div>
+      {/* Header */}
+      <PageHeader
+        title={"Ders Yönetimi"}
+        search={search}
+        setSearch={setSearch}
+        setShowAddModal={setShowAddModal}
+      />
 
       {/* Ders Listesi Bileşeni */}
       <LessonList search={search} user={user} />

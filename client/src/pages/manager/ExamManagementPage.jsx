@@ -8,6 +8,7 @@ import { getCurrentUser } from "../../features/auth/authService";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchLessonsThunk } from "../../features/lesson/lessonThunk";
 import { createExamThunk } from "../../features/exam/examThunk";
+import PageHeader from "../../components/ui/pageHeader";
 
 const ExamManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -90,45 +91,12 @@ const ExamManagementPage = () => {
   return (
     <div className="flex-1 w-full max-w-7xl mx-auto h-full bg-bg-primary text-text-primary px-2 sm:px-4 md:px-8 py-4">
       {/* Header */}
-      <div className="bg-bg-tertiary border-b border-bg-quaternary p-4 sm:p-6 my-4 rounded-lg shadow-sm">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold mb-2 text-text-primary">
-              Sınavlar
-            </h1>
-            <p className="text-text-tertiary">
-              Sınavları oluşturun, arayın ve yönetin
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full lg:w-auto">
-            {/* Arama Kutusu */}
-            <div className="relative flex-1 lg:flex-none lg:w-80 w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Sınav ara..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-bg-secondary border border-bg-tertiary rounded-lg pl-10 pr-4 py-3 text-text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-color-accent focus:border-transparent transition"
-              />
-              <X
-                className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-text-tertiary w-5 h-5 cursor-pointer ${
-                  search !== "" ? "flex" : "hidden"
-                }`}
-                onClick={() => setSearch("")}
-              />
-            </div>
-            {/* Yeni Sınav Ekle Butonu */}
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-2 bg-color-accent text-white rounded-lg shadow-md px-4 py-2 transition hover:bg-color-accent-light"
-            >
-              <Plus className="w-5 h-5" />
-              Yeni Sınav Ekle
-            </button>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title={"Sınav Yönetimi"}
+        search={search}
+        setSearch={setSearch}
+        setShowAddModal={setShowAddModal}
+      />
 
       {/* Sınav Listesi */}
       <ExamList search={search} user={user} />
