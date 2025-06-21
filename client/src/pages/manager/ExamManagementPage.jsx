@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Search, Plus, X } from "lucide-react";
-import ExamList from "../../components/manager/lists/ExamList";
+import ExamList from "../../components/manager/lists/exams/ExamList";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import examSchema from "../../lib/validation/examSchema";
