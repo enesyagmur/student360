@@ -1,15 +1,34 @@
 import React from "react";
 
-const Loading = () => (
-  <div className="flex flex-col items-center justify-center w-full h-full py-8">
-    <div className="relative">
-      <div className="w-12 h-12 border-4 border-color-accent border-t-transparent rounded-full animate-spin"></div>
-      <span className="sr-only">Yükleniyor...</span>
+const Loading = () => {
+  return (
+    <div
+      className="fixed inset-0 flex items-center justify-center"
+      style={{ backgroundColor: "var(--color-bg-primary)" }}
+    >
+      <div className="text-center">
+        {/* Spinner */}
+        <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto mb-4">
+          <div
+            className="absolute inset-0 border-4 border-transparent rounded-full animate-spin"
+            style={{
+              borderTopColor: "var(--color-accent)",
+              borderRightColor: "var(--color-accent-light)",
+              animationDuration: "1s",
+            }}
+          ></div>
+        </div>
+
+        {/* Loading text */}
+        <p
+          className="text-sm sm:text-base md:text-lg font-medium"
+          style={{ color: "var(--color-text-primary)" }}
+        >
+          Yükleniyor...
+        </p>
+      </div>
     </div>
-    <span className="mt-4 text-sm text-text-secondary transition">
-      Yükleniyor...
-    </span>
-  </div>
-);
+  );
+};
 
 export default Loading;

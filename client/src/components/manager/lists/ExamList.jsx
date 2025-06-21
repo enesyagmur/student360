@@ -2,6 +2,9 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getExamsThunk } from "../../../features/exam/examThunk";
 
+import { BookOpen, Users, Calendar, Clock, User, Trash2 } from "lucide-react";
+import Loading from "../../ui/loading";
+
 const ExamList = ({ search, user }) => {
   const dispatch = useDispatch();
   const examState = useSelector((state) => state.examState);
@@ -25,14 +28,15 @@ const ExamList = ({ search, user }) => {
     exam.title.toLowerCase().includes(search.trim().toLowerCase())
   );
 
+  const handleDeleteExam = (examId) => {
+    // Burada silme işlemini başlatabilirsiniz
+    console.log("Silinecek sınav ID:", examId);
+  };
+
   return (
     <div className="w-full mt-6">
       {loading ? (
-        <div className="flex justify-center items-center py-12">
-          <span className="text-text-secondary text-base animate-pulse">
-            Yükleniyor...
-          </span>
-        </div>
+        <Loading />
       ) : error ? (
         <div className="flex flex-col items-center py-12">
           <span className="text-red-600 dark:text-red-400 text-base font-semibold">
@@ -44,67 +48,172 @@ const ExamList = ({ search, user }) => {
           Sonuç bulunamadı.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="h-[450px] overflow-y-auto flex flex-wrap gap-6">
           {filteredExams.map((exam) => (
             <div
               key={exam.id}
-              className="bg-bg-secondary rounded-lg shadow-md p-6 flex flex-col gap-4 transition hover:shadow-lg border border-bg-quaternary"
+              className="group relative bg-bg-secondary rounded-xl shadow-sm hover:shadow-xl border border-bg-quaternary transition-all duration-200  overflow-hidden w-full md:w-[calc(50%-12px)]"
             >
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-xl font-bold text-text-primary">
-                  {exam.title}
-                </h2>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm transition ${
-                    exam.active
-                      ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
-                      : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200"
-                  }`}
+              {/* Üst gradient çizgi */}
+              <div
+                className={`h-1 w-full ${
+                  exam.active
+                    ? "bg-gradient-to-r from-green-400 to-emerald-500"
+                    : "bg-gradient-to-r from-red-400 to-rose-500"
+                }`}
+              />
+
+              <div className="p-6 space-y-4">
+                {/* Başlık ve durum */}
+                <div className="flex items-start justify-between gap-3">
+                  <h2 className="text-xl font-bold text-text-primary leading-tight flex-1 min-w-0">
+                    {exam.title}
+                  </h2>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium shadow-sm transition-all ${
+                        exam.active
+                          ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                          : "bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800"
+                      }`}
+                    >
+                      {exam.active ? (
+                        <>
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                          Yayında
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-2 h-2 bg-red-500 rounded-full" />
+                          Gizli
+                        </>
+                      )}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Ana bilgiler flex wrap */}
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center gap-2 text-sm min-w-0 flex-1 sm:flex-none">
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                      <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="font-medium text-text-primary block">
+                        Ders
+                      </span>
+                      <span className="text-text-secondary text-xs truncate">
+                        {exam.lessonName ||
+                          (exam.lesson && exam.lesson.name) ||
+                          "Yok"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm min-w-0 flex-1 sm:flex-none">
+                    <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+                      <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="font-medium text-text-primary block">
+                        Sınıf
+                      </span>
+                      <span className="text-text-secondary text-xs">
+                        {exam.grade}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm min-w-0 flex-1 sm:flex-none">
+                    <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="font-medium text-text-primary block">
+                        Dönem
+                      </span>
+                      <span className="text-text-secondary text-xs">
+                        {exam.term}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm min-w-0 flex-1 sm:flex-none">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="font-medium text-text-primary block">
+                        Tarih
+                      </span>
+                      <span className="text-text-secondary text-xs">
+                        {exam.examDate}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm min-w-0 flex-1 sm:flex-none">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="font-medium text-text-primary block">
+                        Saat
+                      </span>
+                      <span className="text-text-secondary text-xs">
+                        {exam.examTime || "-"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Açıklama */}
+                {exam.description && (
+                  <div className="mt-4">
+                    <div className="bg-bg-tertiary/50 rounded-lg p-4 border border-bg-quaternary/50">
+                      <h4 className="text-sm font-medium text-text-primary mb-2">
+                        Açıklama
+                      </h4>
+                      <p className="text-text-secondary text-sm leading-relaxed h-40 overflow-y-auto">
+                        {exam.description}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Oluşturan ve tarih */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-4 ">
+                  <div className="flex items-center gap-2 text-sm text-text-tertiary">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
+                      <User className="w-3 h-3 text-white" />
+                    </div>
+                    <span>
+                      <span className="font-medium">Oluşturan:</span>
+                      {exam.creatorName}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-text-tertiary">
+                    <Clock className="w-4 h-4" />
+                    <span>
+                      <span className="font-medium">Oluşturulma:</span>{" "}
+                      {exam.createdAt ? exam.createdAt.slice(0, 10) : "-"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Silme butonu - Hover'da görünür */}
+              {user?.role === "manager" && (
+                <button
+                  onClick={() => handleDeleteExam(exam.id)}
+                  className="absolute bottom-1 right-4 opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-500/90 backdrop-blur-sm text-white text-sm font-medium shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-600/90 dark:hover:bg-red-700 transform scale-95 hover:scale-100"
+                  aria-label="Sınavı Sil"
+                  type="button"
                 >
-                  {exam.active ? "Yayında" : "Gizli"}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-text-secondary">
-                <div>
-                  <span className="font-medium text-text-primary">Ders:</span>
-                  {exam.lessonName
-                    ? exam.lessonName
-                    : exam.lesson && exam.lesson.name
-                    ? exam.lesson.name
-                    : "Ders adı yok"}
-                </div>
-                <div>
-                  <span className="font-medium text-text-primary">Sınıf:</span>{" "}
-                  {exam.grade}
-                </div>
-                <div>
-                  <span className="font-medium text-text-primary">Dönem:</span>{" "}
-                  {exam.term}. Dönem
-                </div>
-                <div>
-                  <span className="font-medium text-text-primary">Tarih:</span>{" "}
-                  {exam.examDate}
-                </div>
-                <div>
-                  <span className="font-medium text-text-primary">Saat:</span>{" "}
-                  {exam.examTime || "-"}
-                </div>
-              </div>
-              {exam.description && (
-                <div className="text-text-tertiary text-sm mt-2 italic">
-                  {exam.description}
-                </div>
+                  <Trash2 className="w-4 h-4" />
+                  Sil
+                </button>
               )}
-              <div className="flex justify-between items-center mt-2 pt-2 border-t border-bg-quaternary text-xs text-text-tertiary">
-                <span>
-                  <span className="font-medium">Oluşturan:</span>{" "}
-                  {exam.creatorName}
-                </span>
-                <span>
-                  <span className="font-medium">Oluşturulma:</span>{" "}
-                  {exam.createdAt ? exam.createdAt.slice(0, 10) : "-"}
-                </span>
-              </div>
             </div>
           ))}
         </div>
