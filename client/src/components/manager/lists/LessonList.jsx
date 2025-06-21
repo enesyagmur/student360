@@ -33,7 +33,7 @@ const LessonList = ({ search, user }) => {
     if (user?.id && lessonList.length === 0) {
       takeLessons();
     }
-  }, [dispatch, user]);
+  }, [dispatch, user, lessonList]);
 
   const filteredLessons = Array.isArray(lessonList)
     ? lessonList.filter((lesson) => {
