@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import scheduleSchema from "../../../lib/validation/scheduleSchema";
+import scheduleSchema from "../../../../lib/validation/scheduleSchema";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchTeachersThunk } from "../../../features/teacher/teacherThunk";
-import { fetchLessonsThunk } from "../../../features/lesson/lessonThunk";
-import { getCurrentUser } from "../../../features/auth/authService";
-import { ChevronDown, ChevronUp, Save, X } from "lucide-react";
+import { fetchTeachersThunk } from "../../../../features/teacher/teacherThunk";
+import { fetchLessonsThunk } from "../../../../features/lesson/lessonThunk";
 
 const lessonTimes = [
   "09:00 - 09:50",
@@ -32,10 +30,7 @@ const defaultTable = days.reduce((acc, day) => {
   return acc;
 }, {});
 
-const NewSchedule = ({ onCancel, onSave }) => {
-  const [user, setUser] = useState();
-  const [isTableExpanded, setIsTableExpanded] = useState(false);
-  const [selectedDay, setSelectedDay] = useState("monday");
+const NewSchedule = ({ user, setShowAddModal }) => {
   const dispatch = useDispatch();
 
   const classes = useSelector((state) => state.classState.classList);
@@ -52,7 +47,7 @@ const NewSchedule = ({ onCancel, onSave }) => {
     handleSubmit,
     setValue,
     watch,
-    reset,
+
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(scheduleSchema),
@@ -60,12 +55,6 @@ const NewSchedule = ({ onCancel, onSave }) => {
   });
 
   const table = watch("table");
-  const selectedClassId = watch("classId");
-
-  useEffect(() => {
-    const currentUser = getCurrentUser();
-    setUser(currentUser);
-  }, []);
 
   useEffect(() => {
     if (user?.id) {
@@ -85,22 +74,7 @@ const NewSchedule = ({ onCancel, onSave }) => {
   };
 
   const onSubmit = (data) => {
-    const scheduleData = {
-      ...data,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-    };
-    onSave(scheduleData);
-  };
-
-  const getFilledSlotsCount = () => {
-    let count = 0;
-    days.forEach((day) => {
-      table[day.key]?.forEach((slot) => {
-        if (slot.lessonId && slot.teacherId) count++;
-      });
-    });
-    return count;
+    console.log(data);
   };
 
   return (
@@ -233,14 +207,10 @@ const NewSchedule = ({ onCancel, onSave }) => {
         <div className="bg-bg-tertiary px-6 py-4 border-t border-bg-quaternary rounded-b-xl flex justify-end space-x-3">
           <button
             type="button"
-            onClick={() => {
-              reset(defaultValues);
-              onCancel?.();
-            }}
+            onClick={() => setShowAddModal(false)}
             className="px-4 py-2 border border-bg-quaternary rounded-md shadow-sm text-sm font-medium text-text-secondary bg-bg-primary hover:bg-bg-secondary focus:outline-none focus:ring-2 focus:ring-color-accent"
-            disabled={isSubmitting}
           >
-            İptal
+            Vazgeç
           </button>
           <button
             type="submit"
