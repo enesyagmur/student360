@@ -10,6 +10,7 @@ import {
 import Loading from "../../../ui/loading";
 import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
+import LessonCard from "./LessonCard";
 
 const LessonList = ({ search, user }) => {
   const lessonState = useSelector((state) => state.lessonState) || {};
@@ -88,82 +89,20 @@ const LessonList = ({ search, user }) => {
 
   return (
     <div className="w-full h-[500px] bg-bg-tertiary rounded-xl overflow-x-auto overflow-y-auto">
-      <div className="">
-        <table className="w-full">
-          <thead className="bg-bg-quaternary">
-            <tr>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                Ders
-              </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                Kredi
-              </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                Durum
-              </th>
-              {user?.position.includes("principal") && (
-                <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                  İşlem
-                </th>
-              )}
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {filteredLessons.map((lesson) => (
-              <tr
-                key={lesson.lessonId}
-                className="text-text-secondary bg-bg-secondary"
-              >
-                <td className="py-4 px-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
-                      <Book className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-text-primary">
-                        {lesson.name || "İsimsiz Ders"}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="py-4 px-6">
-                  <div className="text-sm">{lesson.credit || "0"} Kredi</div>
-                </td>
-                <td className="py-4 px-6">
-                  <div className="text-sm">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${
-                        lesson.isActive
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {lesson.isActive ? "Aktif" : "Pasif"}
-                    </span>
-                  </div>
-                </td>
-                {user?.position.includes("principal") && (
-                  <td className="py-4 px-6">
-                    <Button
-                      onClick={() =>
-                        setConfirmModal({
-                          open: true,
-                          selectedItemId: lesson.lessonId,
-                        })
-                      }
-                      type="danger"
-                      size="sm"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="flex flex-wrap justify-center gap-4 p-4">
+        {lessonList.map((lesson) => (
+          <div
+            key={lesson.lessonId}
+            className="flex-1 min-w-[320px] max-w-[400px]"
+          >
+            <LessonCard
+              lesson={lesson}
+              user={user}
+              setConfirmModal={setConfirmModal}
+            />
+          </div>
+        ))}
       </div>
-
       <ConfirmModal
         type={"danger"}
         message={"Silmek istediğinize emin misiniz?"}

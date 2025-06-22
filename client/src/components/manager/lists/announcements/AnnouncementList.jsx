@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Loader2, AlertCircle, Megaphone, Trash2 } from "lucide-react";
+import { Megaphone, X } from "lucide-react";
 import {
   deleteAnnouncementThunk,
   getAnnouncementsThunk,
@@ -8,6 +8,7 @@ import {
 import Loading from "../../../ui/loading";
 import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
+import Button from "../../../ui/button";
 
 const AnnouncementList = ({ search, user }) => {
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
@@ -99,12 +100,13 @@ const AnnouncementList = ({ search, user }) => {
                   : "Tarih Yok"}
               </p>
               {user?.position === "principal" && (
-                <button
+                <Button
                   onClick={() => handleDelete(item.id)}
-                  className="p-2 hover:bg-bg-secondary rounded-lg transition-colors"
+                  type={"danger"}
+                  size={"sm"}
                 >
-                  <Trash2 className="w-5 h-5 text-red-500" />
-                </button>
+                  <X className="w-5 h-5" />
+                </Button>
               )}
             </div>
           </div>

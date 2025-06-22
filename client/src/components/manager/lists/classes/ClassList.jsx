@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Edit2, Trash2, Users, Loader2, AlertCircle } from "lucide-react";
+import { Edit2, Trash2, Users, Loader2, AlertCircle, X } from "lucide-react";
 import { getClassesThunk } from "../../../../features/class/classThunk";
 import Loading from "../../../ui/loading";
 import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
+import Button from "../../../ui/button";
 
 const ClassList = ({ search, user }) => {
   const [filteredClasses, setFilteredClasses] = useState([]);
@@ -51,112 +52,151 @@ const ClassList = ({ search, user }) => {
   return (
     <div className="bg-bg-tertiary h-[500px] rounded-lg p-6 overflow-y-auto">
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
+        <table className="w-full min-w-[700px]">
+          {/* Modern Table Header */}
+          <thead className="bg-bg-tertiary">
             <tr className="border-b border-bg-quaternary">
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 Sınıf
               </th>
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 Sınıf Yılı
               </th>
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 Şube
               </th>
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
-                Kapasite
-              </th>
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 Mevcut Öğrenci
               </th>
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 Oluşturma Tarihi
               </th>
-              <th className="text-left py-4 px-4 text-text-secondary font-medium">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 Durum
               </th>
               {user?.position === "principal" && (
-                <th className="text-right py-4 px-4 text-text-secondary font-medium">
+                <th className="text-center py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                   İşlemler
                 </th>
               )}
             </tr>
           </thead>
-          <tbody>
-            {filteredClasses.map((classItem) => (
+
+          {/* Modern Table Body */}
+          <tbody className="bg-bg-secondary divide-y divide-bg-quaternary">
+            {filteredClasses.map((classItem, index) => (
               <tr
                 key={classItem.id}
-                className="border-b border-bg-quaternary hover:bg-bg-secondary/50 transition-colors"
+                className={`
+                  group transition-all duration-200 ease-out
+                  hover:bg-bg-tertiary hover:shadow-sm
+                  ${index % 2 === 0 ? "bg-bg-secondary" : "bg-bg-primary/30"}
+                `}
               >
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <Users className="w-5 h-5 text-blue-600" />
+                {/* Class Name Column */}
+                <td className="py-5 px-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-color-accent to-color-accent-light flex items-center justify-center shadow-md">
+                        <Users className="w-6 h-6 text-white" />
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-text-primary uppercase">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-lg text-text-primary uppercase tracking-wide">
                         {classItem.className}
                       </p>
                       {classItem.description && (
-                        <p className="text-sm text-text-tertiary">
+                        <p className="text-sm text-text-tertiary mt-1 truncate">
                           {classItem.description}
                         </p>
                       )}
                     </div>
                   </div>
                 </td>
-                <td className="py-4 px-4">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+
+                {/* Class Year Column */}
+                <td className="py-5 px-6">
+                  <span className="inline-flex items-center px-3 py-2 rounded-xl text-sm font-medium bg-color-accent/10 text-color-accent border border-color-accent/20">
                     {classItem.classNumber}. sınıf
                   </span>
                 </td>
-                <td className="py-4 px-4">
-                  <span className="inline-flex capitalize items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+
+                {/* Class Section Column */}
+                <td className="py-5 px-6">
+                  <span className="inline-flex capitalize items-center px-3 py-2 rounded-xl text-sm font-medium bg-color-accent-light/10 text-color-accent-light border border-color-accent-light/20">
                     {classItem.classChar}
                   </span>
                 </td>
-                <td className="py-4 px-4">
-                  <p className="text-text-primary">{classItem.capacity}</p>
+
+                {/* Current Students Column */}
+                <td className="py-5 px-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-color-success shadow-sm"></div>
+                    <div className="flex flex-col">
+                      <p className="text-text-primary font-medium text-base">
+                        {classItem.currentStudents || 0} / {classItem.capacity}
+                      </p>
+                      <p className="text-xs text-text-tertiary">öğrenci</p>
+                    </div>
+                  </div>
                 </td>
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <p className="text-text-primary">
-                      {classItem.currentStudents || 0}
+
+                {/* Creation Date Column */}
+                <td className="py-5 px-6">
+                  <div className="flex flex-col">
+                    <p className="text-text-primary font-medium">
+                      {classItem.createdAt
+                        ? new Date(classItem.createdAt).toLocaleDateString(
+                            "tr-TR"
+                          )
+                        : "Tarih Belirtilmemiş"}
+                    </p>
+                    <p className="text-xs text-text-tertiary">
+                      {classItem.createdAt
+                        ? new Date(classItem.createdAt).toLocaleDateString(
+                            "tr-TR",
+                            {
+                              weekday: "long",
+                            }
+                          )
+                        : ""}
                     </p>
                   </div>
                 </td>
-                <td className="py-4 px-4">
-                  <p className="text-text-primary">
-                    {classItem.createdAt
-                      ? new Date(classItem.createdAt).toLocaleDateString(
-                          "tr-TR"
-                        )
-                      : "Tarih Belirtilmemiş"}
-                  </p>
-                </td>
-                <td className="py-4 px-4">
+
+                {/* Status Column */}
+                <td className="py-5 px-6">
                   <span
-                    className={`px-3 py-1 rounded-full text-sm ${
+                    className={`inline-flex items-center px-3 py-2 rounded-xl text-sm font-medium border ${
                       classItem.currentStudents >= classItem.capacity
-                        ? "bg-red-100 text-red-600"
-                        : "bg-green-100 text-green-600"
+                        ? "bg-color-danger/10 text-color-danger border-color-danger/20"
+                        : "bg-color-success/10 text-color-success border-color-success/20"
                     }`}
                   >
+                    <div
+                      className={`w-2 h-2 rounded-full mr-2 ${
+                        classItem.currentStudents >= classItem.capacity
+                          ? "bg-color-danger"
+                          : "bg-color-success"
+                      }`}
+                    ></div>
                     {classItem.currentStudents >= classItem.capacity
                       ? "Dolu"
                       : "Aktif"}
                   </span>
                 </td>
+
+                {/* Actions Column */}
                 {user?.position === "principal" && (
-                  <td className="py-4 px-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
+                  <td className="py-5 px-6">
+                    <div className="flex items-center justify-center">
+                      <Button
                         onClick={() => handleDelete(classItem.id)}
-                        className="p-2 hover:bg-bg-secondary rounded-lg transition-colors"
+                        type="danger"
+                        size="sm"
                       >
-                        <Trash2 className="w-5 h-5 text-red-500" />
-                      </button>
+                        <X className="w-4 h-4" />
+                      </Button>
                     </div>
                   </td>
                 )}

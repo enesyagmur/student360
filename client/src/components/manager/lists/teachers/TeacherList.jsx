@@ -1,11 +1,12 @@
-import { Calendar, Mail, Phone, BookOpen, Trash2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Calendar, Mail, Phone, BookOpen, Trash2, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Button from "../../../ui/button";
+
 import {
   fetchTeachersThunk,
   deleteTeacherThunk,
 } from "../../../../features/teacher/teacherThunk";
-import Button from "../../../ui/button";
 import ConfirmModal from "../../../ui/confirmModal";
 import Loading from "../../../ui/loading";
 import SomeThingWrong from "../../../ui/someThingWrong";
@@ -21,22 +22,6 @@ const TeacherList = ({ search, user }) => {
     selectedItemId: "",
   });
 
-  useEffect(() => {
-    const takeTeachers = async () => {
-      try {
-        if (!user?.id) return;
-        await dispatch(fetchTeachersThunk(user.id)).unwrap();
-      } catch (err) {
-        console.error("TEACHERLIST | Öğretmenleri çekerken sorun ", err);
-      }
-    };
-
-    if (user?.id && teacherList.length === 0) {
-      takeTeachers();
-    }
-  }, [dispatch, user]);
-
-  // yardımcı fonksiyon
   const getPositionName = (position) => {
     const positionNames = {
       matematik: "Matematik",
@@ -56,6 +41,21 @@ const TeacherList = ({ search, user }) => {
     };
     return positionNames[position] || "Branş belirtilmemiş";
   };
+
+  useEffect(() => {
+    const takeTeachers = async () => {
+      try {
+        if (!user?.id) return;
+        await dispatch(fetchTeachersThunk(user.id)).unwrap();
+      } catch (err) {
+        console.error("TEACHERLIST | Öğretmenleri çekerken sorun ", err);
+      }
+    };
+
+    if (user?.id && teacherList.length === 0) {
+      takeTeachers();
+    }
+  }, [dispatch, user, teacherList]);
 
   useEffect(() => {
     const handleDelete = async (teacherId) => {
@@ -109,97 +109,147 @@ const TeacherList = ({ search, user }) => {
   return (
     <div className="w-full h-[500px] bg-bg-tertiary rounded-xl overflow-x-auto overflow-y-auto">
       <div className="">
-        <table className="w-full">
-          <thead className="bg-bg-quaternary">
-            <tr>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
+        <table className="w-full min-w-[600px]">
+          {/* Modern Table Header */}
+          <thead className="bg-bg-tertiary">
+            <tr className="border-b border-bg-quaternary">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 Öğretmen
               </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 İletişim
               </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 Branş
               </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
+              <th className="text-left py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                 Katılım Tarihi
               </th>
               {user?.position === "principal" && (
-                <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
+                <th className="text-center py-5 px-6 text-text-secondary font-semibold text-sm tracking-wide uppercase">
                   İşlem
                 </th>
               )}
             </tr>
           </thead>
-          <tbody className="divide-y">
+
+          {/* Modern Table Body */}
+          <tbody className="bg-bg-secondary divide-y divide-bg-quaternary">
             {filteredTeachers.map((teacher) => (
               <tr
                 key={teacher.id}
-                className="text-text-secondary bg-bg-secondary"
+                className={`group transition-all duration-200 ease-out hover:bg-bg-tertiary hover:shadow-sm  `}
               >
-                <td className="py-4 px-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold uppercase">
-                      {teacher.fullName ? (
-                        <>
-                          {teacher.fullName[0]}
-                          {teacher.fullName.split(" ")[1]?.[0] || ""}
-                        </>
-                      ) : (
-                        "?"
-                      )}
+                {/* Teacher Name Column */}
+                <td className="py-5 px-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gradient-to-br from-color-accent to-color-accent-light rounded-full flex items-center justify-center text-white font-semibold shadow-md">
+                        {teacher.fullName ? (
+                          <>
+                            {teacher.fullName[0]}
+                            {teacher.fullName.split(" ")[1]?.[0] || ""}
+                          </>
+                        ) : (
+                          "?"
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <div className="hidden md:flex font-medium text-text-primary capitalize">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-lg text-text-primary capitalize">
                         {teacher.fullName || "İsimsiz Öğretmen"}
+                      </p>
+                      <p className="text-sm text-text-tertiary">
+                        {getPositionName(teacher.position)} Öğretmeni
+                      </p>
+                    </div>
+                  </div>
+                </td>
+
+                {/* Contact Column */}
+                <td className="py-5 px-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-color-accent/10 rounded-lg flex items-center justify-center">
+                        <Mail className="w-4 h-4 text-color-accent" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm text-text-primary font-medium truncate">
+                          {teacher.email || "E-posta yok"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-color-success/10 rounded-lg flex items-center justify-center">
+                        <Phone className="w-4 h-4 text-color-success" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm text-text-primary font-medium">
+                          {teacher.phone || "Telefon yok"}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </td>
-                <td className="py-4 px-6">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Mail className="w-4 h-4" />
-                      {teacher.email || "E-posta yok"}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Phone className="w-4 h-4" />
-                      {teacher.phone || "Telefon yok"}
-                    </div>
-                  </div>
-                </td>
-                <td className="py-4 px-6">
-                  <div className="space-y-1">
-                    <div className="font-medium text-text-primary">
+
+                {/* Subject Column */}
+                <td className="py-5 px-6">
+                  <div className="inline-flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-color-accent-light"></div>
+                    <span className="inline-flex items-center px-3 py-2 rounded-xl text-sm font-medium bg-color-accent/10 text-text-secondary border border-color-accent/20">
                       {getPositionName(teacher.position)}
+                    </span>
+                  </div>
+                </td>
+
+                {/* Join Date Column */}
+                <td className="py-5 px-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-color-warning/10 rounded-lg flex items-center justify-center">
+                      <Calendar className="w-4 h-4 text-color-warning" />
                     </div>
-                    <div className="text-sm">öğretmen</div>
+                    <div className="flex flex-col">
+                      <p className="text-text-primary font-medium text-sm">
+                        {teacher.createdAt
+                          ? new Date(teacher.createdAt).toLocaleDateString(
+                              "tr-TR"
+                            )
+                          : "Tarih belirtilmemiş"}
+                      </p>
+                      <p className="text-xs text-text-tertiary">
+                        {teacher.createdAt
+                          ? new Date(teacher.createdAt).toLocaleDateString(
+                              "tr-TR",
+                              {
+                                weekday: "short",
+                              }
+                            )
+                          : ""}
+                      </p>
+                    </div>
                   </div>
                 </td>
-                <td className="py-4 px-6">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="w-4 h-4" />
-                    {teacher.createdAt
-                      ? new Date(teacher.createdAt).toLocaleDateString("tr-TR")
-                      : "Tarih belirtilmemiş"}
-                  </div>
-                </td>
-                <td className="py-4 px-6 flex items-center justify-start">
-                  <div className="flex items-center justify-center gap-2">
-                    <Button
-                      onClick={() => {
-                        setConfirmModal((prev) => ({
-                          ...prev,
-                          open: true,
-                          teacherId: teacher.id,
-                        }));
-                      }}
-                      type={"danger"}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </td>
+
+                {/* Actions Column */}
+                {user?.position === "principal" && (
+                  <td className="py-5 px-6">
+                    <div className="flex items-center justify-center">
+                      <Button
+                        onClick={() => {
+                          setConfirmModal((prev) => ({
+                            ...prev,
+                            open: true,
+                            teacherId: teacher.id,
+                          }));
+                        }}
+                        type="danger"
+                        size="sm"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
@@ -209,8 +259,8 @@ const TeacherList = ({ search, user }) => {
       <ConfirmModal
         type={"danger"}
         message={"Silmek istediğinize emin misiniz?"}
-        confirmModal={confirmModal}
         setConfirmModal={setConfirmModal}
+        confirmModal={confirmModal}
       />
     </div>
   );

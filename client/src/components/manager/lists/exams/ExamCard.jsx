@@ -1,4 +1,13 @@
-import { BookOpen, Users, Calendar, Clock, User, Trash2 } from "lucide-react";
+import {
+  BookOpen,
+  Users,
+  Calendar,
+  Clock,
+  User,
+  Trash2,
+  X,
+} from "lucide-react";
+import Button from "../../../ui/button";
 
 const ExamCard = ({ exam, user }) => {
   const handleDeleteExam = (examId) => {
@@ -144,15 +153,14 @@ const ExamCard = ({ exam, user }) => {
 
       {/* Silme butonu - Hover'da görünür */}
       {user?.role === "manager" && (
-        <button
+        <Button
           onClick={() => handleDeleteExam(exam.id)}
-          className="absolute bottom-1 right-4 opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-500/90 backdrop-blur-sm text-white text-sm font-medium shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 dark:bg-red-600/90 dark:hover:bg-red-700 transform scale-95 hover:scale-100"
-          aria-label="Sınavı Sil"
-          type="button"
+          type={"danger"}
+          size={"sm"}
+          className="absolute bottom-2 left-[90%] opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         >
-          <Trash2 className="w-4 h-4" />
-          Sil
-        </button>
+          <X className="w-4 h-4" />
+        </Button>
       )}
     </div>
   );
