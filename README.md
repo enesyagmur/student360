@@ -2,8 +2,8 @@
 
 **Student360**, okullardaki öğrenci, öğretmen, sınıf, ders ve sınav yönetimini dijital ortama taşıyan çok yönlü bir web uygulamasıdır. Yönetici ve öğretmen rollerine özel kontrol panelleriyle eğitim süreçlerini sade, hızlı ve etkili şekilde yönetmeyi hedefler.
 
-![Uploading student360-ezgif.com-video-to-gif-converter.gif…]
 
+![student360-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/4f071d06-f7cd-41f6-a15a-d32ee16f8a78)
 
 ---
 
