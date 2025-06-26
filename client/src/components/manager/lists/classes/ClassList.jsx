@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Edit2, Trash2, Users, Loader2, AlertCircle, X } from "lucide-react";
+import { Users, X } from "lucide-react";
 import { getClassesThunk } from "../../../../features/class/classThunk";
 import Loading from "../../../ui/loading";
 import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
 import Button from "../../../ui/button";
 
-const ClassList = ({ search, user }) => {
-  const [filteredClasses, setFilteredClasses] = useState([]);
+//parent render olsa bile proplar değişmediği sürece render edilmeyecek
+const ClassList = React.memo(({ search, user }) => {
   const classState = useSelector((state) => state.classState);
   const { classList: classes = [], loading = false, error = null } = classState;
   const dispatch = useDispatch();
@@ -19,15 +19,14 @@ const ClassList = ({ search, user }) => {
     }
   }, [dispatch, user?.id, classes.length]);
 
-  useEffect(() => {
+  //dependency ler değişmediği sürece filtreleme işlemi yapmayacak
+  const filteredClasses = useMemo(() => {
     if (search) {
-      const filtered = classes.filter((classItem) =>
+      return classes.filter((classItem) =>
         classItem.className.toLowerCase().includes(search.toLowerCase())
       );
-      setFilteredClasses(filtered);
-    } else {
-      setFilteredClasses(classes);
     }
+    return classes;
   }, [search, classes]);
 
   const handleDelete = (classId) => {
@@ -207,6 +206,6 @@ const ClassList = ({ search, user }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ClassList;

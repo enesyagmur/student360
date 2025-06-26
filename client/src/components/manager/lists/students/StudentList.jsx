@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteStudentThunk,
@@ -10,7 +10,7 @@ import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
 import StudentCard from "./StudentCard";
 
-const StudentList = ({ search, user }) => {
+const StudentList = React.memo(({ search, user }) => {
   const studentState = useSelector((state) => state.studentState) || {};
   const { studentList = [], loading = false, error = null } = studentState;
   const [confirmModal, setConfirmModal] = useState({
@@ -36,15 +36,18 @@ const StudentList = ({ search, user }) => {
     }
   }, [dispatch, user, studentList.length]);
 
-  const filteredStudents = Array.isArray(studentList)
-    ? studentList.filter((student) => {
+  const filteredStudents = useMemo(() => {
+    if (search) {
+      return studentList.filter((student) => {
         if (!search.trim()) return true;
         if (!student?.fullName) return false;
         return student.fullName
           .toLowerCase()
           .includes(search.toLowerCase().trim());
-      })
-    : [];
+      });
+    }
+    return studentList;
+  }, [studentList, search]);
 
   useEffect(() => {
     const handleDelete = async (studentId) => {
@@ -116,6 +119,7 @@ const StudentList = ({ search, user }) => {
                 student={student}
                 setConfirmModal={setConfirmModal}
                 user={user}
+                key={student.id}
               />
             ))}
           </tbody>
@@ -130,6 +134,6 @@ const StudentList = ({ search, user }) => {
       />
     </div>
   );
-};
+});
 
 export default StudentList;

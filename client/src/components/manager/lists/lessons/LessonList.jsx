@@ -1,5 +1,5 @@
 import { Book, Trash2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../../ui/button";
 import ConfirmModal from "../../../ui/confirmModal";
@@ -12,7 +12,7 @@ import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
 import LessonCard from "./LessonCard";
 
-const LessonList = ({ search, user }) => {
+const LessonList = React.memo(({ search, user }) => {
   const lessonState = useSelector((state) => state.lessonState) || {};
   const { lessonList = [], loading = false, error = null } = lessonState;
   const [confirmModal, setConfirmModal] = useState({
@@ -38,13 +38,16 @@ const LessonList = ({ search, user }) => {
     }
   }, [dispatch, user, lessonList]);
 
-  const filteredLessons = Array.isArray(lessonList)
-    ? lessonList.filter((lesson) => {
+  const filteredLessons = useMemo(() => {
+    if (search) {
+      return lessonList.filter((lesson) => {
         if (!search.trim()) return true;
         if (!lesson?.name) return false;
         return lesson.name.toLowerCase().includes(search.toLowerCase().trim());
-      })
-    : [];
+      });
+    }
+    return lessonList;
+  }, [search, lessonList]);
 
   useEffect(() => {
     const handleDelete = async (lessonId) => {
@@ -111,6 +114,6 @@ const LessonList = ({ search, user }) => {
       />
     </div>
   );
-};
+});
 
 export default LessonList;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getExamsThunk } from "../../../../features/exam/examThunk";
 import Loading from "../../../ui/loading";
@@ -6,7 +6,8 @@ import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
 import ExamCard from "./ExamCard";
 
-const ExamList = ({ search, user }) => {
+//parent render olsa bile proplar değişmediği sürece list render olmayacak
+const ExamList = React.memo(({ search, user }) => {
   const dispatch = useDispatch();
   const examState = useSelector((state) => state.examState);
   const { examList = [], loading = false, error = null } = examState;
@@ -24,9 +25,15 @@ const ExamList = ({ search, user }) => {
     }
   }, [dispatch, user, examList]);
 
-  const filteredExams = examList.filter((exam) =>
-    exam.title.toLowerCase().includes(search.trim().toLowerCase())
-  );
+  //dependencyler değişmediği sürece yeniden filitrelemeyecek
+  const filteredExams = useMemo(() => {
+    if (search) {
+      return examList.filter((exam) =>
+        exam.title.toLowerCase().includes(search.trim().toLowerCase())
+      );
+    }
+    return examList;
+  }, [search, examList]);
 
   // Loading durumu
   if (loading) {
@@ -46,11 +53,11 @@ const ExamList = ({ search, user }) => {
     <div className="w-full mt-6">
       <div className="h-[450px] overflow-y-auto flex flex-wrap gap-6">
         {filteredExams.map((exam) => (
-          <ExamCard exam={exam} user={user} />
+          <ExamCard exam={exam} user={user} key={exam.id} />
         ))}
       </div>
     </div>
   );
-};
+});
 
 export default ExamList;

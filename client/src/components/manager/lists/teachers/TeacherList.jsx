@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 import { Calendar, Mail, Phone, BookOpen, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +13,7 @@ import Loading from "../../../ui/loading";
 import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
 
-const TeacherList = ({ search, user }) => {
+const TeacherList = React.memo(({ search, user }) => {
   const dispatch = useDispatch();
   const teacherState = useSelector((state) => state.teacherState) || {};
   const { teacherList = [], loading = false, error = null } = teacherState;
@@ -81,16 +82,18 @@ const TeacherList = ({ search, user }) => {
     }
   }, [confirmModal, dispatch]);
 
-  // arama fonksiyonu
-  const filteredTeachers = Array.isArray(teacherList)
-    ? teacherList.filter((teacher) => {
+  const filteredTeachers = useMemo(() => {
+    if (search) {
+      return teacherList.filter((teacher) => {
         if (!search.trim()) return true;
         if (!teacher?.fullName) return false;
         return teacher.fullName
           .toLowerCase()
           .includes(search.toLowerCase().trim());
-      })
-    : [];
+      });
+    }
+    return teacherList;
+  }, [search, teacherList]);
 
   // Loading durumu
   if (loading) {
@@ -264,6 +267,6 @@ const TeacherList = ({ search, user }) => {
       />
     </div>
   );
-};
+});
 
 export default TeacherList;

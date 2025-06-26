@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Megaphone, X } from "lucide-react";
 import {
@@ -10,8 +10,8 @@ import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
 import Button from "../../../ui/button";
 
-const AnnouncementList = ({ search, user }) => {
-  const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
+//parent render olsa bile ilgili proplar değişmediği sürece list render olmayacak
+const AnnouncementList = React.memo(({ search, user }) => {
   const announcementState = useSelector((state) => state.announcementState);
   const {
     announcementList: announcements = [],
@@ -34,15 +34,14 @@ const AnnouncementList = ({ search, user }) => {
     }
   }, [dispatch, user?.id, user?.role]);
 
-  useEffect(() => {
+  //search ve duyurular listesi değişmediği sürece tekrar filtreleme yapmayacak
+  const filteredAnnouncements = useMemo(() => {
     if (search) {
-      const filtered = announcements.filter((item) =>
+      return announcements.filter((item) =>
         item.title.toLowerCase().includes(search.toLowerCase())
       );
-      setFilteredAnnouncements(filtered);
-    } else {
-      setFilteredAnnouncements(announcements);
     }
+    return announcements;
   }, [search, announcements]);
 
   const handleDelete = async (announcementId) => {
@@ -114,6 +113,6 @@ const AnnouncementList = ({ search, user }) => {
       </div>
     </div>
   );
-};
+});
 
 export default AnnouncementList;

@@ -1,5 +1,5 @@
-import { Calendar, Mail, Phone, Shield, Trash2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Calendar, Mail, Phone, Trash2 } from "lucide-react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteManagerThunk,
@@ -11,7 +11,7 @@ import Loading from "../../../ui/loading";
 import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
 
-const ManagerList = ({ search, user }) => {
+const ManagerList = React.memo(({ search, user }) => {
   const managerState = useSelector((state) => state.managerState) || {};
   const { managerList = [], loading = false, error = null } = managerState;
   const [confirmModal, setConfirmModal] = useState({
@@ -37,15 +37,19 @@ const ManagerList = ({ search, user }) => {
     }
   }, [dispatch, user]);
 
-  const filteredManagers = Array.isArray(managerList)
-    ? managerList.filter((manager) => {
+  const filteredManagers = useMemo(() => {
+    if (search) {
+      return managerList.filter((manager) => {
         if (!search.trim()) return true;
         if (!manager?.fullName) return false;
         return manager.fullName
           .toLowerCase()
           .includes(search.toLowerCase().trim());
-      })
-    : [];
+      });
+    }
+
+    return managerList;
+  }, [managerList, search]);
 
   useEffect(() => {
     const handleDelete = async (managerId) => {
@@ -200,6 +204,6 @@ const ManagerList = ({ search, user }) => {
       />
     </div>
   );
-};
+});
 
 export default ManagerList;
