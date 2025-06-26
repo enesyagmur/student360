@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Search, Plus, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import TeacherList from "../../components/manager/lists/teachers/TeacherList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { teacherSchema } from "../../lib/validation/teacherFormSchema";
@@ -9,7 +8,6 @@ import {
   addNewTeacherThunk,
   fetchTeachersThunk,
 } from "../../features/teacher/teacherThunk";
-import Button from "../../components/ui/button";
 import { getCurrentUser } from "../../features/auth/authService";
 import PageHeader from "../../components/ui/pageHeader";
 
@@ -43,11 +41,16 @@ const TeacherManagementPage = () => {
         return;
       }
 
-      const newData = {
+      const newTeacherData = {
         ...data,
         role: "teacher",
       };
-      const teacher = await dispatch(addNewTeacherThunk(newData)).unwrap();
+
+      const fullData = {
+        newTeacherData,
+        currentUserId: user.id,
+      };
+      const teacher = await dispatch(addNewTeacherThunk(fullData)).unwrap();
 
       if (teacher) {
         reset();
@@ -91,100 +94,158 @@ const TeacherManagementPage = () => {
               Yeni Öğretmen Ekle
             </h3>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
-                  Ad Soyad
-                </label>
-                <input
-                  type="text"
-                  {...register("fullName")}
-                  className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Öğretmen adı ve soyadı"
-                />
-                {errors.fullName && (
-                  <p className="text-color-danger">{errors.fullName.message}</p>
-                )}
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* Sol Bölüm */}
+              <div className="flex-1 space-y-4">
+                <div>
+                  <label className="block text-sm  font-medium text-text-secondary mb-1">
+                    Ad Soyad
+                  </label>
+                  <input
+                    type="text"
+                    {...register("fullName")}
+                    className="w-full bg-bg-secondary capitalize rounded-lg px-3 py-2 text-text-primary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Öğretmen adı ve soyadı"
+                  />
+                  {errors.fullName && (
+                    <p className="text-color-danger">
+                      {errors.fullName.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm  font-medium text-text-secondary mb-1">
+                    Kimlik Numarası
+                  </label>
+                  <input
+                    type="number"
+                    {...register("tc")}
+                    className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="TC numarası"
+                  />
+                  {errors.tc && (
+                    <p className="text-color-danger">{errors.tc.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">
+                    E-posta
+                  </label>
+                  <input
+                    type="email"
+                    {...register("email")}
+                    className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="ornek@ogrenci360.com"
+                  />
+                  {errors.email && (
+                    <p className="text-color-danger">{errors.email.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">
+                    Telefon
+                  </label>
+                  <input
+                    type="tel"
+                    {...register("phone")}
+                    className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="+90 5XX XXX XX XX"
+                  />
+                  {errors.phone && (
+                    <p className="text-color-danger">{errors.phone.message}</p>
+                  )}
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
-                  Kimlik Numarası
-                </label>
-                <input
-                  type="number"
-                  {...register("tc")}
-                  className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="TC numarası"
-                />
-                {errors.tc && (
-                  <p className="text-color-danger">{errors.tc.message}</p>
-                )}
-              </div>
+              {/* Sağ Bölüm */}
+              <div className="flex-1 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">
+                    Branş
+                  </label>
+                  <select
+                    {...register("position")}
+                    className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Branş seçin</option>
+                    <option value="mathematics">Matematik</option>
+                    <option value="physics">Fizik</option>
+                    <option value="chemistry">Kimya</option>
+                    <option value="biology">Biyoloji</option>
+                    <option value="turkish">Türkçe</option>
+                    <option value="english">İngilizce</option>
+                    <option value="history">Tarih</option>
+                    <option value="geography">Coğrafya</option>
+                    <option value="physical_education">Beden Eğitimi</option>
+                    <option value="music">Müzik</option>
+                    <option value="art">Resim</option>
+                    <option value="religion">Din Kültürü</option>
+                    <option value="philosophy">Felsefe</option>
+                    <option value="computer">Bilgisayar</option>
+                  </select>
+                  {errors.position && (
+                    <p className="text-color-danger">
+                      {errors.position.message}
+                    </p>
+                  )}
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
-                  E-posta
-                </label>
-                <input
-                  type="email"
-                  {...register("email")}
-                  className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="ornek@ogrenci360.com"
-                />
-                {errors.email && (
-                  <p className="text-color-danger">{errors.email.message}</p>
-                )}
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">
+                    Düzey
+                  </label>
+                  <select
+                    {...register("level")}
+                    className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Düzey seçin</option>
+                    <option value="middle_school">Ortaokul</option>
+                    <option value="high_school">Lise</option>
+                  </select>
+                  {errors.level && (
+                    <p className="text-color-danger">{errors.level.message}</p>
+                  )}
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
-                  Telefon
-                </label>
-                <input
-                  type="tel"
-                  {...register("phone")}
-                  className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="+90 5XX XXX XX XX"
-                />
-                {errors.phone && (
-                  <p className="text-color-danger">{errors.phone.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
-                  Branş
-                </label>
-                <select
-                  {...register("position")}
-                  className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Branş seçin</option>
-                  <option value="matematik">Matematik</option>
-                  <option value="fizik">Fizik</option>
-                  <option value="kimya">Kimya</option>
-                  <option value="biyoloji">Biyoloji</option>
-                  <option value="turkce">Türkçe</option>
-                  <option value="ingilizce">İngilizce</option>
-                  <option value="tarih">Tarih</option>
-                  <option value="cografya">Coğrafya</option>
-                  <option value="beden">Beden Eğitimi</option>
-                  <option value="muzik">Müzik</option>
-                  <option value="resim">Resim</option>
-                  <option value="din">Din Kültürü</option>
-                  <option value="felsefe">Felsefe</option>
-                  <option value="bilgisayar">Bilgisayar</option>
-                </select>
-                {errors.position && (
-                  <p className="text-color-danger">{errors.position.message}</p>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">
+                    Durum
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-1">
+                      <input
+                        type="radio"
+                        value="true"
+                        defaultChecked
+                        {...register("active")}
+                        className="accent-blue-600"
+                      />
+                      <span>Aktif</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input
+                        type="radio"
+                        value="false"
+                        {...register("active")}
+                        className="accent-blue-600"
+                      />
+                      <span>Pasif</span>
+                    </label>
+                  </div>
+                  {errors.active && (
+                    <p className="text-color-danger">{errors.active.message}</p>
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowAddModal(false)}
+                type="button"
                 className="flex-1 bg-text-secondary hover:bg-text-primary text-bg-primary py-2 px-4 rounded-lg transition-colors"
               >
                 İptal

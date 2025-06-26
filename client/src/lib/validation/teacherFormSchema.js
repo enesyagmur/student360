@@ -21,21 +21,29 @@ export const teacherSchema = Yup.object({
     .required("Branş seçimi zorunludur.")
     .oneOf(
       [
-        "matematik",
-        "fizik",
-        "kimya",
-        "biyoloji",
-        "turkce",
-        "ingilizce",
-        "tarih",
-        "cografya",
-        "beden",
-        "muzik",
-        "resim",
-        "din",
-        "felsefe",
-        "bilgisayar",
+        "mathematics",
+        "physics",
+        "chemistry",
+        "biology",
+        "turkish",
+        "english",
+        "history",
+        "geography",
+        "physical_education",
+        "music",
+        "art",
+        "religion",
+        "philosophy",
+        "computer",
       ],
       "Geçerli bir branş seçiniz."
     ),
+  level: Yup.string()
+    .required("Öğretmen düzey seçimi zorunludur")
+    .oneOf(
+      ["middle_school"],
+      ["high_school"],
+      "Lütfen geçerli bir düzey seçiniz."
+    ),
+  active: Yup.boolean().required("Durum seçimi zorunludur"),
 });

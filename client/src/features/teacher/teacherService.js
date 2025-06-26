@@ -1,5 +1,7 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../../lib/firebase";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
 
 const BASE_URL = "http://localhost:3001";
 
@@ -16,51 +18,47 @@ const getTokenFromStorage = () => {
   return user.token;
 };
 
-export const createNewTeacherService = async ({
-  fullName,
-  email,
-  phone,
-  position,
-  tc,
-  role,
-}) => {
+export const createNewTeacherService = async (
+  newTeacherData,
+  currentUserId
+) => {
   try {
-    const token = getTokenFromStorage();
-    if (!token) {
-      throw new Error("Token bulunamadı");
+    if (!currentUserId) {
+      throw new Error("currentUserId parametresi gereklidir");
     }
 
-    const response = await fetch(`${BASE_URL}/api/teachers`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        fullName,
-        tc,
-        email,
-        phone,
-        position,
-        role,
-      }),
-    });
+    // Kullanıcı managers koleksiyonunda var mı kontrol et
+    const currentUserRef = doc(db, "managers", currentUserId);
+    const currentUserDoc = await getDoc(currentUserRef);
 
-    // Response'un content type'ını kontrol et
-    const contentType = response.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      throw new Error("Sunucudan geçersiz yanıt alındı");
+    if (!currentUserDoc.exists()) {
+      throw new Error("Yalnızca yönetici kullanıcı öğretmen ekleyebilir");
     }
 
-    const data = await response.json();
+    // Rastgele şifre oluştur
+    const randomPassword = uuidv4();
 
-    if (!response.ok) {
-      throw new Error(data.error || data.details || "Öğretmen oluşturulamadı");
-    }
+    // Firebase Auth'ta kullanıcı oluştur
+    const auth = getAuth();
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      newTeacherData.email,
+      randomPassword
+    );
 
-    return data;
+    // Firestore teachers koleksiyonuna ekle
+    const newTeacher = {
+      id: userCredential.user.uid,
+      ...newTeacherData,
+      weeklyLessonHours: 0,
+      createdAt: new Date().toISOString(),
+    };
+
+    await addDoc(collection(db, "teachers"), newTeacher);
+
+    return newTeacher;
   } catch (err) {
-    console.error("API | Öğretmen Oluşturma Hatası: ", err.message);
+    console.error("Firebase | Öğretmen Oluşturma Hatası: ", err.message);
     throw err;
   }
 };
@@ -78,7 +76,7 @@ export const deleteTeacherService = async (teacherId) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ teacherId }),
+      // body: JSON.stringify({ teacherId }), // <-- Bunu kaldırın
     });
 
     const contentType = response.headers.get("content-type");

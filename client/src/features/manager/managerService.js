@@ -1,5 +1,7 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
 
 const BASE_URL = "http://localhost:3001";
 
@@ -16,6 +18,7 @@ const getTokenFromStorage = () => {
   return user.token;
 };
 
+//YÖnetici oluşturma --------------------------------------
 export const createNewManagerService = async ({
   fullName,
   email,
@@ -25,36 +28,32 @@ export const createNewManagerService = async ({
   role,
 }) => {
   try {
-    const token = getTokenFromStorage();
+    // 1. Rastgele parola oluştur
+    const password = uuidv4();
 
-    const response = await fetch(`${BASE_URL}/api/managers`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        fullName,
-        tc,
-        email,
-        phone,
-        position,
-        role,
-      }),
-    });
+    // 2. Firebase Auth ile kullanıcı oluştur
+    const auth = getAuth();
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const { uid } = userCredential.user;
 
-    const data = await response.json();
+    // 3. Firestore'a yönetici olarak ekle
+    const managerData = {
+      id: uid,
+      fullName,
+      email,
+      phone,
+      position,
+      tc,
+      role,
+      createdAt: new Date().toISOString(),
+    };
+    await setDoc(doc(db, "managers", uid), managerData);
 
-    if (!response.ok) {
-      throw new Error(data.error || data.details || "Kullanıcı oluşturulamadı");
-    }
-
-    // Gelen veriyi kontrol et ve doğru formatta döndür
-    if (!data || typeof data !== "object") {
-      throw new Error("Geçersiz veri formatı");
-    }
-
-    return data;
+    return managerData;
   } catch (err) {
     console.error("API | Kullanıcı Oluşturma Hatası: ", err.message);
     throw err;

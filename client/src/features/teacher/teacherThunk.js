@@ -7,9 +7,12 @@ import {
 
 export const addNewTeacherThunk = createAsyncThunk(
   "teacher/addNewTeacher",
-  async (newTeacherData, thunkAPI) => {
+  async ({ newTeacherData, currentUserId }, thunkAPI) => {
     try {
-      const newTeacher = await createNewTeacherService(newTeacherData);
+      const newTeacher = await createNewTeacherService(
+        newTeacherData,
+        currentUserId
+      );
       if (!newTeacher || typeof newTeacher !== "object") {
         throw new Error("Geçersiz veri formatı");
       }
