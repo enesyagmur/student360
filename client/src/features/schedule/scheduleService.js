@@ -1,4 +1,11 @@
-import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
 export const createScheduleService = async (
@@ -50,5 +57,37 @@ export const createScheduleService = async (
     return newSchedule;
   } catch (err) {
     throw new Error(`SERVICE | Program oluştururken sorun: ${err}`);
+  }
+};
+
+export const getSchedulesService = async (currentUserId) => {
+  try {
+    if (!currentUserId) {
+      throw new Error(
+        "SERVICE | Programları getirirken sorun: currentUserId eksik"
+      );
+    }
+
+    const managerDocRef = doc(db, "managers", currentUserId);
+    const managerSnapShot = await getDoc(managerDocRef);
+    if (!managerSnapShot.exists()) {
+      throw new Error(
+        "SERVICE | Programları getirirken sorun: Yönetici Bulunamadı"
+      );
+    }
+
+    const schedulesColRef = collection(db, "schedules");
+    const schedulesSnapShot = await getDocs(schedulesColRef);
+
+    if (schedulesSnapShot.empty) {
+      throw new Error("SERVICE | Program bulunamadı");
+    }
+
+    const schedules = schedulesSnapShot.docs.map((doc) => ({
+      ...doc.data(),
+    }));
+    return schedules;
+  } catch (err) {
+    throw new Error(err);
   }
 };

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createScheduleThunk } from "./scheduleThunk";
+import { createScheduleThunk, fetchScheduleThunk } from "./scheduleThunk";
 
 const initialState = {
   scheduleList: [],
@@ -13,6 +13,8 @@ const scheduleSlice = createSlice({
   reducers: () => {},
   extraReducers: (builder) => {
     builder
+
+      //Program oluşturma ---------------------
       .addCase(createScheduleThunk.pending, (state) => {
         state.loading = true;
         state.errors = null;
@@ -22,6 +24,20 @@ const scheduleSlice = createSlice({
         state.scheduleList = action.payload;
       })
       .addCase(createScheduleThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.errors = action.payload;
+      })
+
+      //Programları getirme --------------------
+      .addCase(fetchScheduleThunk.pending, (state) => {
+        state.loading = true;
+        state.errors = null;
+      })
+      .addCase(fetchScheduleThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.scheduleList = action.payload;
+      })
+      .addCase(fetchScheduleThunk.rejected, (state, action) => {
         state.loading = false;
         state.errors = action.payload;
       });
