@@ -122,7 +122,7 @@ const LessonManagementPage = () => {
                   <option value="middle_school">Ortaokul</option>
                   <option value="high_school">Lise</option>
                 </select>
-                {errors.isActive && (
+                {errors.level && (
                   <p className="text-color-danger">{errors.isActive.message}</p>
                 )}
               </div>

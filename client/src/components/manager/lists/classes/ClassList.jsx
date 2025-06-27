@@ -101,7 +101,7 @@ const ClassList = React.memo(({ search, user }) => {
                       </div>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-lg text-text-primary uppercase tracking-wide">
+                      <p className="font-semibold text-lg text-text-secondary uppercase tracking-wide">
                         {classItem.className}
                       </p>
                       {classItem.description && (
@@ -115,14 +115,14 @@ const ClassList = React.memo(({ search, user }) => {
 
                 {/* Class Year Column */}
                 <td className="py-5 px-6">
-                  <span className="inline-flex items-center px-3 py-2 rounded-xl text-sm font-medium bg-color-accent/10 text-color-accent border border-color-accent/20">
+                  <span className="inline-flex items-center px-3 py-2 rounded-xl text-sm font-medium bg-color-accent/10 text-text-secondary border border-color-accent/20">
                     {classItem.classNumber}. sınıf
                   </span>
                 </td>
 
                 {/* Class Section Column */}
                 <td className="py-5 px-6">
-                  <span className="inline-flex capitalize items-center px-3 py-2 rounded-xl text-sm font-medium bg-color-accent-light/10 text-color-accent-light border border-color-accent-light/20">
+                  <span className="inline-flex capitalize items-center px-3 py-2 rounded-xl text-sm font-medium bg-color-accent-light/10 text-text-secondary border border-color-accent-light/20">
                     {classItem.classChar}
                   </span>
                 </td>
@@ -167,21 +167,19 @@ const ClassList = React.memo(({ search, user }) => {
                 <td className="py-5 px-6">
                   <span
                     className={`inline-flex items-center px-3 py-2 rounded-xl text-sm font-medium border ${
-                      classItem.currentStudents >= classItem.capacity
+                      classItem.state === false
                         ? "bg-color-danger/10 text-color-danger border-color-danger/20"
                         : "bg-color-success/10 text-color-success border-color-success/20"
                     }`}
                   >
                     <div
                       className={`w-2 h-2 rounded-full mr-2 ${
-                        classItem.currentStudents >= classItem.capacity
+                        classItem.state === false
                           ? "bg-color-danger"
                           : "bg-color-success"
                       }`}
                     ></div>
-                    {classItem.currentStudents >= classItem.capacity
-                      ? "Dolu"
-                      : "Aktif"}
+                    {classItem.state === false ? "Pasif" : "Aktif"}
                   </span>
                 </td>
 

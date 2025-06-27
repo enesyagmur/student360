@@ -25,7 +25,7 @@ export const teacherSchema = Yup.object({
       "biology", // Biyoloji
       "turkish", // Türkçe
       "english", // İngilizce
-      "german", // Almanca (eklemek istersen)
+      "german", // Almanca
       "literature", // Türk Dili ve Edebiyatı
       "history", // Tarih
       "geography", // Coğrafya

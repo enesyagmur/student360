@@ -23,7 +23,7 @@ export const createClassService = async (currentUserId, classData) => {
       );
     }
 
-    const requiredFields = ["classNumber", "classChar", "capacity", "state"];
+    const requiredFields = ["classNumber", "classChar", "capacity"];
     const missingValues = requiredFields.filter((field) => !classData[field]);
 
     if (missingValues.length > 0) {

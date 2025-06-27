@@ -1,4 +1,4 @@
-import { Book, CreditCard, Edit, X } from "lucide-react";
+import { Book, CreditCard, Edit, Timer, X } from "lucide-react";
 import Button from "../../../ui/button"; // Button component'inizi import edin
 
 const LessonCard = ({ lesson, user, setConfirmModal }) => {
@@ -10,6 +10,31 @@ const LessonCard = ({ lesson, user, setConfirmModal }) => {
     return levels[level];
   };
 
+  const lessonConvertToTurkish = (lesson) => {
+    const lessons = {
+      art: "Görsel Sanatlar",
+      biology: "Biyoloji",
+      chemistry: "Kimya",
+      computer_science: "Bilgisayar Bilimleri",
+      english: "İngilizce",
+      geography: "Coğrafya",
+      german: "Almanca",
+      health_information_and_first_aid: "Sağlık Bilgisi ve İlk Yardım",
+      history: "Tarih",
+      mathematics: "Matematik",
+      music: "Müzik",
+      philosophy: "Felsefe",
+      physical_education: "Beden Eğitimi",
+      physics: "Fizik",
+      religion: "Din Kültürü",
+      science: "Fen Bilimleri",
+      social_sciences: "Sosyal Bilgiler",
+      technology_design: "Teknoloji ve Tasarım",
+      turkish: "Türkçe",
+    };
+    return lessons[lesson] || lesson;
+  };
+
   return (
     lesson && (
       <div className="group relative bg-bg-secondary border border-bg-tertiary rounded-xl p-4 hover:bg-bg-tertiary hover:border-bg-quaternary transition-all duration-300 hover:shadow-lg">
@@ -18,11 +43,11 @@ const LessonCard = ({ lesson, user, setConfirmModal }) => {
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1 min-w-0 pr-4">
               <h3 className="text-xl font-bold text-text-primary mb-2 leading-tight">
-                {lesson.name || "İsimsiz Ders"}
+                {lessonConvertToTurkish(lesson.name)}
               </h3>
               <div className="flex items-center gap-2 text-base text-text-secondary font-medium">
-                <CreditCard className="w-5 h-5" />
-                <span>{lesson.credit || "0"} Kredi</span>
+                <Timer className="w-5 h-5" />
+                <span>{lesson.oneWeekLessonHours || "0"} Saat / Hafta</span>
               </div>
             </div>
 

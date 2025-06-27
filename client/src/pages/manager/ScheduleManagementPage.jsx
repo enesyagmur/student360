@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getCurrentUser } from "../../features/auth/authService";
 import PageHeader from "../../components/ui/pageHeader";
@@ -25,7 +25,7 @@ const ScheduleManagementPage = () => {
         setShowAddModal={setShowAddModal}
       />
 
-      <ScheduleList search={search} user={user} />
+      {/* <ScheduleList search={search} user={user} /> */}
 
       {showAddModal && (
         <NewSchedule user={user} setShowAddModal={setShowAddModal} />

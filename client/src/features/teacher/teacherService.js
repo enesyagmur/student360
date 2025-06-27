@@ -46,11 +46,53 @@ export const createNewTeacherService = async (
       randomPassword
     );
 
+    const lessonConvertToHour = () => {
+      if (newTeacherData.level === "middle_school") {
+        const lessons = {
+          turkish: 4,
+          mathematics: 5,
+          science: 4,
+          social_sciences: 4,
+          english: 4,
+          religion: 1,
+          physical_education: 2,
+          computer_science: 2,
+          technology_design: 2,
+          art: 1,
+          music: 1,
+        };
+        return lessons[newTeacherData.position];
+      } else {
+        const lessons = {
+          turkish: 4,
+          mathematics: 4,
+          physics: 4,
+          chemistry: 2,
+          biology: 2,
+          history: 2,
+          geography: 2,
+          english: 4,
+          german: 2,
+          philosophy: 2,
+          religion: 2,
+        };
+        return lessons[newTeacherData.position];
+      }
+    };
+
     // Firestore teachers koleksiyonuna ekle
     const newTeacher = {
       id: userCredential.user.uid,
       ...newTeacherData,
       weeklyLessonHours: 0,
+      minTeacherLessonHour: lessonConvertToHour(),
+      schedule: {
+        monday: ["", "", "", "", "", ""],
+        tuesday: ["", "", "", "", "", ""],
+        wednesday: ["", "", "", "", "", ""],
+        thursday: ["", "", "", "", "", ""],
+        friday: ["", "", "", "", "", ""],
+      },
       createdAt: new Date().toISOString(),
     };
 

@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 const scheduleSchema = yup.object().shape({
-  classId: yup.string().required("Sınıf seçimi zorunlu"),
+  class: yup.object().required("Sınıf seçimi zorunlu"),
   table: yup
     .object()
     .test(
