@@ -10,20 +10,26 @@ const TeacherCard = ({
   const getPositionName = (position) => {
     const positionNames = {
       mathematics: "Matematik",
+      science: "Fen Bilimleri",
       physics: "Fizik",
       chemistry: "Kimya",
       biology: "Biyoloji",
       turkish: "Türkçe",
       english: "İngilizce",
+      german: "Almanca",
+      literature: "Türk Dili ve Edebiyatı",
       history: "Tarih",
       geography: "Coğrafya",
+      social_sciences: "Sosyal Bilgiler",
       physical_education: "Beden Eğitimi",
       music: "Müzik",
-      art: "Resim",
-      religion: "Din Kültürü",
+      art: "Görsel Sanatlar",
+      religion: "Din Kültürü ve Ahlak Bilgisi",
       philosophy: "Felsefe",
-      computer: "Bilgisayar",
+      computer_science: "Bilgisayar",
+      technology_design: "Teknoloji ve Tasarım",
     };
+
     return positionNames[position] || "Branş belirtilmemiş";
   };
 
@@ -38,7 +44,7 @@ const TeacherCard = ({
   return (
     <div
       key={teacher.id}
-      className="w-full max-w-sm bg-bg-primary rounded-lg border border-bg-tertiary m-2 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden"
+      className="w-[380px] bg-bg-primary rounded-lg border border-bg-tertiary shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden"
     >
       {/* Card Header */}
       <div className="p-3 bg-bg-secondary border-b border-bg-tertiary flex flex-col">

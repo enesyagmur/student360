@@ -1,7 +1,6 @@
 import { Book, Trash2 } from "lucide-react";
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "../../../ui/button";
 import ConfirmModal from "../../../ui/confirmModal";
 import {
   deleteLessonThunk,
@@ -93,11 +92,8 @@ const LessonList = React.memo(({ search, user }) => {
   return (
     <div className="w-full h-[500px] bg-bg-tertiary rounded-xl overflow-x-auto overflow-y-auto">
       <div className="flex flex-wrap justify-center gap-4 p-4">
-        {lessonList.map((lesson) => (
-          <div
-            key={lesson.lessonId}
-            className="flex-1 min-w-[320px] max-w-[400px]"
-          >
+        {lessonList.map((lesson, index) => (
+          <div key={index} className="flex-1 min-w-[320px] max-w-[400px]">
             <LessonCard
               lesson={lesson}
               user={user}

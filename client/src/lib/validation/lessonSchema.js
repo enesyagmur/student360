@@ -11,5 +11,9 @@ export const lessonSchema = yup.object().shape({
     .required("Kredi zorunludur")
     .min(1, "Kredi en az 1 olmalıdır")
     .max(10, "Kredi en fazla 10 olmalıdır"),
-  isActive: yup.boolean().required("Durum seçimi zorunludur"),
+  level: yup
+    .string()
+    .required("Düzey seçimi zorunludur")
+    .oneOf(["middle_school", "high_school"]),
+  active: yup.boolean().required("Durum seçimi zorunludur"),
 });

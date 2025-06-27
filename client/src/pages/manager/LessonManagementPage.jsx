@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Search, Plus, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import LessonList from "../../components/manager/lists/lessons/LessonList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { lessonSchema } from "../../lib/validation/lessonSchema";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { createLessonThunk } from "../../features/lesson/lessonThunk";
-import Button from "../../components/ui/button";
 import { getCurrentUser } from "../../features/auth/authService";
 import PageHeader from "../../components/ui/pageHeader";
 
@@ -110,19 +108,52 @@ const LessonManagementPage = () => {
                 )}
               </div>
 
-              {/* Aktiflik Durumu */}
+              {/* Düzey */}
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-1">
                   Durum
                 </label>
                 <select
-                  {...register("isActive")}
+                  {...register("level")}
                   className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="true">Aktif</option>
-                  <option value="false">Pasif</option>
+                  <option value="">Düzey Seçiniz</option>
+
+                  <option value="middle_school">Ortaokul</option>
+                  <option value="high_school">Lise</option>
                 </select>
                 {errors.isActive && (
+                  <p className="text-color-danger">{errors.isActive.message}</p>
+                )}
+              </div>
+
+              {/* Aktiflik Durumu */}
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1">
+                  Durum
+                </label>
+                <div className="flex gap-6">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="true"
+                      defaultChecked
+                      {...register("active")}
+                      className="form-radio text-blue-600"
+                    />
+                    <span className="ml-2">Aktif</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="false"
+                      {...register("active")}
+                      className="form-radio text-blue-600"
+                    />
+                    <span className="ml-2">Pasif</span>
+                  </label>
+                </div>
+                {errors.active && (
                   <p className="text-color-danger">{errors.isActive.message}</p>
                 )}
               </div>

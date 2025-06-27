@@ -17,32 +17,34 @@ export const teacherSchema = Yup.object({
   phone: Yup.string()
     .required("Boş bırakılamaz.")
     .matches(/^\d{10}$/, "Telefon numarası 10 adet rakam içermelidir."),
-  position: Yup.string()
-    .required("Branş seçimi zorunludur.")
-    .oneOf(
-      [
-        "mathematics",
-        "physics",
-        "chemistry",
-        "biology",
-        "turkish",
-        "english",
-        "history",
-        "geography",
-        "physical_education",
-        "music",
-        "art",
-        "religion",
-        "philosophy",
-        "computer",
-      ],
-      "Geçerli bir branş seçiniz."
-    ),
+  position: Yup.string().required("Branş seçimi zorunludur.").oneOf(
+    [
+      "mathematics", // Matematik
+      "physics", // Fizik
+      "chemistry", // Kimya
+      "biology", // Biyoloji
+      "turkish", // Türkçe
+      "english", // İngilizce
+      "german", // Almanca (eklemek istersen)
+      "literature", // Türk Dili ve Edebiyatı
+      "history", // Tarih
+      "geography", // Coğrafya
+      "social_sciences", // Sosyal Bilgiler
+      "science", //fen bilgileri
+      "physical_education", // Beden Eğitimi
+      "music", // Müzik
+      "art", // Resim / Görsel Sanatlar
+      "religion", // Din Kültürü ve Ahlak Bilgisi
+      "philosophy", // Felsefe
+      "computer_science", // Bilgisayar
+      "technology_design", // Teknoloji ve Tasarım
+    ],
+    "Geçerli bir branş seçiniz."
+  ),
   level: Yup.string()
     .required("Öğretmen düzey seçimi zorunludur")
     .oneOf(
-      ["middle_school"],
-      ["high_school"],
+      ["middle_school", "high_school"],
       "Lütfen geçerli bir düzey seçiniz."
     ),
   active: Yup.boolean().required("Durum seçimi zorunludur"),

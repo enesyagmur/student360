@@ -96,7 +96,7 @@ const TeacherList = React.memo(({ search, user }) => {
   return (
     <div className="w-full h-[500px] bg-bg-tertiary rounded-xl overflow-x-auto overflow-y-auto">
       {/* Modern Teacher Cards Flex Layout */}
-      <div className="flex flex-wrap justify-center gap-6">
+      <div className="flex flex-wrap justify-center gap-6 pt-2">
         {filteredTeachers.map((teacher) => (
           <TeacherCard
             key={teacher.id}

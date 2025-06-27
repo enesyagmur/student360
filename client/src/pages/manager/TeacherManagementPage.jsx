@@ -4,10 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { teacherSchema } from "../../lib/validation/teacherFormSchema";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import {
-  addNewTeacherThunk,
-  fetchTeachersThunk,
-} from "../../features/teacher/teacherThunk";
+import { addNewTeacherThunk } from "../../features/teacher/teacherThunk";
 import { getCurrentUser } from "../../features/auth/authService";
 import PageHeader from "../../components/ui/pageHeader";
 
@@ -29,10 +26,13 @@ const TeacherManagementPage = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(teacherSchema),
   });
+
+  const level = watch("level");
 
   const onSubmit = async (data) => {
     try {
@@ -55,12 +55,6 @@ const TeacherManagementPage = () => {
       if (teacher) {
         reset();
         setShowAddModal(false);
-        // Yeni öğretmen eklendikten sonra listeyi güncelle
-        dispatch(
-          fetchTeachersThunk({
-            currentUserId: user.id,
-          })
-        );
       }
     } catch (err) {
       console.error(
@@ -164,37 +158,6 @@ const TeacherManagementPage = () => {
               <div className="flex-1 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-1">
-                    Branş
-                  </label>
-                  <select
-                    {...register("position")}
-                    className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Branş seçin</option>
-                    <option value="mathematics">Matematik</option>
-                    <option value="physics">Fizik</option>
-                    <option value="chemistry">Kimya</option>
-                    <option value="biology">Biyoloji</option>
-                    <option value="turkish">Türkçe</option>
-                    <option value="english">İngilizce</option>
-                    <option value="history">Tarih</option>
-                    <option value="geography">Coğrafya</option>
-                    <option value="physical_education">Beden Eğitimi</option>
-                    <option value="music">Müzik</option>
-                    <option value="art">Resim</option>
-                    <option value="religion">Din Kültürü</option>
-                    <option value="philosophy">Felsefe</option>
-                    <option value="computer">Bilgisayar</option>
-                  </select>
-                  {errors.position && (
-                    <p className="text-color-danger">
-                      {errors.position.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-text-secondary mb-1">
                     Düzey
                   </label>
                   <select
@@ -209,6 +172,71 @@ const TeacherManagementPage = () => {
                     <p className="text-color-danger">{errors.level.message}</p>
                   )}
                 </div>
+
+                {level === "middle_school" ? (
+                  <div>
+                    <label className="block text-sm font-medium text-text-secondary mb-1">
+                      Branş
+                    </label>
+                    <select
+                      {...register("position")}
+                      className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Branş seçin</option>
+                      <option value="mathematics">Matematik</option>
+                      <option value="science">Fen Bilimleri</option>
+                      <option value="technology_design">
+                        Teknoloji Tasarım
+                      </option>
+                      <option value="turkish">Türkçe</option>
+                      <option value="english">İngilizce</option>
+                      <option value="social_sciences">Sosyal Bilgiler</option>
+                      <option value="physical_education">Beden Eğitimi</option>
+                      <option value="music">Müzik</option>
+                      <option value="art">Resim</option>
+                      <option value="religion">Din Kültürü</option>
+                      <option value="computer_science">
+                        Bilgisayar Teknolojileri
+                      </option>
+                    </select>
+                    {errors.position && (
+                      <p className="text-color-danger">
+                        {errors.position.message}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium text-text-secondary mb-1">
+                      Branş
+                    </label>
+                    <select
+                      {...register("position")}
+                      className="w-full bg-bg-secondary rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Branş seçin</option>
+                      <option value="mathematics">Matematik</option>
+                      <option value="physics">Fizik</option>
+                      <option value="chemistry">Kimya</option>
+                      <option value="biology">Biyoloji</option>
+                      <option value="turkish">Türk Dili ve Edebiyatı</option>
+                      <option value="english">İngilizce</option>
+                      <option value="german">Almanca</option>
+
+                      <option value="history">Tarih</option>
+                      <option value="geography">Coğrafya</option>
+                      <option value="religion">
+                        Din Kültürü ve Ahlak Bilgisi
+                      </option>
+                      <option value="philosophy">Felsefe</option>
+                    </select>
+                    {errors.position && (
+                      <p className="text-color-danger">
+                        {errors.position.message}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-1">
