@@ -4,7 +4,7 @@ import { fetchTeachersThunk } from "../../../../features/teacher/teacherThunk";
 import { fetchLessonsThunk } from "../../../../features/lesson/lessonThunk";
 import useScheduleFormReducer from "../../../../hooks/useScheduleFormReducer";
 import { getClassesThunk } from "../../../../features/class/classThunk";
-import { createScheduleService } from "../../../../features/schedule/scheduleService";
+import { createScheduleThunk } from "../../../../features/schedule/scheduleThunk";
 
 const lessonTimes = [
   "09:00 - 09:50",
@@ -184,7 +184,24 @@ const NewSchedule = ({ user, setShowAddModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await createScheduleService(state, user.id);
+    try {
+      if (!user?.id) {
+        throw new Error(
+          "SCHEDULE FORM | Schedule oluştururken sorun: userId eksik"
+        );
+      }
+      const data = {
+        classId: state.class.id,
+        className: state.class.className,
+        schedule: state.schedule,
+        currentUserId: user.id,
+      };
+      await dispatch(createScheduleThunk(data)).unwrap();
+      dispatchRedux({ type: "RESET_STATE" });
+      setShowAddModal(false);
+    } catch (err) {
+      throw new Error(err);
+    }
   };
 
   // console.log(state);

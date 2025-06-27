@@ -1,7 +1,12 @@
 import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
-export const createScheduleService = async (formState, currentUserId) => {
+export const createScheduleService = async (
+  classId,
+  className,
+  schedule,
+  currentUserId
+) => {
   try {
     if (!currentUserId) {
       throw new Error(
@@ -22,15 +27,16 @@ export const createScheduleService = async (formState, currentUserId) => {
 
     const newSchedule = {
       id: scheduleDocRef.id,
-      classInfo: formState.class,
-      schedule: formState.schedule,
+      classId: classId,
+      className: className,
+      schedule: schedule,
       updatedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
     };
     //programlara ekleme
     await setDoc(scheduleDocRef, newSchedule);
 
-    const classDocRef = doc(db, "classes", formState.class.id);
+    const classDocRef = doc(db, "classes", classId);
     const classSnapShot = await getDoc(classDocRef);
     if (!classSnapShot.exists()) {
       throw new Error("SERVICE | Sınıf bulunamadı");
@@ -38,8 +44,10 @@ export const createScheduleService = async (formState, currentUserId) => {
     const classData = classSnapShot.data();
     await updateDoc(classDocRef, {
       ...classData,
-      schedule: newSchedule,
+      schedule: schedule,
     });
+
+    return newSchedule;
   } catch (err) {
     throw new Error(`SERVICE | Program oluştururken sorun: ${err}`);
   }

@@ -45,6 +45,20 @@ export function scheduleFormReducer(state, action) {
         class: action.value,
       };
     }
+    case "RESET_STATE": {
+      return {
+        class: {},
+        schedule: {
+          monday: Array(6).fill({ lesson: "", teacherId: "" }),
+          tuesday: Array(6).fill({ lesson: "", teacherId: "" }),
+          wednesday: Array(6).fill({ lesson: "", teacherId: "" }),
+          thursday: Array(6).fill({ lesson: "", teacherId: "" }),
+          friday: Array(6).fill({ lesson: "", teacherId: "" }),
+        },
+        errors: {},
+        isSubmitting: false,
+      };
+    }
     default:
       return state;
   }
