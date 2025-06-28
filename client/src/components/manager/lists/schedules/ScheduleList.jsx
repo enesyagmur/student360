@@ -5,8 +5,6 @@ import ConfirmModal from "../../../ui/confirmModal";
 import Loading from "../../../ui/loading";
 import SomeThingWrong from "../../../ui/someThingWrong";
 import NoData from "../../../ui/noData";
-import Button from "../../../ui/button";
-import { Trash2 } from "lucide-react";
 import ScheduleCard from "./ScheduleCard";
 
 const ScheduleList = ({ search, user }) => {

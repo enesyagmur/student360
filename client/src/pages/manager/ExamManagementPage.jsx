@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Plus, X } from "lucide-react";
 import ExamList from "../../components/manager/lists/exams/ExamList";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import examSchema from "../../lib/validation/examSchema";
-import { getCurrentUser } from "../../features/auth/authService";
+
 import { useSelector, useDispatch } from "react-redux";
 import { fetchLessonsThunk } from "../../features/lesson/lessonThunk";
 import { createExamThunk } from "../../features/exam/examThunk";
@@ -13,7 +13,7 @@ import PageHeader from "../../components/ui/pageHeader";
 const ExamManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState();
+  const user = useSelector((state) => state.authState.user);
   const dispatch = useDispatch();
 
   const { lessonList = [], loading } = useSelector(
@@ -31,13 +31,6 @@ const ExamManagementPage = () => {
   });
 
   const selectedLessonId = watch("lessonId");
-
-  useEffect(() => {
-    const userData = getCurrentUser();
-    if (userData) {
-      setUser(userData);
-    }
-  }, []);
 
   useEffect(() => {
     const takeLessons = async () => {

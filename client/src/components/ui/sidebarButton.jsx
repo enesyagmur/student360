@@ -1,5 +1,3 @@
-import React from "react";
-
 const SidebarButton = ({ title, Icon, isActive, visible }) => {
   return (
     <div

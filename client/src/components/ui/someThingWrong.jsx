@@ -4,31 +4,31 @@ import { AlertCircle } from "lucide-react";
 const SomeThingWrong = ({ err }) => {
   return (
     <div
-      className="flex items-center justify-center h-full"
+      className="flex items-center justify-center min-h-screen p-4 px-4 sm:px-6 lg:px-8"
       style={{ backgroundColor: "var(--color-bg-primary)" }}
     >
       <div
-        className="w-full max-w-md p-6 sm:p-8 rounded-lg shadow-lg text-center"
+        className="w-full max-w-sm sm:max-w-md lg:max-w-lg p-4 sm:p-6 lg:p-8 rounded-lg shadow-lg text-center"
         style={{ backgroundColor: "var(--color-bg-secondary)" }}
       >
         {/* Error Icon */}
         <div
-          className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full flex items-center justify-center"
+          className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 lg:mb-6 rounded-full flex items-center justify-center"
           style={{ backgroundColor: "var(--color-danger)" }}
         >
-          <AlertCircle className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+          <AlertCircle className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-white" />
         </div>
 
         {/* Error Message */}
         <h2
-          className="text-lg sm:text-xl font-semibold mb-2"
+          className="text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold mb-2 sm:mb-3 lg:mb-4 leading-tight"
           style={{ color: "var(--color-text-primary)" }}
         >
           Oops! Bir Hata Oluştu
         </h2>
 
         <p
-          className="text-sm sm:text-base"
+          className="text-xs sm:text-sm lg:text-base leading-relaxed px-2 sm:px-0"
           style={{ color: "var(--color-text-secondary)" }}
         >
           {err.message ||

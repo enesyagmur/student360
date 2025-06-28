@@ -1,19 +1,13 @@
-import { useEffect, useState } from "react";
-
-import { getCurrentUser } from "../../features/auth/authService";
+import { useState } from "react";
 import PageHeader from "../../components/ui/pageHeader";
 import ScheduleList from "../../components/manager/lists/schedules/ScheduleList";
 import NewSchedule from "../../components/manager/lists/schedules/newSchedule";
+import { useSelector } from "react-redux";
 
 const ScheduleManagementPage = () => {
-  const [user, setUser] = useState();
+  const user = useSelector((state) => state.authState.user);
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
-
-  useEffect(() => {
-    const user = getCurrentUser();
-    setUser(user);
-  }, []);
 
   return (
     <div className="flex-1 w-11/12 h-full bg-bg-primary text-text-primary">

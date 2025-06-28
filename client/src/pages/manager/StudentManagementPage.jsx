@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Search, X, Plus } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import Button from "../../components/ui/button";
-import { getCurrentUser } from "../../features/auth/authService";
 import {
   addNewStudentThunk,
   fetchStudentsThunk,
@@ -18,7 +16,7 @@ import PageHeader from "../../components/ui/pageHeader";
 const StudentManagementPage = () => {
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.authState.user);
   const dispatch = useDispatch();
   const [classes, setClasses] = useState([]);
 
@@ -36,11 +34,8 @@ const StudentManagementPage = () => {
 
   // LocalStorage'dan kullanıcı bilgisini al
   useEffect(() => {
-    const userData = getCurrentUser();
-    if (userData) {
-      setUser(userData);
-
-      dispatch(fetchStudentsThunk(userData.id));
+    if (user) {
+      dispatch(fetchStudentsThunk(user.id));
     }
   }, [dispatch]);
 

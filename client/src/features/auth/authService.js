@@ -53,8 +53,6 @@ export const userLoginService = async (email, password, role) => {
       ...userData,
     };
 
-    localStorage.setItem("user", JSON.stringify(userToStore));
-
     return userToStore;
   } catch (err) {
     console.error("Giriş hatası:", err);

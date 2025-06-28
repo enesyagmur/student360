@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Search, Plus, X } from "lucide-react";
+import { useState } from "react";
+import { X } from "lucide-react";
 import AnnouncementList from "../../components/manager/lists/announcements/AnnouncementList";
-import { getCurrentUser } from "../../features/auth/authService";
-
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { announcementSchema } from "../../lib/validation/announcementSchema";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createAnnouncementThunk } from "../../features/announcement/announcementThunk";
 import PageHeader from "../../components/ui/pageHeader";
 
 const AnnouncementManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.authState.user);
 
   const {
     register,
@@ -24,14 +22,6 @@ const AnnouncementManagementPage = () => {
   } = useForm({
     resolver: yupResolver(announcementSchema),
   });
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const currentUser = await getCurrentUser();
-      if (currentUser) setUser(currentUser);
-    };
-    fetchUser();
-  }, []);
 
   const onSubmit = async (data) => {
     try {

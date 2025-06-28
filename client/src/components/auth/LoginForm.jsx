@@ -1,15 +1,18 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { GraduationCap, Lock, Mail, UserCheck, Users } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { loginSchema } from "../../lib/validation/loginFormSchema";
 import { useNavigate } from "react-router-dom";
 import { userLoginService } from "../../features/auth/authService";
+import { useDispatch } from "react-redux"; // Ekle
+import { setUser } from "../../features/auth/authSlice"; // setUser'ı import et
 
 const LoginForm = ({ setShowForgotPassword }) => {
   const [role, setRole] = useState("student");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Doğru şekilde ekle
 
   const {
     register,
@@ -23,8 +26,8 @@ const LoginForm = ({ setShowForgotPassword }) => {
   const onSubmit = async (data) => {
     try {
       setError("");
-      await userLoginService(data.email, data.password, role);
-
+      const result = await userLoginService(data.email, data.password, role);
+      dispatch(setUser(result)); // setUser olarak düzelt
       // Rol bazlı yönlendirme
       if (role === "manager") {
         navigate("/manager/dashboard");

@@ -1,5 +1,6 @@
 //// filepath: client/src/pages/manager/ManagerDashboardPage.jsx
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const students = [
   {
@@ -45,6 +46,7 @@ const lessons = ["matematik", "fizik", "turkce"];
 const ManagerDashboardPage = () => {
   const [selectedClass, setSelectedClass] = useState("all");
   const [selectedLesson, setSelectedLesson] = useState("all");
+  const user = useSelector((state) => state.authState.user);
 
   // Filtrelenmiş öğrenciler
   const filteredStudents =

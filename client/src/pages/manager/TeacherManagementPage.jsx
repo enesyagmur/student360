@@ -1,26 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import TeacherList from "../../components/manager/lists/teachers/TeacherList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { teacherSchema } from "../../lib/validation/teacherFormSchema";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addNewTeacherThunk } from "../../features/teacher/teacherThunk";
-import { getCurrentUser } from "../../features/auth/authService";
 import PageHeader from "../../components/ui/pageHeader";
 
 const TeacherManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.authState.user);
   const dispatch = useDispatch();
-
-  // LocalStorage'dan kullanıcı bilgisini al
-  useEffect(() => {
-    const userData = getCurrentUser();
-    if (userData) {
-      setUser(userData);
-    }
-  }, []);
 
   const {
     register,

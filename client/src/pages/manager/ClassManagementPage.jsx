@@ -1,28 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { classSchema } from "../../lib/validation/classSchema";
 import { createClassThunk } from "../../features/class/classThunk";
 import ClassList from "../../components/manager/lists/classes/ClassList";
 import PageHeader from "../../components/ui/pageHeader";
-import { getCurrentUser } from "../../features/auth/authService";
 
 const ClassManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.authState.user);
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const currentUser = getCurrentUser();
-    if (!currentUser) {
-      console.error("Kullanıcı bilgisi bulunamadı");
-      return;
-    }
-    setUser(currentUser);
-  }, []);
 
   const {
     register,

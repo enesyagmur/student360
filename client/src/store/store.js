@@ -7,6 +7,7 @@ import studentSlice from "../features/student/studentSlice";
 import announcementSlice from "../features/announcement/announcementSlice";
 import examSlice from "../features/exam/examSlice";
 import scheduleSlice from "../features/schedule/scheduleSlice";
+import authSlice from "../features/auth/authSlice";
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     announcementState: announcementSlice,
     examState: examSlice,
     scheduleState: scheduleSlice,
+    authState: authSlice,
   },
 });
 

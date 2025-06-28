@@ -1,25 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LessonList from "../../components/manager/lists/lessons/LessonList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { lessonSchema } from "../../lib/validation/lessonSchema";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createLessonThunk } from "../../features/lesson/lessonThunk";
-import { getCurrentUser } from "../../features/auth/authService";
 import PageHeader from "../../components/ui/pageHeader";
 
 const LessonManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.authState.user);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const userData = getCurrentUser();
-    if (userData) {
-      setUser(userData);
-    }
-  }, []);
 
   const {
     register,

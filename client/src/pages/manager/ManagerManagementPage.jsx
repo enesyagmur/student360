@@ -1,26 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Search, Plus, X } from "lucide-react";
+import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { managerSchema } from "../../lib/validation/managerSchema";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addNewManagerThunk } from "../../features/manager/managerThunk";
-import Button from "../../components/ui/button";
 import ManagerList from "../../components/manager/lists/managers/ManagerList";
 import PageHeader from "../../components/ui/pageHeader";
 
 const ManagerManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.authState.user);
+
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
 
   const {
     register,

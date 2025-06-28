@@ -1,30 +1,9 @@
 import { Sun, LogOut, BellRing } from "lucide-react";
 import toggleTheme from "../../utils/theme";
-import { useEffect, useState } from "react";
-import { logoutService } from "../../features/auth/authService";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Header = () => {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // LocalStorage'dan kullanıcı bilgilerini al
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await logoutService();
-      setUser(null);
-      navigate("/");
-    } catch (error) {
-      console.error("Çıkış yapılırken hata oluştu:", error);
-    }
-  };
+  const user = useSelector((state) => state.authState?.user);
 
   if (!user) return null;
 
@@ -40,12 +19,6 @@ const Header = () => {
 
         <div className="flex items-center justify-evenly space-x-2 text-text-secondary">
           <p className="text-sm font-medium capitalize">{user.fullName}</p>
-          <button
-            onClick={handleLogout}
-            className="text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-full p-1"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
         </div>
       </div>
     </header>

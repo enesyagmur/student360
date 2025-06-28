@@ -13,11 +13,13 @@ import SettingsPage from "./pages/shared/SettingsPage";
 import AnnouncementManagementPage from "./pages/manager/AnnouncementManagementPage";
 import { Provider } from "react-redux";
 import store from "./store/store";
+import useAuthListener from "./hooks/useAuthListener";
 
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
+        <AuthListenerWrapper />
         <Routes>
           <Route path="/" element={<LoginPage />} />
 
@@ -42,6 +44,12 @@ function App() {
       </BrowserRouter>
     </Provider>
   );
+}
+
+// Yeni bir wrapper component ekleyin:
+function AuthListenerWrapper() {
+  useAuthListener();
+  return null;
 }
 
 export default App;
