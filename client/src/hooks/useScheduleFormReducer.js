@@ -3,11 +3,11 @@ import { useReducer } from "react";
 export const initialState = {
   class: {},
   schedule: {
-    monday: Array(6).fill({ lesson: "", teacherId: "" }),
-    tuesday: Array(6).fill({ lesson: "", teacherId: "" }),
-    wednesday: Array(6).fill({ lesson: "", teacherId: "" }),
-    thursday: Array(6).fill({ lesson: "", teacherId: "" }),
-    friday: Array(6).fill({ lesson: "", teacherId: "" }),
+    monday: Array(6).fill({ lesson: "", teacherId: "", teacherName: "" }),
+    tuesday: Array(6).fill({ lesson: "", teacherId: "", teacherName: "" }),
+    wednesday: Array(6).fill({ lesson: "", teacherId: "", teacherName: "" }),
+    thursday: Array(6).fill({ lesson: "", teacherId: "", teacherName: "" }),
+    friday: Array(6).fill({ lesson: "", teacherId: "", teacherName: "" }),
   },
   errors: {},
   isSubmitting: false,
@@ -29,7 +29,13 @@ export function scheduleFormReducer(state, action) {
     }
     case "SET_TEACHER": {
       const updatedDay = state.schedule[action.day].map((item, idx) =>
-        idx === action.hourId ? { ...item, teacherId: action.teacherId } : item
+        idx === action.hourId
+          ? {
+              ...item,
+              teacherId: action.teacherId,
+              teacherName: action.teacherName,
+            }
+          : item
       );
       return {
         ...state,
@@ -49,11 +55,23 @@ export function scheduleFormReducer(state, action) {
       return {
         class: {},
         schedule: {
-          monday: Array(6).fill({ lesson: "", teacherId: "" }),
-          tuesday: Array(6).fill({ lesson: "", teacherId: "" }),
-          wednesday: Array(6).fill({ lesson: "", teacherId: "" }),
-          thursday: Array(6).fill({ lesson: "", teacherId: "" }),
-          friday: Array(6).fill({ lesson: "", teacherId: "" }),
+          monday: Array(6).fill({ lesson: "", teacherId: "", teacherName: "" }),
+          tuesday: Array(6).fill({
+            lesson: "",
+            teacherId: "",
+            teacherName: "",
+          }),
+          wednesday: Array(6).fill({
+            lesson: "",
+            teacherId: "",
+            teacherName: "",
+          }),
+          thursday: Array(6).fill({
+            lesson: "",
+            teacherId: "",
+            teacherName: "",
+          }),
+          friday: Array(6).fill({ lesson: "", teacherId: "", teacherName: "" }),
         },
         errors: {},
         isSubmitting: false,

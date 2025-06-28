@@ -178,7 +178,15 @@ const NewSchedule = ({ user, setShowAddModal }) => {
   };
 
   const handleTeacherChange = (day, hourId, value) => {
-    dispatchRedux({ type: "SET_TEACHER", day, hourId, teacherId: value });
+    const findTeacher = filteredTeachers.find((t) => t.id === value);
+
+    dispatchRedux({
+      type: "SET_TEACHER",
+      day,
+      hourId,
+      teacherId: findTeacher.id,
+      teacherName: findTeacher.fullName,
+    });
   };
 
   const handleSubmit = async (e) => {
