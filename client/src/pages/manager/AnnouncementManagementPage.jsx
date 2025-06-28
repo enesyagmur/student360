@@ -51,7 +51,7 @@ const AnnouncementManagementPage = () => {
   };
 
   return (
-    <div className="flex-1 w-11/12 h-full bg-bg-primary text-text-primary">
+    <div className="flex-1 w-11/12 h-full bg-bg-primary text-text-primary ">
       {/* Header */}
       <PageHeader
         title={"Duyuru Yönetimi"}

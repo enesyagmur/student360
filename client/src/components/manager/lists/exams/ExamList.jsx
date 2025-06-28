@@ -50,12 +50,10 @@ const ExamList = React.memo(({ search, user }) => {
   }
 
   return (
-    <div className="w-full mt-6">
-      <div className="h-[450px] overflow-y-auto flex flex-wrap gap-6">
-        {filteredExams.map((exam) => (
-          <ExamCard exam={exam} user={user} key={exam.id} />
-        ))}
-      </div>
+    <div className="w-full flex flex-wrap justify-evenly overflow-y-auto">
+      {filteredExams.map((exam) => (
+        <ExamCard exam={exam} user={user} />
+      ))}
     </div>
   );
 });

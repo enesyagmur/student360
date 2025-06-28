@@ -10,7 +10,7 @@ const SidebarButton = ({ title, Icon, isActive, visible }) => {
       <Icon className="w-5 h-5" />
       <span
         className={`font-medium text-sm ${
-          visible === true ? "hidden" : "hidden md:flex"
+          visible === true ? "hidden" : "hidden lg:flex"
         }`}
       >
         {title}

@@ -23,8 +23,8 @@ const Sidebar = ({ role, menuItems }) => {
               visible === true ? "hidden" : "hidden md:flex"
             } flex-col`}
           >
-            <h1 className="text-base sm:text-lg font-bold">ÖĞRENCİ360</h1>
-            <p className="text-[10px] sm:text-xs text-text-secondary">
+            <h1 className="text-base lg:text-lg font-bold">ÖĞRENCİ360</h1>
+            <p className="text-[10px] lg:text-xs text-text-secondary">
               Okul Yönetimi
             </p>
           </div>
@@ -58,7 +58,7 @@ const Sidebar = ({ role, menuItems }) => {
       >
         <div
           className={`hidden ${
-            visible === false && "md:flex"
+            visible === false && "lg:flex"
           } w-full p-4 h-full pl-8  justify-start item-center  font-semibold hover:bg-color-accent-light`}
         >
           <PanelLeftClose className=" sm:w-5 sm:h-5 mt-1" />
@@ -67,7 +67,7 @@ const Sidebar = ({ role, menuItems }) => {
 
         <div
           className={`hidden ${
-            visible === true && "md:flex"
+            visible === true && "lg:flex"
           } w-full p-4 h-full pl-7 justify-start item-center  font-semibold hover:bg-color-accent-light`}
         >
           <PanelRightClose className=" sm:w-5 sm:h-5 " />

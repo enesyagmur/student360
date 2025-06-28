@@ -18,7 +18,7 @@ const LogOutButton = ({ visible }) => {
       <LogOut className="w-5 h-5" />
       <span
         className={`font-medium text-sm ${
-          visible ? "hidden" : "hidden md:flex"
+          visible ? "hidden" : "hidden lg:flex"
         }`}
       >
         Çıkış Yap
