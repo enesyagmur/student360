@@ -1,4 +1,4 @@
-import { User, Mail, Lock, Camera, Save, Edit } from "lucide-react";
+import { User, Mail, Lock, Camera, Save, Edit, Sun } from "lucide-react";
 import Button from "../../components/ui/button";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -8,6 +8,7 @@ import {
   updateEmailService,
   updatePasswordService, // ekle
 } from "../../features/shared/settings/settingsService";
+import toggleTheme from "../../utils/theme";
 
 const SettingsPage = () => {
   const user = useSelector((state) => state.authState.user);
@@ -86,8 +87,8 @@ const SettingsPage = () => {
         {/* Main Content */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sol: Profil Fotoğrafı */}
-          <div className="w-full lg:w-1/3 flex justify-center item-center">
-            <div className="bg-bg-secondary rounded-xl shadow-lg p-6 w-full ">
+          <div className="w-full lg:w-1/3 bg-bg-secondary  flex flex-col justify-evenly item-center">
+            <div className="rounded-xl shadow-lg p-6 w-full ">
               <div className="flex flex-col items-center text-center">
                 <h2 className="text-lg sm:text-xl font-semibold text-text-primary mb-4">
                   Profil Fotoğrafı
@@ -135,6 +136,16 @@ const SettingsPage = () => {
                   Fotoğrafı Güncelle
                 </Button>
               </div>
+            </div>
+
+            <div className="w-full mt-4 flex justify-center">
+              <button
+                className="px-4 py-4 rounded-md text-sm font-medium text-text-secondary bg-bg-primary hover:bg-bg-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out flex items-center space-x-2"
+                onClick={toggleTheme}
+              >
+                <Sun className="h-4 w-4 mr-2" />
+                Temayı Değiştir
+              </button>
             </div>
           </div>
 
