@@ -76,7 +76,7 @@ const AnnouncementList = React.memo(({ search, user }) => {
         {filteredAnnouncements.map((item) => (
           <div
             key={item.id}
-            className="w-full rounded-lg shadow-md bg-bg-secondary p-4 flex flex-col justify-between transition-all"
+            className="w-full rounded-lg shadow-md mt-2 bg-bg-secondary p-4 flex flex-col justify-between transition-all"
           >
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
