@@ -89,41 +89,16 @@ const StudentList = React.memo(({ search, user }) => {
   }
 
   return (
-    <div className="w-full h-[500px] bg-bg-tertiary rounded-xl overflow-x-auto overflow-y-auto">
-      <div className="">
-        <table className="w-full">
-          <thead className="bg-bg-quaternary">
-            <tr>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                Öğrenci
-              </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                İletişim
-              </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                Sınıf
-              </th>
-              <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                Kayıt Tarihi
-              </th>
-              {user?.position.includes("principal") && (
-                <th className="text-left py-4 px-6 text-sm font-medium text-text-primary">
-                  İşlem
-                </th>
-              )}
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {filteredStudents.map((student) => (
-              <StudentCard
-                student={student}
-                setConfirmModal={setConfirmModal}
-                user={user}
-                key={student.id}
-              />
-            ))}
-          </tbody>
-        </table>
+    <div className="w-full h-[440px] md:h-[500px] bg-bg-tertiary rounded-xl overflow-hidden shadow-lg border border-bg-quaternary">
+      <div className="h-full w-full flex flex-wrap justify-center overflow-x-hidden overflow-y-auto">
+        {filteredStudents.map((student) => (
+          <StudentCard
+            student={student}
+            setConfirmModal={setConfirmModal}
+            user={user}
+            key={student.id}
+          />
+        ))}
       </div>
 
       <ConfirmModal

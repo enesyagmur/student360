@@ -1,8 +1,13 @@
 import React from "react";
-import { Mail, Phone, Calendar, Trash2 } from "lucide-react";
+import { Mail, Phone, Calendar, Trash2, User, Edit } from "lucide-react";
 import Button from "../../../ui/button";
 
-const StudentCard = ({ student, user, setConfirmModal = () => {} }) => {
+const StudentCard = ({
+  student,
+  user,
+  setConfirmModal = () => {},
+  setEditModal = () => {},
+}) => {
   const getInitials = (fullName) => {
     if (!fullName) return "?";
     const nameParts = fullName.split(" ");
@@ -17,18 +22,18 @@ const StudentCard = ({ student, user, setConfirmModal = () => {} }) => {
   };
 
   return (
-    <tr
-      className="py-4 px-6"
+    <div
+      className="w-[380px] h-72 rounded-xl m-2 border hover:shadow-lg transition-all duration-300 group flex flex-col"
       style={{
-        color: "var(--color-text-secondary)",
         backgroundColor: "var(--color-bg-secondary)",
+        borderColor: "var(--color-bg-quaternary)",
       }}
     >
-      {/* Öğrenci */}
-      <td className="py-4 px-6">
-        <div className="flex items-center gap-3">
+      {/* Header - Avatar ve İsim */}
+      <div className="p-4 flex items-start justify-evenly">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <div
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold uppercase"
+            className="w-12 h-12  rounded-full flex items-center justify-center text-white font-semibold uppercase shadow-lg group-hover:scale-105 transition-transform duration-200"
             style={{
               background:
                 "linear-gradient(135deg, var(--color-accent), var(--color-accent-light))",
@@ -36,32 +41,44 @@ const StudentCard = ({ student, user, setConfirmModal = () => {} }) => {
           >
             {getInitials(student.fullName)}
           </div>
-          <div>
-            <div
-              className="hidden md:flex font-medium capitalize"
+          <div className="flex-1 min-w-0">
+            <h3
+              className="font-semibold text-lg capitalize truncate"
               style={{ color: "var(--color-text-primary)" }}
             >
               {student.fullName || "İsimsiz Öğrenci"}
+            </h3>
+            <div
+              className="text-sm flex items-center gap-1 mt-1"
+              style={{ color: "var(--color-text-secondary)" }}
+            >
+              <User className="w-3 h-3" />
+              Öğrenci
             </div>
           </div>
         </div>
-      </td>
+      </div>
 
-      {/* İletişim */}
-      <td className="py-4 px-6">
-        <div className="space-y-1">
+      {/* Content */}
+      <div className="w-11/12 mx-auto h-32  flex flex-col justify-between">
+        {/* İletişim Bilgileri */}
+        <div className="w-full h-16 flex flex-col justify-evenly">
           <div className="flex items-center gap-2 text-sm">
             <Mail
-              className="w-4 h-4"
+              className="w-4 h-4 flex-shrink-0"
               style={{ color: "var(--color-text-tertiary)" }}
             />
-            <span style={{ color: "var(--color-text-secondary)" }}>
+            <span
+              className="truncate"
+              style={{ color: "var(--color-text-secondary)" }}
+              title={student.email || "E-posta yok"}
+            >
               {student.email || "E-posta yok"}
             </span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Phone
-              className="w-4 h-4"
+              className="w-4 h-4 flex-shrink-0"
               style={{ color: "var(--color-text-tertiary)" }}
             />
             <span style={{ color: "var(--color-text-secondary)" }}>
@@ -69,57 +86,68 @@ const StudentCard = ({ student, user, setConfirmModal = () => {} }) => {
             </span>
           </div>
         </div>
-      </td>
 
-      {/* Sınıf */}
-      <td className="py-4 px-6">
-        <div className="space-y-1">
-          <div
-            className="font-medium"
-            style={{ color: "var(--color-text-primary)" }}
+        {/* Alt Bilgiler */}
+        <div className="w-full  h-16 flex items-center justify-between">
+          <span
+            className="w-10 h-8 flex item-center justify-center pt-1 text-sm font-semibold rounded-md"
+            style={{
+              color: "var(--color-text-primary)",
+              backgroundColor: "var(--color-bg-quaternary)",
+            }}
           >
-            {student.grade !== "" ? student.className : "Sınıf atanmamış"}
-          </div>
-          <div
-            className="text-sm"
-            style={{ color: "var(--color-text-secondary)" }}
-          >
-            Öğrenci
-          </div>
-        </div>
-      </td>
-
-      {/* Kayıt Tarihi */}
-      <td className="py-4 px-6">
-        <div className="flex items-center gap-2 text-sm">
-          <Calendar
-            className="w-4 h-4"
-            style={{ color: "var(--color-text-tertiary)" }}
-          />
-          <span style={{ color: "var(--color-text-secondary)" }}>
-            {formatDate(student.createdAt)}
+            {student.grade !== "" ? student.className : "Atanmamış"}
           </span>
+          <div className="h-full flex items-center text-sm">
+            <Calendar
+              className="w-4 h-4"
+              style={{ color: "var(--color-text-tertiary)" }}
+            />
+            <span style={{ color: "var(--color-text-secondary)" }}>
+              {formatDate(student.createdAt)}
+            </span>
+          </div>
         </div>
-      </td>
+      </div>
 
-      {/* İşlem */}
       {user?.position.includes("principal") && (
-        <td className="py-4 px-6">
-          <Button
-            onClick={() =>
-              setConfirmModal({
-                open: true,
-                selectedItemId: student.id,
-              })
-            }
-            type={"danger"}
-            size={"sm"}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        </td>
+        <div
+          className="h-16 p-4 border-t "
+          style={{ borderColor: "var(--color-bg-quaternary)" }}
+        >
+          <div className="flex gap-2">
+            <Button
+              onClick={() =>
+                setEditModal({
+                  open: true,
+                  selectedStudent: student,
+                })
+              }
+              type={"success"}
+              size={"sm"}
+              className="flex-1"
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Düzenle
+            </Button>
+            <Button
+              onClick={() =>
+                setConfirmModal({
+                  open: true,
+                  selectedItemId: student.id,
+                })
+              }
+              type={"danger"}
+              size={"sm"}
+              className="flex-1"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Sil
+            </Button>
+          </div>
+        </div>
       )}
-    </tr>
+    </div>
   );
 };
 
