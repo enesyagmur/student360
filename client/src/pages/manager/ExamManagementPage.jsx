@@ -82,7 +82,7 @@ const ExamManagementPage = () => {
   };
 
   return (
-    <div className="flex-1 w-full max-w-7xl mx-auto h-full bg-bg-primary text-text-primary px-2 sm:px-4 md:px-8 py-4">
+    <div className="flex-1 w-full  mx-auto h-full bg-bg-primary text-text-primary px-4  ">
       {/* Header */}
       <PageHeader
         title={"Sınav Yönetimi"}

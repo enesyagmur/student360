@@ -90,10 +90,10 @@ const LessonList = React.memo(({ search, user }) => {
   }
 
   return (
-    <div className="w-full h-[500px] bg-bg-tertiary rounded-xl overflow-x-auto overflow-y-auto">
+    <div className="w-full h-[440px] md:h-[460px] lg:h-[500px] bg-bg-tertiary rounded-xl overflow-x-auto overflow-y-auto">
       <div className="flex flex-wrap justify-center gap-4 p-4">
         {lessonList.map((lesson, index) => (
-          <div key={index} className="flex-1 min-w-[320px] max-w-[400px]">
+          <div key={index} className=" flex-1 min-w-[320px] max-w-[400px]">
             <LessonCard
               lesson={lesson}
               user={user}

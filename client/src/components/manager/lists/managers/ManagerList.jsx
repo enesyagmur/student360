@@ -89,7 +89,7 @@ const ManagerList = React.memo(({ search, user }) => {
   }
 
   return (
-    <div className="w-full h-auto max-h-[500px] bg-bg-tertiary rounded-xl overflow-hidden">
+    <div className="w-full h-[440px] md:h-[460px] lg:h-[500px] bg-bg-tertiary rounded-xl overflow-hidden">
       {/* Desktop Table View */}
       <div className="hidden lg:block overflow-x-auto overflow-y-auto max-h-[500px]">
         <table className="w-full">

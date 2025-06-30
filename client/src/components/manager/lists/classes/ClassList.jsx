@@ -52,7 +52,7 @@ const ClassList = React.memo(({ search, user }) => {
     <div className="bg-bg-tertiary rounded-2xl shadow-lg border border-bg-quaternary overflow-hidden">
       {/* Desktop Table View */}
       <div className="hidden lg:block">
-        <div className="h-[500px] overflow-y-auto overflow-x-auto">
+        <div className="h-[440px] md:h-[460px] lg:h-[500px] overflow-y-auto overflow-x-auto">
           <table className="w-full">
             {/* Modern Table Header */}
             <thead className="bg-bg-quaternary backdrop-blur-sm">
@@ -190,11 +190,11 @@ const ClassList = React.memo(({ search, user }) => {
       </div>
 
       {/* Mobile/Tablet Card View */}
-      <div className="lg:hidden max-h-[480px] overflow-y-auto p-4 space-y-4">
+      <div className="lg:hidden h-[440px] md:h-[500px] overflow-y-auto p-4 space-y-4">
         {filteredClasses.map((classItem) => (
           <div
             key={classItem.id}
-            className="bg-bg-secondary/50 backdrop-blur-sm rounded-2xl p-5 border border-bg-quaternary/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-bg-quaternary/10"
+            className="bg-bg-secondary backdrop-blur-sm rounded-2xl p-5 border border-bg-quaternary/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-bg-quaternary/10"
           >
             {/* Header Section */}
             <div className="flex items-center justify-between mb-4">

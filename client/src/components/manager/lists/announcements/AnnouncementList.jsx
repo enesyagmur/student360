@@ -71,8 +71,8 @@ const AnnouncementList = React.memo(({ search, user }) => {
   }
 
   return (
-    <div className="bg-bg-tertiary min-h-[500px] rounded-lg p-2  overflow-y-auto">
-      <div className="flex flex-col overflow-y-auto h-[470px]  mt-2 sm:mt-0">
+    <div className="bg-bg-tertiary h-[440px] md:h-[460px] lg:h-[500px] rounded-lg p-2  overflow-y-auto">
+      <div className="flex flex-col overflow-y-auto  mt-2 sm:mt-0">
         {filteredAnnouncements.map((item) => (
           <div
             key={item.id}

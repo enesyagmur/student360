@@ -15,12 +15,14 @@ const ExamCard = ({ exam, user }) => {
     console.log("Silinecek sınav ID:", examId);
   };
 
-  const handleEditExam = (examId) => {};
+  const handleEditExam = (examId) => {
+    console.log(examId);
+  };
 
   return (
     <div
       key={exam.id}
-      className="w-[400px] md:w-[500px] lg:w-[450px] mt-6  bg-bg-secondary rounded-xl shadow-sm hover:shadow-xl border border-bg-quaternary transition-all duration-200   flex flex-col  "
+      className="w-11/12 mt-4 lg:w-5/12 lg:m-6  bg-bg-secondary rounded-xl shadow-sm hover:shadow-xl border border-bg-quaternary transition-all duration-200 flex flex-col  "
     >
       {/* Üst gradient çizgi */}
       <div
@@ -130,8 +132,8 @@ const ExamCard = ({ exam, user }) => {
 
         {/* Açıklama */}
         {exam.description && (
-          <div className="mt-2 sm:mt-4">
-            <div className="bg-bg-tertiary/50 rounded-lg p-3 sm:p-4 border border-bg-quaternary/50">
+          <div className=" mt-2 sm:mt-4">
+            <div className="bg-bg-tertiary h-44 rounded-lg p-3 sm:p-4 border border-bg-quaternary/50">
               <h4 className="text-xs sm:text-sm font-medium text-text-primary mb-1 sm:mb-2">
                 Açıklama
               </h4>

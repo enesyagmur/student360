@@ -89,7 +89,7 @@ const StudentList = React.memo(({ search, user }) => {
   }
 
   return (
-    <div className="w-full h-[440px] md:h-[500px] bg-bg-tertiary rounded-xl overflow-hidden shadow-lg border border-bg-quaternary">
+    <div className="w-full h-[440px] md:h-[460px] lg:h-[500px] bg-bg-tertiary rounded-xl overflow-hidden shadow-lg border border-bg-quaternary">
       <div className="h-full w-full flex flex-wrap justify-center overflow-x-hidden overflow-y-auto">
         {filteredStudents.map((student) => (
           <StudentCard

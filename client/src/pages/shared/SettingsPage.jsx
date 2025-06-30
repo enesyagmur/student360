@@ -138,7 +138,7 @@ const SettingsPage = () => {
               </div>
             </div>
 
-            <div className="w-full mt-4 flex justify-center">
+            <div className="w-full p-8 lg:p-0 mt-4 flex justify-center">
               <button
                 className="px-4 py-4 rounded-md text-sm font-medium text-text-secondary bg-bg-primary hover:bg-bg-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out flex items-center space-x-2"
                 onClick={toggleTheme}

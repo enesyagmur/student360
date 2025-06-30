@@ -22,13 +22,7 @@ const StudentCard = ({
   };
 
   return (
-    <div
-      className="w-[380px] h-72 rounded-xl m-2 border hover:shadow-lg transition-all duration-300 group flex flex-col"
-      style={{
-        backgroundColor: "var(--color-bg-secondary)",
-        borderColor: "var(--color-bg-quaternary)",
-      }}
-    >
+    <div className="bg-bg-secondary w-[380px] h-72 rounded-xl m-2 border border-bg-quaternary hover:shadow-lg  transition-all duration-300 group flex flex-col">
       {/* Header - Avatar ve İsim */}
       <div className="p-4 flex items-start justify-evenly">
         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -42,16 +36,10 @@ const StudentCard = ({
             {getInitials(student.fullName)}
           </div>
           <div className="flex-1 min-w-0">
-            <h3
-              className="font-semibold text-lg capitalize truncate"
-              style={{ color: "var(--color-text-primary)" }}
-            >
+            <h3 className="font-semibold text-lg capitalize truncate text-text-primary">
               {student.fullName || "İsimsiz Öğrenci"}
             </h3>
-            <div
-              className="text-sm flex items-center gap-1 mt-1"
-              style={{ color: "var(--color-text-secondary)" }}
-            >
+            <div className="text-sm flex items-center gap-1 mt-1 text-text-secondary">
               <User className="w-3 h-3" />
               Öğrenci
             </div>
@@ -64,24 +52,17 @@ const StudentCard = ({
         {/* İletişim Bilgileri */}
         <div className="w-full h-16 flex flex-col justify-evenly">
           <div className="flex items-center gap-2 text-sm">
-            <Mail
-              className="w-4 h-4 flex-shrink-0"
-              style={{ color: "var(--color-text-tertiary)" }}
-            />
+            <Mail className="w-4 h-4 flex-shrink-0 text-text-tertiary" />
             <span
-              className="truncate"
-              style={{ color: "var(--color-text-secondary)" }}
+              className="truncate text-text-secondary"
               title={student.email || "E-posta yok"}
             >
               {student.email || "E-posta yok"}
             </span>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <Phone
-              className="w-4 h-4 flex-shrink-0"
-              style={{ color: "var(--color-text-tertiary)" }}
-            />
-            <span style={{ color: "var(--color-text-secondary)" }}>
+            <Phone className="w-4 h-4 flex-shrink-0 text-text-tertiary" />
+            <span className="text-text-secondary">
               {student.phone || "Telefon yok"}
             </span>
           </div>
@@ -89,21 +70,12 @@ const StudentCard = ({
 
         {/* Alt Bilgiler */}
         <div className="w-full  h-16 flex items-center justify-between">
-          <span
-            className="w-10 h-8 flex item-center justify-center pt-1 text-sm font-semibold rounded-md"
-            style={{
-              color: "var(--color-text-primary)",
-              backgroundColor: "var(--color-bg-quaternary)",
-            }}
-          >
+          <span className="w-10 h-8 flex item-center justify-center bg-bg-quaternary text-text-primary pt-1 text-sm font-semibold rounded-md">
             {student.grade !== "" ? student.className : "Atanmamış"}
           </span>
           <div className="h-full flex items-center text-sm">
-            <Calendar
-              className="w-4 h-4"
-              style={{ color: "var(--color-text-tertiary)" }}
-            />
-            <span style={{ color: "var(--color-text-secondary)" }}>
+            <Calendar className="w-4 h-4 text-text-tertiary" />
+            <span className="text-text-secondary">
               {formatDate(student.createdAt)}
             </span>
           </div>
@@ -111,10 +83,7 @@ const StudentCard = ({
       </div>
 
       {user?.position.includes("principal") && (
-        <div
-          className="h-16 p-4 border-t "
-          style={{ borderColor: "var(--color-bg-quaternary)" }}
-        >
+        <div className="h-16 p-4 border-t ">
           <div className="flex gap-2">
             <Button
               onClick={() =>

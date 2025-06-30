@@ -41,7 +41,7 @@ const ScheduleList = ({ search, user }) => {
   if (filteredSchedules.length === 0 && !loading && !errors) return <NoData />;
 
   return (
-    <div className="w-full h-[500px] bg-bg-tertiary rounded-xl overflow-x-auto overflow-y-auto">
+    <div className="w-full h-[440px] md:h-[460px] lg:h-[500px] bg-bg-tertiary rounded-xl overflow-x-auto overflow-y-auto">
       <div className="w-full flex flex-col overflow-y-outo p-4">
         {filteredSchedules.map((schedule) => (
           <ScheduleCard key={schedule.id} schedule={schedule} />
